@@ -1,0 +1,17 @@
+include @../peripherals/MRAMController.cs
+
+mach create
+machine LoadPlatformDescription @../platforms/cortex_m0_mram.repl
+
+macro reset
+"""
+    $sp=`sysbus ReadDoubleWord 0x0`
+    $pc=`sysbus ReadDoubleWord 0x4`
+    cpu SP $sp
+    cpu PC $pc
+"""
+
+sysbus LoadELF @../examples/resilient_ota/bootloader.elf
+sysbus LoadBinary @../examples/resilient_ota/slot_a.bin 0x10002000
+sysbus LoadBinary @../examples/resilient_ota/boot_meta.bin 0x10070000
+runMacro $reset

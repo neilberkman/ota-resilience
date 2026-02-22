@@ -1,0 +1,179 @@
+# Live fault-point run for resilient OTA scenario.
+# Required monitor variables:
+#   $fault_at (int)
+#   $total_writes (int)
+#   $result_file (string path)
+#   $include_metadata_faults (true/false)
+
+$fault_at?=0
+$total_writes?=28672
+$include_metadata_faults?=false
+
+python """
+import json
+import struct
+
+bus = monitor.Machine.SystemBus
+ctrl = monitor.Machine['sysbus.mram_ctrl']
+
+fault_at = int(monitor.GetVariable('fault_at'))
+total_writes = int(monitor.GetVariable('total_writes'))
+result_file = str(monitor.GetVariable('result_file'))
+include_metadata_faults = str(monitor.GetVariable('include_metadata_faults')).lower() in ('1', 'true', 'yes')
+
+def as_int(value):
+    try:
+        return int(value)
+    except Exception:
+        return int(str(value), 0)
+
+slot_b_path = 'examples/resilient_ota/slot_b.bin'
+try:
+    repo_root = str(monitor.GetVariable('repo_root'))
+    slot_b_path = repo_root + '/examples/resilient_ota/slot_b.bin'
+except Exception:
+    pass
+with open(slot_b_path, 'rb') as f:
+    slot_payload = f.read()
+needed = total_writes * 8
+if len(slot_payload) < needed:
+    slot_payload = slot_payload + bytes(needed - len(slot_payload))
+else:
+    slot_payload = slot_payload[:needed]
+
+state = {'index': 0, 'faulted': False, 'fault_address': 0}
+
+def le64(chunk):
+    return struct.unpack('<Q', chunk)[0]
+
+def maybe_write_word(addr, value):
+    if state['faulted']:
+        return False
+
+    do_fault = (state['index'] == fault_at)
+    if do_fault:
+        ctrl.InjectPartialWrite(addr)
+        state['faulted'] = True
+        state['fault_address'] = addr
+        return False
+
+    bus.WriteQuadWord(addr, value)
+    state['index'] += 1
+    return True
+
+# 1) Host writes new image to inactive slot (slot B).
+for i in range(total_writes):
+    addr = 0x10039000 + i * 8
+    word = le64(slot_payload[i * 8:(i + 1) * 8])
+    if not maybe_write_word(addr, word):
+        break
+
+# 2) Firmware metadata update (replica 0 then replica 1), optionally faultable.
+if not state['faulted']:
+    words = [0] * 64
+    words[0] = 0x4F54414D
+    words[1] = 2  # seq
+    words[2] = 1  # active_slot = slot B
+    words[3] = 1  # target_slot = slot B
+    words[4] = 1  # pending test
+    words[5] = 0  # boot_count
+    words[6] = 3  # max_boot_count
+
+    crc = 0x1EDC6F41
+    for w in words[:-1]:
+        crc ^= (w + 0x9E3779B9 + ((crc << 6) & 0xFFFFFFFF) + (crc >> 2)) & 0xFFFFFFFF
+        crc &= 0xFFFFFFFF
+    words[-1] = crc
+    meta_blob = struct.pack('<64I', *words)
+
+    def write_metadata_replica(base):
+        for i in range(0, 256, 8):
+            addr = base + i
+            word = le64(meta_blob[i:i + 8])
+            if include_metadata_faults:
+                if not maybe_write_word(addr, word):
+                    return False
+            else:
+                bus.WriteQuadWord(addr, word)
+        return True
+
+    if write_metadata_replica(0x10070000):
+        write_metadata_replica(0x10070100)
+
+def slot_base(slot_id):
+    return 0x10039000 if slot_id == 1 else 0x10002000
+
+def slot_vector_valid(slot_id):
+    base = slot_base(slot_id)
+    sp = as_int(bus.ReadDoubleWord(base + 0))
+    reset_vector = as_int(bus.ReadDoubleWord(base + 4))
+    reset_pc = reset_vector & ~1
+    return (
+        (0x20000000 <= sp <= 0x20020000)
+        and ((reset_vector & 1) == 1)
+        and (base <= reset_pc < (base + 0x37000))
+    )
+
+def read_replica(addr):
+    words = []
+    for i in range(64):
+        words.append(as_int(bus.ReadDoubleWord(addr + i * 4)))
+
+    crc = 0x1EDC6F41
+    for w in words[:-1]:
+        crc ^= (w + 0x9E3779B9 + ((crc << 6) & 0xFFFFFFFF) + (crc >> 2)) & 0xFFFFFFFF
+        crc &= 0xFFFFFFFF
+
+    valid = (words[0] == 0x4F54414D) and (words[-1] == crc)
+    return {
+        'valid': valid,
+        'seq': words[1],
+        'active_slot': words[2],
+        'target_slot': words[3],
+    }
+
+r0 = read_replica(0x10070000)
+r1 = read_replica(0x10070100)
+
+selected = None
+if r0['valid'] and r1['valid']:
+    selected = r0 if r0['seq'] >= r1['seq'] else r1
+elif r0['valid']:
+    selected = r0
+elif r1['valid']:
+    selected = r1
+
+requested_slot = selected['active_slot'] if selected is not None else 0
+chosen_slot = requested_slot
+if not slot_vector_valid(chosen_slot):
+    other = 1 if chosen_slot == 0 else 0
+    chosen_slot = other if slot_vector_valid(other) else -1
+
+if chosen_slot in (0, 1):
+    boot_outcome = 'success'
+    boot_slot = 'B' if chosen_slot == 1 else 'A'
+else:
+    boot_outcome = 'hard_fault'
+    boot_slot = None
+
+result = {
+    'fault_at': fault_at,
+    'boot_outcome': boot_outcome,
+    'boot_slot': boot_slot,
+    'mram_state': {
+        'chosen_slot': chosen_slot,
+        'requested_slot': requested_slot,
+        'write_index': state['index'],
+        'faulted': state['faulted'],
+        'fault_address': '0x{0:08X}'.format(state['fault_address']),
+        'include_metadata_faults': include_metadata_faults,
+        'replica0_valid': r0['valid'],
+        'replica1_valid': r1['valid'],
+        'replica0_seq': r0['seq'],
+        'replica1_seq': r1['seq'],
+    },
+}
+
+with open(result_file, 'w') as f:
+    f.write(json.dumps(result, sort_keys=True))
+"""

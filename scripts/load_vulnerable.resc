@@ -1,0 +1,17 @@
+include @../peripherals/MRAMController.cs
+
+mach create
+machine LoadPlatformDescription @../platforms/cortex_m0_mram.repl
+
+macro reset
+"""
+    # Reset CPU execution state while preserving MRAM backing store.
+    $sp=`sysbus ReadDoubleWord 0x0`
+    $pc=`sysbus ReadDoubleWord 0x4`
+    cpu SP $sp
+    cpu PC $pc
+"""
+
+sysbus LoadELF @../examples/vulnerable_ota/firmware.elf
+sysbus LoadBinary @../examples/test_image.bin 0x10038000
+runMacro $reset

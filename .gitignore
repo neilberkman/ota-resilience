@@ -1,0 +1,27 @@
+# Python caches
+__pycache__/
+*.pyc
+
+# Build artifacts
+*.elf
+*.o
+*.bin
+
+# Keep prebuilt examples for out-of-the-box runnable OSS usage.
+!examples/vulnerable_ota/*.elf
+!examples/vulnerable_ota/*.bin
+!examples/resilient_ota/*.elf
+!examples/resilient_ota/*.bin
+!examples/test_image.bin
+
+# Robot outputs
+output.xml
+robot_output.xml
+log.html
+report.html
+
+# Campaign scratch outputs
+results/full_campaign.json
+results/resilient_campaign.json
+results/resilient_meta_campaign.json
+results/vulnerable_campaign.json

@@ -1,0 +1,277 @@
+{
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/ota_fault_campaign.py --scenario comparative --fault-range 0:28672 --fault-step 5000 --output results/campaign_report.json --chart-output results/money_chart.txt",
+    "run_utc": "2026-02-22T05:10:54Z"
+  },
+  "fault_points": [
+    0,
+    5000,
+    10000,
+    15000,
+    20000,
+    25000,
+    28672
+  ],
+  "git": {
+    "commit": "unknown",
+    "dirty": "true",
+    "short_commit": "unknown"
+  },
+  "include_metadata_faults": false,
+  "inputs": {
+    "firmware": "examples/vulnerable_ota/firmware.elf",
+    "ota_image": "examples/test_image.bin",
+    "platform": "platforms/cortex_m0_mram.repl",
+    "renode_test": "renode-test",
+    "robot_suite": "tests/ota_fault_point.robot"
+  },
+  "money_chart": "Fault Point      Copy-Based OTA    A/B Bootloader\nWrite #0       BRICK           OK (slot A)\nWrite #5000    BRICK           OK (slot A)\nWrite #10000   BRICK           OK (slot A)\nWrite #15000   BRICK           OK (slot A)\nWrite #20000   BRICK           OK (slot A)\nWrite #25000   BRICK           OK (slot A)\nWrite #28672   OK (slot A)     OK (slot B)",
+  "results": {
+    "resilient": [
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 0,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x10039000",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 0
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 68243 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.50 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 4.07 seconds.\nCleaning up suites\nClosing Renode pid 68243\nRenode pid 68243 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_0/robot/robot_output.xml\nLog:     <artifacts>/resilient_0/robot/log.html\nReport:  <artifacts>/resilient_0/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 5000,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x10042C40",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 5000
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 68307 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.56 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 4.08 seconds.\nCleaning up suites\nClosing Renode pid 68307\nRenode pid 68307 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_5000/robot/robot_output.xml\nLog:     <artifacts>/resilient_5000/robot/log.html\nReport:  <artifacts>/resilient_5000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 10000,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x1004C880",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 10000
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 68370 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.52 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 3.93 seconds.\nCleaning up suites\nClosing Renode pid 68370\nRenode pid 68370 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_10000/robot/robot_output.xml\nLog:     <artifacts>/resilient_10000/robot/log.html\nReport:  <artifacts>/resilient_10000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 15000,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x100564C0",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 15000
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 68493 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 5.53 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 6.06 seconds.\nCleaning up suites\nClosing Renode pid 68493\nRenode pid 68493 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_15000/robot/robot_output.xml\nLog:     <artifacts>/resilient_15000/robot/log.html\nReport:  <artifacts>/resilient_15000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 20000,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x10060100",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 20000
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 69121 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.43 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 3.78 seconds.\nCleaning up suites\nClosing Renode pid 69121\nRenode pid 69121 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_20000/robot/robot_output.xml\nLog:     <artifacts>/resilient_20000/robot/log.html\nReport:  <artifacts>/resilient_20000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 25000,
+        "mram_state": {
+          "chosen_slot": 0,
+          "fault_address": "0x10069D40",
+          "faulted": true,
+          "include_metadata_faults": false,
+          "replica0_seq": 1,
+          "replica0_valid": true,
+          "replica1_seq": 1,
+          "replica1_valid": true,
+          "requested_slot": 0,
+          "write_index": 25000
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 69173 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.17 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 3.52 seconds.\nCleaning up suites\nClosing Renode pid 69173\nRenode pid 69173 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_25000/robot/robot_output.xml\nLog:     <artifacts>/resilient_25000/robot/log.html\nReport:  <artifacts>/resilient_25000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "B",
+        "fault_at": 28672,
+        "mram_state": {
+          "chosen_slot": 1,
+          "fault_address": "0x00000000",
+          "faulted": false,
+          "include_metadata_faults": false,
+          "replica0_seq": 2,
+          "replica0_valid": true,
+          "replica1_seq": 2,
+          "replica1_valid": true,
+          "requested_slot": 1,
+          "write_index": 28672
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 69226 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 3.04 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 3.4 seconds.\nCleaning up suites\nClosing Renode pid 69226\nRenode pid 69226 closed\nAggregating all robot results\nOutput:  <artifacts>/resilient_28672/robot/robot_output.xml\nLog:     <artifacts>/resilient_28672/robot/log.html\nReport:  <artifacts>/resilient_28672/robot/report.html\nTests finished successfully :)\n"
+      }
+    ],
+    "vulnerable": [
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 0,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x00000000",
+          "vector_sp": "0x20020000",
+          "vector_valid": false
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 65935 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 11.65 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 12.29 seconds.\nCleaning up suites\nClosing Renode pid 65935\nRenode pid 65935 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_0/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_0/robot/log.html\nReport:  <artifacts>/vulnerable_0/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 5000,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 66050 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 12.24 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 12.97 seconds.\nCleaning up suites\nClosing Renode pid 66050\nRenode pid 66050 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_5000/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_5000/robot/log.html\nReport:  <artifacts>/vulnerable_5000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 10000,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 66371 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 11.85 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 12.38 seconds.\nCleaning up suites\nClosing Renode pid 66371\nRenode pid 66371 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_10000/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_10000/robot/log.html\nReport:  <artifacts>/vulnerable_10000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 15000,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 66903 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 12.03 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 12.56 seconds.\nCleaning up suites\nClosing Renode pid 66903\nRenode pid 66903 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_15000/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_15000/robot/log.html\nReport:  <artifacts>/vulnerable_15000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 20000,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 67077 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 11.74 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 12.18 seconds.\nCleaning up suites\nClosing Renode pid 67077\nRenode pid 67077 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_20000/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_20000/robot/log.html\nReport:  <artifacts>/vulnerable_20000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "fault_at": 25000,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0x00000000",
+          "fault_injected": true,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 67281 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 12.56 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 13.17 seconds.\nCleaning up suites\nClosing Renode pid 67281\nRenode pid 67281 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_25000/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_25000/robot/log.html\nReport:  <artifacts>/vulnerable_25000/robot/report.html\nTests finished successfully :)\n"
+      },
+      {
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "fault_at": 28672,
+        "mram_state": {
+          "boot_counter": 0,
+          "copy_marker": "0xC0FEBEEF",
+          "fault_injected": false,
+          "vector_reset": "0x10000041",
+          "vector_sp": "0x2001FFF0",
+          "vector_valid": true
+        },
+        "raw_log": "Preparing suites\nStarting suites\nRunning suite on Renode pid 67660 using port 49152: tests/ota_fault_point.robot\n+++++ Starting test 'ota_fault_point.Run OTA Fault Point'\n+++++ Finished test 'ota_fault_point.Run OTA Fault Point' in 12.64 seconds with status \u001b[92mOK\u001b[0m\nSuite tests/ota_fault_point.robot finished successfully in 13.27 seconds.\nCleaning up suites\nClosing Renode pid 67660\nRenode pid 67660 closed\nAggregating all robot results\nOutput:  <artifacts>/vulnerable_28672/robot/robot_output.xml\nLog:     <artifacts>/vulnerable_28672/robot/log.html\nReport:  <artifacts>/vulnerable_28672/robot/report.html\nTests finished successfully :)\n"
+      }
+    ]
+  },
+  "scenario": "comparative",
+  "summary": {
+    "resilient": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "recoveries": 7,
+      "total": 7
+    },
+    "vulnerable": {
+      "brick_rate": 0.8571428571428571,
+      "bricks": 6,
+      "recoveries": 1,
+      "total": 7
+    }
+  },
+  "total_writes": 28672
+}
