@@ -1,0 +1,23 @@
+# Load the resilient OTA scenario.
+# Optional monitor variable:
+#   $repo_root (defaults to current working directory)
+
+$repo_root?=""
+
+python """
+import os
+
+repo_root = str(monitor.GetVariable('repo_root'))
+if not repo_root:
+    repo_root = os.getcwd()
+repo_root = os.path.abspath(repo_root)
+
+monitor.Parse('include "{}/peripherals/NVMemoryController.cs"'.format(repo_root))
+monitor.Parse('mach create')
+monitor.Parse('machine LoadPlatformDescription @' + repo_root + '/platforms/cortex_m0_nvm.repl')
+
+bus = monitor.Machine.SystemBus
+bus.LoadELF(repo_root + '/examples/resilient_ota/bootloader.elf')
+bus.LoadBinary(repo_root + '/examples/resilient_ota/slot_a.bin', 0x10002000)
+bus.LoadBinary(repo_root + '/examples/resilient_ota/boot_meta.bin', 0x10070000)
+"""

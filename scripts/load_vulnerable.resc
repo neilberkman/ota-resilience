@@ -1,0 +1,22 @@
+# Load the vulnerable OTA scenario.
+# Optional monitor variable:
+#   $repo_root (defaults to current working directory)
+
+$repo_root?=""
+
+python """
+import os
+
+repo_root = str(monitor.GetVariable('repo_root'))
+if not repo_root:
+    repo_root = os.getcwd()
+repo_root = os.path.abspath(repo_root)
+
+monitor.Parse('include "{}/peripherals/NVMemoryController.cs"'.format(repo_root))
+monitor.Parse('mach create')
+monitor.Parse('machine LoadPlatformDescription @' + repo_root + '/platforms/cortex_m0_nvm.repl')
+
+bus = monitor.Machine.SystemBus
+bus.LoadELF(repo_root + '/examples/vulnerable_ota/firmware.elf')
+bus.LoadBinary(repo_root + '/examples/test_image.bin', 0x10038000)
+"""

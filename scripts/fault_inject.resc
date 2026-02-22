@@ -1,0 +1,21 @@
+# Watchpoint-based NVM fault injector.
+# Expects machine/platform loaded and sysbus.nvm_ctrl present.
+# Optional monitor variables:
+#   $fault_address - absolute target address to watch (default: 0x10000000)
+#   $watch_width   - watch width in bytes (1,2,4,8; default: 8)
+
+$fault_address?=0x10000000
+$watch_width?=8
+
+set py_nvm_fault_hook
+"""
+if not hasattr(self, 'ota_watchpoint_fault_armed'):
+    self.ota_watchpoint_fault_armed = True
+
+if self.ota_watchpoint_fault_armed:
+    monitor.Machine['sysbus.nvm_ctrl'].InjectPartialWrite(address)
+    self.ota_watchpoint_fault_armed = False
+    cpu.WarningLog('Injected NVM partial write at watched address 0x{:X}'.format(address))
+"""
+
+sysbus AddWatchpointHook $fault_address $watch_width Write $py_nvm_fault_hook

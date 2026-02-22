@@ -1,0 +1,136 @@
+# Validate that bootloader fallback repairs metadata before jumping.
+# Required monitor variables:
+#   $result_file (string path)
+# Optional monitor variables:
+#   $repo_root (defaults to current working directory)
+
+$repo_root?=""
+$result_file?="/tmp/fallback_self_heal_result.json"
+
+python """
+import json
+import os
+import struct
+
+repo_root = str(monitor.GetVariable('repo_root'))
+if not repo_root:
+    repo_root = os.getcwd()
+repo_root = os.path.abspath(repo_root)
+
+result_file = str(monitor.GetVariable('result_file'))
+META0_BASE = 0x10070000
+META1_BASE = 0x10070100
+
+monitor.Parse('include "{}/peripherals/NVMemoryController.cs"'.format(repo_root))
+monitor.Parse('mach create')
+monitor.Parse('machine LoadPlatformDescription @' + repo_root + '/platforms/cortex_m0_nvm.repl')
+
+bus = monitor.Machine.SystemBus
+bus.LoadELF(repo_root + '/examples/resilient_ota/bootloader.elf')
+bus.LoadBinary(repo_root + '/examples/resilient_ota/slot_a.bin', 0x10002000)
+bus.LoadBinary(repo_root + '/examples/resilient_ota/slot_b_bad.bin', 0x10039000)
+
+def as_int(value):
+    try:
+        return int(value) & 0xFFFFFFFF
+    except Exception:
+        return int(str(value), 0) & 0xFFFFFFFF
+
+def boot_meta_crc_words(words):
+    crc = 0xFFFFFFFF
+    for word in words[:-1]:
+        for shift in (0, 8, 16, 24):
+            crc ^= (word >> shift) & 0xFF
+            for _ in range(8):
+                if crc & 1:
+                    crc = (crc >> 1) ^ 0xEDB88320
+                else:
+                    crc >>= 1
+                crc &= 0xFFFFFFFF
+    return crc ^ 0xFFFFFFFF
+
+def seq_ge(a, b):
+    return ((a - b) & 0xFFFFFFFF) < 0x80000000
+
+def build_meta(seq, active_slot, target_slot, state, boot_count, max_boot_count):
+    words = [0] * 64
+    words[0] = 0x4F54414D
+    words[1] = seq
+    words[2] = active_slot
+    words[3] = target_slot
+    words[4] = state
+    words[5] = boot_count
+    words[6] = max_boot_count
+    words[-1] = boot_meta_crc_words(words)
+    return struct.pack('<64I', *words)
+
+def write_meta_replica(base, blob):
+    for offset in range(0, len(blob), 4):
+        bus.WriteDoubleWord(base + offset, struct.unpack('<I', blob[offset:offset + 4])[0])
+
+def read_replica(base):
+    words = [as_int(bus.ReadDoubleWord(base + i * 4)) for i in range(64)]
+    valid = (words[0] == 0x4F54414D) and (words[-1] == boot_meta_crc_words(words))
+    return {
+        'valid': valid,
+        'seq': words[1],
+        'active_slot': words[2],
+        'target_slot': words[3],
+        'state': words[4],
+    }
+
+def select_meta():
+    r0 = read_replica(META0_BASE)
+    r1 = read_replica(META1_BASE)
+    if r0['valid'] and r1['valid']:
+        return r0 if seq_ge(r0['seq'], r1['seq']) else r1
+    if r0['valid']:
+        return r0
+    if r1['valid']:
+        return r1
+    return None
+
+# Start from metadata selecting slot A.
+initial = build_meta(
+    seq=2,
+    active_slot=0,
+    target_slot=0,
+    state=0,
+    boot_count=0,
+    max_boot_count=3,
+)
+write_meta_replica(META1_BASE, initial)
+write_meta_replica(META0_BASE, initial)
+
+# Corrupt slot A vectors to force fallback to slot B.
+bus.WriteDoubleWord(0x10002004, 0x00000000)
+
+monitor.Parse('machine Reset')
+monitor.Parse('emulation RunFor "0.1"')
+
+final_meta = select_meta()
+slot_marker = as_int(bus.ReadDoubleWord(0x10070220))
+if slot_marker == 0:
+    final_slot = 'A'
+elif slot_marker == 1:
+    final_slot = 'B'
+else:
+    final_slot = None
+
+repaired = bool(
+    final_meta is not None
+    and final_meta['active_slot'] == 1
+    and final_meta['target_slot'] == 1
+    and final_meta['state'] == 0
+    and final_slot == 'B'
+)
+
+result = {
+    'boot_outcome': 'success' if repaired else 'hard_fault',
+    'final_slot': final_slot,
+    'repaired': repaired,
+}
+
+with open(result_file, 'w') as f:
+    f.write(json.dumps(result, sort_keys=True))
+"""

@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  renode-tests:
+    runs-on: ubuntu-22.04
+    env:
+      TOOLCHAIN_VERSION: 13.2.1-1.1
+      TOOLCHAIN_URL: https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.2.1-1.1/xpack-arm-none-eabi-gcc-13.2.1-1.1-linux-x64.tar.gz
+      TOOLCHAIN_SHA256: 1252a8cafe9237de27a765376697230368eec21db44dc3f1edeb8d838dabd530
+      RENODE_REVISION: d66b0c2aa3d420408eccecfd1d3bab0fd702a6db
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned Arm GNU toolchain
+        # Download + checksum verification keeps the compiler version reproducible.
+        run: |
+          set -euxo pipefail
+          tarball="${RUNNER_TEMP}/arm-toolchain.tar.gz"
+          curl -L "${TOOLCHAIN_URL}" -o "${tarball}"
+          echo "${TOOLCHAIN_SHA256}  ${tarball}" | sha256sum -c -
+          tar -xzf "${tarball}" -C "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/xpack-arm-none-eabi-gcc-${TOOLCHAIN_VERSION}/bin" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/xpack-arm-none-eabi-gcc-${TOOLCHAIN_VERSION}/bin/arm-none-eabi-gcc" --version
+
+      - name: Build example firmware
+        run: |
+          set -euxo pipefail
+          make -C examples/vulnerable_ota
+          make -C examples/resilient_ota
+
+      - name: Run Robot suites in pinned Renode
+        uses: antmicro/renode-test-action@0705567acf04d7b998d7deac1e05d9067d70d901
+        env:
+          RENODE_TEST: renode-test
+        with:
+          renode-revision: ${{ env.RENODE_REVISION }}
+          tests-to-run: |
+            tests/nvm_peripheral.robot
+            tests/ota_resilience.robot
+          artifacts-path: results/ci_artifacts
+
+      - name: Upload Renode artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: renode-artifacts
+          path: results/ci_artifacts

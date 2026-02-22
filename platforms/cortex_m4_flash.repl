@@ -1,0 +1,28 @@
+cpu: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4"
+    nvic: nvic
+
+nvic: IRQControllers.NVIC @ sysbus 0xE000E000
+    -> cpu@0
+
+nvm: Memory.LocalNVMemory @ sysbus 0x00000000
+    size: 0x100000
+    wordSize: 256
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x40000
+
+nvm_ctrl: NVMemoryController @ sysbus 0x40001000
+    Nvm: nvm
+    NvmBaseAddress: 0x00000000
+    WriteGranularity: 256
+    SectorSize: 4096
+    EraseValue: 0xFF
+    EnforceEraseBeforeWrite: true
+    FullMode: false
+
+sysbus:
+    init:
+        Tag <0x00000000 0x100000> "NVM_FLASH"
+        Tag <0x20000000 0x40000> "SRAM"
+        Tag <0x40001000 0x100> "NVM_CTRL"
