@@ -136,16 +136,17 @@ def main() -> None:
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
-    # Slot bases from bootloader_nxboot.c
+    # Both images target the primary slot execution address since the
+    # bootloader copies update -> primary before jumping.  The vector
+    # table must be valid at the primary slot base, not the staging slot.
     primary_base = 0x10002000
-    secondary_base = 0x10025000
 
     # Primary image (v1.0.0) — goes into primary slot
     primary = make_nxboot_image(primary_base, args.payload_size, (1, 0, 0))
     (out / "nxboot_primary.bin").write_bytes(primary)
 
-    # Update image (v2.0.0) — goes into secondary (update) slot
-    update = make_nxboot_image(secondary_base, args.payload_size, (2, 0, 0))
+    # Update image (v2.0.0) — goes into secondary, copied to primary to run
+    update = make_nxboot_image(primary_base, args.payload_size, (2, 0, 0))
     (out / "nxboot_update.bin").write_bytes(update)
 
     print(f"Generated images in {out}:")
