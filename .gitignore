@@ -19,6 +19,7 @@ output.xml
 robot_output.xml
 log.html
 report.html
+results-*.xml
 
 # Campaign scratch outputs
 results/full_campaign.json

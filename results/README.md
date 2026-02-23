@@ -8,10 +8,12 @@ by `tests/ota_resilience.robot` and `scripts/update_readme_from_report.py`.
 | Field                     | Type   | Description                                         |
 | ------------------------- | ------ | --------------------------------------------------- |
 | `engine`                  | string | Always `"renode-test"` for live runs                |
-| `scenario`                | string | `"vulnerable"`, `"resilient"`, or `"comparative"`   |
-| `total_writes`            | int    | Number of 8-byte word writes in the OTA copy        |
+| `scenario`                | string | Built-in or custom scenario name                    |
+| `total_writes`            | mixed  | Int for single-scenario, object for comparative     |
 | `fault_points`            | int[]  | Write indices where faults were injected            |
 | `include_metadata_faults` | bool   | Whether faults were injected during metadata writes |
+| `evaluation_mode`         | string | `execute` or `state`                                |
+| `control_enabled`         | bool   | Whether control points were included                |
 | `summary`                 | object | Per-scenario aggregate counts (see below)           |
 | `inputs`                  | object | Platform, firmware, and tooling paths               |
 | `execution`               | object | Timestamp, command, artifacts directory             |
@@ -28,6 +30,9 @@ by `tests/ota_resilience.robot` and `scripts/update_readme_from_report.py`.
 | `recoveries` | int   | Count of `success` outcomes              |
 | `brick_rate` | float | `bricks / total`                         |
 
+When controls are enabled, `summary.control` contains the unfaulted baseline
+outcome for each scenario.
+
 ## `results.<scenario>[]` (FaultResult)
 
 | Field          | Type           | Description                                      |
@@ -35,26 +40,32 @@ by `tests/ota_resilience.robot` and `scripts/update_readme_from_report.py`.
 | `fault_at`     | int            | Write index where fault was injected             |
 | `boot_outcome` | string         | One of: `success`, `hard_fault`, `hang`, `error` |
 | `boot_slot`    | string or null | `"A"`, `"B"`, or `null` if no valid slot         |
-| `mram_state`   | object         | Scenario-specific MRAM state snapshot            |
+| `nvm_state`    | object         | Scenario-specific NVM state snapshot             |
 | `raw_log`      | string         | Truncated renode-test output (paths redacted)    |
+| `is_control`   | bool           | `true` for unfaulted control points              |
 
-### `mram_state` for vulnerable scenario
+### `nvm_state` for vulnerable scenario
 
-| Field            | Type       | Description                                                    |
-| ---------------- | ---------- | -------------------------------------------------------------- |
-| `copy_marker`    | hex string | Value at persistence region; `0xC0FEBEEF` = copy complete      |
-| `boot_counter`   | int        | Incremented each copy attempt                                  |
-| `vector_sp`      | hex string | Stack pointer from vector table word 0                         |
-| `vector_reset`   | hex string | Reset vector from vector table word 1                          |
-| `vector_valid`   | bool       | SP in SRAM range and reset vector in slot range with thumb bit |
-| `fault_injected` | bool       | Whether `InjectPartialWrite` fired                             |
+| Field                  | Type       | Description                                                    |
+| ---------------------- | ---------- | -------------------------------------------------------------- |
+| `copy_marker`          | hex string | Value at persistence region; `0xC0FEBEEF` = copy complete      |
+| `boot_counter`         | int        | Incremented each copy attempt                                  |
+| `pre_boot_counter`     | int        | Counter value before execute-mode run                          |
+| `boot_progress`        | bool       | `true` when boot counter changed during execute-mode run       |
+| `second_boot_progress` | bool       | `true` when image also booted after a follow-up reset          |
+| `evaluation_mode`      | string     | `execute` or `state`                                           |
+| `vector_sp`            | hex string | Stack pointer from vector table word 0                         |
+| `vector_reset`         | hex string | Reset vector from vector table word 1                          |
+| `vector_valid`         | bool       | SP in SRAM range and reset vector in slot range with thumb bit |
+| `fault_injected`       | bool       | Whether `InjectPartialWrite` fired                             |
 
-### `mram_state` for resilient scenario
+### `nvm_state` for resilient scenario
 
 | Field                     | Type       | Description                                           |
 | ------------------------- | ---------- | ----------------------------------------------------- |
 | `chosen_slot`             | int        | Slot the bootloader would jump to (0=A, 1=B, -1=none) |
 | `requested_slot`          | int        | Slot requested by metadata                            |
+| `evaluation_mode`         | string     | `execute` or `state`                                  |
 | `write_index`             | int        | How many writes completed before fault                |
 | `faulted`                 | bool       | Whether `InjectPartialWrite` fired                    |
 | `fault_address`           | hex string | Bus address of the faulted write                      |

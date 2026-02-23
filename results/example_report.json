@@ -19,7 +19,7 @@
     }
   },
   "inputs": {
-    "platform": "platforms/cortex_m0_mram.repl",
+    "platform": "platforms/cortex_m0_nvm.repl",
     "firmware": "examples/vulnerable_ota/firmware.elf",
     "ota_image": "examples/test_image.bin",
     "robot_suite": "tests/ota_fault_point.robot",
@@ -41,7 +41,7 @@
         "fault_at": 0,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x20010000",
@@ -55,7 +55,7 @@
         "fault_at": 2000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -69,7 +69,7 @@
         "fault_at": 4000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -83,7 +83,7 @@
         "fault_at": 6000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -97,7 +97,7 @@
         "fault_at": 8000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -111,7 +111,7 @@
         "fault_at": 10000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -125,7 +125,7 @@
         "fault_at": 12000,
         "boot_outcome": "hard_fault",
         "boot_slot": null,
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0x00000000",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -139,7 +139,7 @@
         "fault_at": 13824,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "copy_marker": "0xC0FEBEEF",
           "boot_counter": 0,
           "vector_sp": "0x2000FFF0",
@@ -155,7 +155,7 @@
         "fault_at": 0,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 0,
@@ -173,7 +173,7 @@
         "fault_at": 2000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 2000,
@@ -191,7 +191,7 @@
         "fault_at": 4000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 4000,
@@ -209,7 +209,7 @@
         "fault_at": 6000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 6000,
@@ -227,7 +227,7 @@
         "fault_at": 8000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 8000,
@@ -245,7 +245,7 @@
         "fault_at": 10000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 10000,
@@ -263,7 +263,7 @@
         "fault_at": 12000,
         "boot_outcome": "success",
         "boot_slot": "A",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "requested_slot": 0,
           "write_index": 12000,
@@ -281,7 +281,7 @@
         "fault_at": 13824,
         "boot_outcome": "success",
         "boot_slot": "B",
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 1,
           "requested_slot": 1,
           "write_index": 13824,

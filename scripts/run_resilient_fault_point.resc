@@ -6,20 +6,24 @@
 #   $include_metadata_faults (true/false)
 
 $fault_at?=0
-$total_writes?=28672
+$total_writes?=28160
 $include_metadata_faults?=false
+$evaluation_mode?="execute"
 
 python """
 import json
 import struct
 
 bus = monitor.Machine.SystemBus
-ctrl = monitor.Machine['sysbus.mram_ctrl']
+ctrl = monitor.Machine['sysbus.nvm_ctrl']
 
 fault_at = int(monitor.GetVariable('fault_at'))
 total_writes = int(monitor.GetVariable('total_writes'))
 result_file = str(monitor.GetVariable('result_file'))
 include_metadata_faults = str(monitor.GetVariable('include_metadata_faults')).lower() in ('1', 'true', 'yes')
+evaluation_mode = str(monitor.GetVariable('evaluation_mode')).strip().lower()
+if evaluation_mode not in ('execute', 'state'):
+    evaluation_mode = 'execute'
 
 def as_int(value):
     try:
@@ -27,10 +31,30 @@ def as_int(value):
     except Exception:
         return int(str(value), 0)
 
+def boot_meta_crc_words(words):
+    crc = 0xFFFFFFFF
+    for w in words[:-1]:
+        for shift in (0, 8, 16, 24):
+            crc ^= (w >> shift) & 0xFF
+            for _ in range(8):
+                crc = (crc >> 1) ^ (0xEDB88320 if (crc & 1) else 0)
+            crc &= 0xFFFFFFFF
+    return (~crc) & 0xFFFFFFFF
+
+def seq_ge(a, b):
+    return ((a - b) & 0xFFFFFFFF) < 0x80000000
+
 slot_b_path = 'examples/resilient_ota/slot_b.bin'
 try:
+    explicit_slot_b = str(monitor.GetVariable('slot_b_image')).strip()
+    if explicit_slot_b:
+        slot_b_path = explicit_slot_b
+except Exception:
+    pass
+try:
     repo_root = str(monitor.GetVariable('repo_root'))
-    slot_b_path = repo_root + '/examples/resilient_ota/slot_b.bin'
+    if slot_b_path == 'examples/resilient_ota/slot_b.bin':
+        slot_b_path = repo_root + '/examples/resilient_ota/slot_b.bin'
 except Exception:
     pass
 with open(slot_b_path, 'rb') as f:
@@ -68,7 +92,7 @@ for i in range(total_writes):
     if not maybe_write_word(addr, word):
         break
 
-# 2) Firmware metadata update (replica 0 then replica 1), optionally faultable.
+# 2) Firmware metadata update (replica 1 then replica 0), optionally faultable.
 if not state['faulted']:
     words = [0] * 64
     words[0] = 0x4F54414D
@@ -79,11 +103,7 @@ if not state['faulted']:
     words[5] = 0  # boot_count
     words[6] = 3  # max_boot_count
 
-    crc = 0x1EDC6F41
-    for w in words[:-1]:
-        crc ^= (w + 0x9E3779B9 + ((crc << 6) & 0xFFFFFFFF) + (crc >> 2)) & 0xFFFFFFFF
-        crc &= 0xFFFFFFFF
-    words[-1] = crc
+    words[-1] = boot_meta_crc_words(words)
     meta_blob = struct.pack('<64I', *words)
 
     def write_metadata_replica(base):
@@ -97,8 +117,10 @@ if not state['faulted']:
                 bus.WriteQuadWord(addr, word)
         return True
 
-    if write_metadata_replica(0x10070000):
-        write_metadata_replica(0x10070100)
+    # Write replica 1 first, then replica 0. With seq-based selection, this ordering
+    # preserves at least one valid latest-seq replica if a fault lands mid-update.
+    if write_metadata_replica(0x10070100):
+        write_metadata_replica(0x10070000)
 
 def slot_base(slot_id):
     return 0x10039000 if slot_id == 1 else 0x10002000
@@ -119,12 +141,7 @@ def read_replica(addr):
     for i in range(64):
         words.append(as_int(bus.ReadDoubleWord(addr + i * 4)))
 
-    crc = 0x1EDC6F41
-    for w in words[:-1]:
-        crc ^= (w + 0x9E3779B9 + ((crc << 6) & 0xFFFFFFFF) + (crc >> 2)) & 0xFFFFFFFF
-        crc &= 0xFFFFFFFF
-
-    valid = (words[0] == 0x4F54414D) and (words[-1] == crc)
+    valid = (words[0] == 0x4F54414D) and (words[-1] == boot_meta_crc_words(words))
     return {
         'valid': valid,
         'seq': words[1],
@@ -137,17 +154,43 @@ r1 = read_replica(0x10070100)
 
 selected = None
 if r0['valid'] and r1['valid']:
-    selected = r0 if r0['seq'] >= r1['seq'] else r1
+    selected = r0 if seq_ge(r0['seq'], r1['seq']) else r1
 elif r0['valid']:
     selected = r0
 elif r1['valid']:
     selected = r1
 
 requested_slot = selected['active_slot'] if selected is not None else 0
-chosen_slot = requested_slot
-if not slot_vector_valid(chosen_slot):
-    other = 1 if chosen_slot == 0 else 0
-    chosen_slot = other if slot_vector_valid(other) else -1
+chosen_slot = -1
+vtor = 0
+if evaluation_mode == 'execute':
+    monitor.Parse('machine Reset')
+    monitor.Parse('emulation RunFor "0.5"')
+
+    # VTOR-based slot detection: read the Vector Table Offset Register
+    vtor = as_int(bus.ReadDoubleWord(0xE000ED08))
+
+    if 0x10000000 <= vtor <= 0x10038FFF:
+        # VTOR points within slot A range
+        chosen_slot = 0
+    elif 0x10039000 <= vtor <= 0x10071FFF:
+        # VTOR points within slot B range
+        chosen_slot = 1
+    else:
+        # VTOR is zero or unexpected — fall back to boot marker method
+        slot_marker = as_int(bus.ReadDoubleWord(0x10070220))
+        if slot_marker in (0, 1):
+            chosen_slot = slot_marker
+        else:
+            chosen_slot = requested_slot
+            if not slot_vector_valid(chosen_slot):
+                other = 1 if chosen_slot == 0 else 0
+                chosen_slot = other if slot_vector_valid(other) else -1
+else:
+    chosen_slot = requested_slot
+    if not slot_vector_valid(chosen_slot):
+        other = 1 if chosen_slot == 0 else 0
+        chosen_slot = other if slot_vector_valid(other) else -1
 
 if chosen_slot in (0, 1):
     boot_outcome = 'success'
@@ -156,13 +199,30 @@ else:
     boot_outcome = 'hard_fault'
     boot_slot = None
 
+# Fault region classification based on fault address
+fault_addr = state['fault_address']
+if 0x10070000 <= fault_addr <= 0x100700FF:
+    fault_region = 'metadata_replica_0'
+elif 0x10070100 <= fault_addr <= 0x100701FF:
+    fault_region = 'metadata_replica_1'
+else:
+    # Determine target slot base for vector_table check
+    target_slot_base = slot_base(requested_slot)
+    if target_slot_base <= fault_addr < (target_slot_base + 0x100):
+        fault_region = 'vector_table'
+    else:
+        fault_region = 'image_payload'
+
 result = {
     'fault_at': fault_at,
     'boot_outcome': boot_outcome,
     'boot_slot': boot_slot,
-    'mram_state': {
+    'fault_region': fault_region,
+    'nvm_state': {
+        'evaluation_mode': evaluation_mode,
         'chosen_slot': chosen_slot,
         'requested_slot': requested_slot,
+        'vtor': '0x{0:08X}'.format(vtor) if evaluation_mode == 'execute' else None,
         'write_index': state['index'],
         'faulted': state['faulted'],
         'fault_address': '0x{0:08X}'.format(state['fault_address']),

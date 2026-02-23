@@ -1,0 +1,417 @@
+# State-fuzz audit script: load arbitrary NVM state + inject fault + boot + report.
+#
+# Required variables:
+#   $result_file (string path)
+#
+# Optional variables:
+#   $replica0_file     - 256-byte binary blob for metadata replica 0
+#   $replica1_file     - 256-byte binary blob for metadata replica 1
+#   $slot_a_vec_file   - 8-byte binary (SP + reset_vector) for slot A
+#   $slot_b_vec_file   - 8-byte binary (SP + reset_vector) for slot B
+#   $slot_a_image_file - full slot A image file
+#   $slot_b_image_file - full slot B image file
+#   $fault_at          - write index at which to inject partial-write fault (-1 = no fault)
+#   $fault_phase       - "metadata" or "slot_copy" (where fault is injected)
+#   $total_writes      - total write operations in the fault phase
+#   $write_granularity - bytes per write operation (default: 8)
+#   $slot_a_base       - slot A NVM base address
+#   $slot_b_base       - slot B NVM base address
+#   $slot_size         - size of each slot
+#   $meta_base_0       - address of metadata replica 0
+#   $meta_base_1       - address of metadata replica 1
+#   $meta_size         - size of each metadata replica
+#   $bootloader_entry  - bootloader vector table address
+#   $nvm_ctrl_path     - path to NVMemoryController in Renode
+#   $run_duration      - how long to let bootloader run (seconds)
+#   $scenario_id       - integer ID for result correlation
+#   $ota_header_size   - offset from slot base to vector table
+
+$result_file?="audit_result.json"
+$replica0_file?=""
+$replica1_file?=""
+$slot_a_vec_file?=""
+$slot_b_vec_file?=""
+$slot_a_image_file?=""
+$slot_b_image_file?=""
+$fault_at?=-1
+$fault_phase?="slot_copy"
+$total_writes?=28160
+$write_granularity?=8
+$slot_a_base?=0x10002000
+$slot_b_base?=0x10039000
+$slot_size?=0x37000
+$meta_base_0?=0x10070000
+$meta_base_1?=0x10070100
+$meta_size?=256
+$bootloader_entry?=0x10000000
+$nvm_ctrl_path?="sysbus.nvm_ctrl"
+$run_duration?="0.01"
+$scenario_id?=0
+$ota_header_size?=0
+
+python """
+import json
+import os
+import struct
+from System import Array, Byte
+
+bus = monitor.Machine.SystemBus
+
+def as_int(value):
+    try:
+        return int(value) & 0xFFFFFFFF
+    except Exception:
+        return int(str(value), 0) & 0xFFFFFFFF
+
+def as_long(value):
+    try:
+        return int(value)
+    except Exception:
+        return int(str(value), 0)
+
+result_file = str(monitor.GetVariable('result_file'))
+replica0_file = str(monitor.GetVariable('replica0_file')).strip()
+replica1_file = str(monitor.GetVariable('replica1_file')).strip()
+slot_a_vec_file = str(monitor.GetVariable('slot_a_vec_file')).strip()
+slot_b_vec_file = str(monitor.GetVariable('slot_b_vec_file')).strip()
+slot_a_image_file = str(monitor.GetVariable('slot_a_image_file')).strip()
+slot_b_image_file = str(monitor.GetVariable('slot_b_image_file')).strip()
+fault_at = as_long(monitor.GetVariable('fault_at'))
+fault_phase = str(monitor.GetVariable('fault_phase')).strip().lower()
+total_writes = as_long(monitor.GetVariable('total_writes'))
+write_granularity = as_long(monitor.GetVariable('write_granularity'))
+if write_granularity <= 0:
+    write_granularity = 8
+slot_a_base = as_long(monitor.GetVariable('slot_a_base'))
+slot_b_base = as_long(monitor.GetVariable('slot_b_base'))
+slot_size = as_long(monitor.GetVariable('slot_size'))
+meta_base_0 = as_long(monitor.GetVariable('meta_base_0'))
+meta_base_1 = as_long(monitor.GetVariable('meta_base_1'))
+meta_size = as_long(monitor.GetVariable('meta_size'))
+bootloader_entry = as_long(monitor.GetVariable('bootloader_entry'))
+nvm_ctrl_path = str(monitor.GetVariable('nvm_ctrl_path'))
+run_duration = str(monitor.GetVariable('run_duration')).strip()
+if not run_duration:
+    run_duration = "0.01"
+scenario_id = as_long(monitor.GetVariable('scenario_id'))
+ota_header_size = as_long(monitor.GetVariable('ota_header_size'))
+if ota_header_size < 0:
+    ota_header_size = 0
+
+ctrl = None
+if nvm_ctrl_path:
+    try:
+        ctrl = monitor.Machine[nvm_ctrl_path]
+    except Exception:
+        ctrl = None
+cpu = monitor.Machine['sysbus.cpu']
+
+# --- helpers ---
+def read_chunk(addr, size):
+    raw = bus.ReadBytes(addr, size)
+    return bytes([(int(b) & 0xFF) for b in raw])
+
+def write_chunk(addr, chunk):
+    array_data = Array[Byte]([int(b) & 0xFF for b in bytearray(chunk)])
+    bus.WriteBytes(addr, array_data, 0, len(array_data))
+
+def inject_partial_write(addr, chunk_hint):
+    if ctrl is not None and hasattr(ctrl, 'InjectPartialWrite'):
+        ctrl.InjectPartialWrite(addr)
+        return 'controller'
+    before = read_chunk(addr, write_granularity)
+    if chunk_hint is None:
+        chunk_hint = before
+    if len(chunk_hint) < write_granularity:
+        chunk_hint = chunk_hint + (b'\\xFF' * (write_granularity - len(chunk_hint)))
+    half = max(1, write_granularity // 2)
+    merged = bytearray(before)
+    merged[0:half] = chunk_hint[0:half]
+    write_chunk(addr, bytes(merged))
+    return 'fallback'
+
+state = {'index': 0, 'faulted': False, 'fault_address': 0, 'fault_model': None}
+
+def maybe_write_chunk(addr, chunk):
+    if state['faulted']:
+        return False
+    if fault_at >= 0 and state['index'] == fault_at:
+        state['fault_model'] = inject_partial_write(addr, chunk)
+        state['faulted'] = True
+        state['fault_address'] = addr
+        return False
+    write_chunk(addr, chunk)
+    state['index'] += 1
+    return True
+
+def maybe_write_dword(addr, value):
+    if state['faulted']:
+        return False
+    if fault_at >= 0 and state['index'] == fault_at:
+        dword_chunk = struct.pack('<I', value)
+        state['fault_model'] = inject_partial_write(addr, dword_chunk)
+        state['faulted'] = True
+        state['fault_address'] = addr
+        return False
+    bus.WriteDoubleWord(addr, value)
+    state['index'] += 1
+    return True
+
+def slot_vector_valid(base):
+    vt = base + ota_header_size
+    sp = as_int(bus.ReadDoubleWord(vt + 0))
+    reset_vector = as_int(bus.ReadDoubleWord(vt + 4))
+    reset_pc = reset_vector & (~1)
+    code_base = base + ota_header_size
+    code_size = slot_size - ota_header_size
+    if code_size <= 0:
+        return False
+    return (
+        (0x20000000 <= sp <= 0x20020000)
+        and ((reset_vector & 1) == 1)
+        and (code_base <= reset_pc < (code_base + code_size))
+    )
+
+# CRC-32 matching boot_meta.h
+def crc32_metadata(data):
+    crc = 0xFFFFFFFF
+    for b in bytearray(data):
+        crc ^= b
+        for _ in range(8):
+            crc = (crc >> 1) ^ (0xEDB88320 if (crc & 1) else 0)
+    return (crc ^ 0xFFFFFFFF) & 0xFFFFFFFF
+
+def metadata_valid(blob):
+    if len(blob) < meta_size:
+        return False
+    magic = struct.unpack_from('<I', blob, 0)[0]
+    if magic != 0x4F54414D:
+        return False
+    stored_crc = struct.unpack_from('<I', blob, meta_size - 4)[0]
+    return crc32_metadata(blob[:meta_size - 4]) == stored_crc
+
+def metadata_fields(blob):
+    if len(blob) < 28:
+        return {}
+    fields = struct.unpack_from('<7I', blob, 0)
+    return {
+        'magic': fields[0],
+        'seq': fields[1],
+        'active_slot': fields[2],
+        'target_slot': fields[3],
+        'state': fields[4],
+        'boot_count': fields[5],
+        'max_boot_count': fields[6],
+    }
+
+# --- 1) Load initial state ---
+
+# Metadata replicas: from files or leave existing NVM content.
+pre_r0_blob = b''
+pre_r1_blob = b''
+
+if replica0_file:
+    with open(replica0_file, 'rb') as f:
+        r0_data = f.read()
+    for i in range(0, min(meta_size, len(r0_data)), 4):
+        val = struct.unpack_from('<I', r0_data, i)[0]
+        bus.WriteDoubleWord(meta_base_0 + i, val)
+    pre_r0_blob = read_chunk(meta_base_0, meta_size)
+else:
+    pre_r0_blob = read_chunk(meta_base_0, meta_size)
+
+if replica1_file:
+    with open(replica1_file, 'rb') as f:
+        r1_data = f.read()
+    for i in range(0, min(meta_size, len(r1_data)), 4):
+        val = struct.unpack_from('<I', r1_data, i)[0]
+        bus.WriteDoubleWord(meta_base_1 + i, val)
+    pre_r1_blob = read_chunk(meta_base_1, meta_size)
+else:
+    pre_r1_blob = read_chunk(meta_base_1, meta_size)
+
+# Slot vectors: from vec files or image files.
+if slot_a_vec_file:
+    with open(slot_a_vec_file, 'rb') as f:
+        vec_data = f.read()
+    for i in range(0, min(8, len(vec_data)), 4):
+        val = struct.unpack_from('<I', vec_data, i)[0]
+        bus.WriteDoubleWord(slot_a_base + i, val)
+
+if slot_b_vec_file:
+    with open(slot_b_vec_file, 'rb') as f:
+        vec_data = f.read()
+    for i in range(0, min(8, len(vec_data)), 4):
+        val = struct.unpack_from('<I', vec_data, i)[0]
+        bus.WriteDoubleWord(slot_b_base + i, val)
+
+if slot_a_image_file:
+    with open(slot_a_image_file, 'rb') as f:
+        img = f.read()
+    for i in range(0, min(slot_size, len(img)), write_granularity):
+        chunk = img[i:i + write_granularity]
+        if len(chunk) < write_granularity:
+            chunk = chunk + (b'\\xFF' * (write_granularity - len(chunk)))
+        write_chunk(slot_a_base + i, chunk)
+
+if slot_b_image_file:
+    with open(slot_b_image_file, 'rb') as f:
+        img = f.read()
+    for i in range(0, min(slot_size, len(img)), write_granularity):
+        chunk = img[i:i + write_granularity]
+        if len(chunk) < write_granularity:
+            chunk = chunk + (b'\\xFF' * (write_granularity - len(chunk)))
+        write_chunk(slot_b_base + i, chunk)
+
+# Record pre-boot state.
+pre_slot_a_valid = slot_vector_valid(slot_a_base)
+pre_slot_b_valid = slot_vector_valid(slot_b_base)
+pre_r0_valid = metadata_valid(pre_r0_blob)
+pre_r1_valid = metadata_valid(pre_r1_blob)
+pre_r0_fields = metadata_fields(pre_r0_blob) if pre_r0_valid else {}
+pre_r1_fields = metadata_fields(pre_r1_blob) if pre_r1_valid else {}
+
+# --- 2) Optionally do a faulted write phase ---
+
+# The fault_phase controls what kind of operation we're simulating fault in.
+# "metadata" = simulate power fail during a metadata write
+# "slot_copy" = simulate power fail during slot image copy (B->A or A->B)
+# "none" = no write phase, just boot with the loaded state
+
+if fault_phase == "metadata" and fault_at >= 0:
+    # Simulate a metadata update that gets interrupted.
+    # We re-write replica1 first (stale), then replica0 (fresh) — matching
+    # the write_replicas protocol. Fault during this sequence.
+    r0_blob = read_chunk(meta_base_0, meta_size)
+    for offset in range(0, meta_size, 4):
+        chunk = r0_blob[offset:offset + 4]
+        value = struct.unpack('<I', chunk)[0]
+        if not maybe_write_dword(meta_base_1 + offset, value):
+            break
+    if not state['faulted']:
+        for offset in range(0, meta_size, 4):
+            chunk = r0_blob[offset:offset + 4]
+            value = struct.unpack('<I', chunk)[0]
+            if not maybe_write_dword(meta_base_0 + offset, value):
+                break
+
+elif fault_phase == "slot_copy" and fault_at >= 0:
+    # Simulate copying slot A to slot B (or vice versa) with fault injection.
+    src_base = slot_a_base
+    dst_base = slot_b_base
+    for i in range(total_writes):
+        offset = i * write_granularity
+        if offset >= slot_size:
+            break
+        chunk = read_chunk(src_base + offset, write_granularity)
+        if not maybe_write_chunk(dst_base + offset, chunk):
+            break
+
+# --- 3) Boot the bootloader ---
+
+# Copy bootloader vectors to low alias for reset.
+for offset in range(0, 0x100, 4):
+    bus.WriteDoubleWord(offset, as_int(bus.ReadDoubleWord(bootloader_entry + offset)))
+
+try:
+    cpu.VectorTableOffset = bootloader_entry
+except Exception:
+    pass
+
+monitor.Parse('machine Reset')
+monitor.Parse('emulation RunFor "{}"'.format(run_duration))
+
+# --- 4) Read post-boot state ---
+
+pc = as_int(cpu.PC)
+vtor = as_int(bus.ReadDoubleWord(0xE000ED08))
+
+boot_slot = None
+if slot_a_base <= vtor < (slot_a_base + slot_size):
+    boot_slot = 'A'
+elif slot_b_base <= vtor < (slot_b_base + slot_size):
+    boot_slot = 'B'
+elif slot_a_base <= pc < (slot_a_base + slot_size):
+    boot_slot = 'A'
+elif slot_b_base <= pc < (slot_b_base + slot_size):
+    boot_slot = 'B'
+
+boot_outcome = 'success' if boot_slot is not None else 'hard_fault'
+
+# Post-boot NVM state.
+post_r0_blob = read_chunk(meta_base_0, meta_size)
+post_r1_blob = read_chunk(meta_base_1, meta_size)
+post_r0_valid = metadata_valid(post_r0_blob)
+post_r1_valid = metadata_valid(post_r1_blob)
+post_r0_fields = metadata_fields(post_r0_blob) if post_r0_valid else {}
+post_r1_fields = metadata_fields(post_r1_blob) if post_r1_valid else {}
+post_slot_a_valid = slot_vector_valid(slot_a_base)
+post_slot_b_valid = slot_vector_valid(slot_b_base)
+
+# --- 5) Build fault diagnostics ---
+fault_diag = {}
+if state['faulted']:
+    fa = int(state['fault_address'])
+    fault_diag['fault_address'] = '0x{0:08X}'.format(fa)
+    fault_diag['corrupted_bytes'] = ''.join('{:02X}'.format(int(b) & 0xFF) for b in bytearray(read_chunk(fa, write_granularity)))
+
+    if meta_base_0 <= fa < (meta_base_0 + meta_size):
+        fault_diag['region'] = 'metadata_replica_0'
+    elif meta_base_1 <= fa < (meta_base_1 + meta_size):
+        fault_diag['region'] = 'metadata_replica_1'
+    elif slot_a_base <= fa < (slot_a_base + slot_size):
+        fault_diag['region'] = 'slot_a'
+        fault_diag['offset_in_slot'] = fa - slot_a_base
+    elif slot_b_base <= fa < (slot_b_base + slot_size):
+        fault_diag['region'] = 'slot_b'
+        fault_diag['offset_in_slot'] = fa - slot_b_base
+    else:
+        fault_diag['region'] = 'unknown'
+
+# --- 6) Emit result ---
+result = {
+    'scenario_id': int(scenario_id),
+    'fault_at': int(fault_at),
+    'fault_phase': fault_phase,
+    'boot_outcome': boot_outcome,
+    'boot_slot': boot_slot,
+    'fault_diagnostics': fault_diag,
+    'pre_state': {
+        'slot_a_valid': bool(pre_slot_a_valid),
+        'slot_b_valid': bool(pre_slot_b_valid),
+        'replica0_valid': bool(pre_r0_valid),
+        'replica1_valid': bool(pre_r1_valid),
+        'replica0_fields': pre_r0_fields,
+        'replica1_fields': pre_r1_fields,
+    },
+    'post_state': {
+        'slot_a_valid': bool(post_slot_a_valid),
+        'slot_b_valid': bool(post_slot_b_valid),
+        'replica0_valid': bool(post_r0_valid),
+        'replica1_valid': bool(post_r1_valid),
+        'replica0_fields': post_r0_fields,
+        'replica1_fields': post_r1_fields,
+        'pc': '0x{0:08X}'.format(pc),
+        'vtor': '0x{0:08X}'.format(vtor),
+    },
+    'nvm_state': {
+        'slot_a_base': '0x{0:08X}'.format(slot_a_base),
+        'slot_b_base': '0x{0:08X}'.format(slot_b_base),
+        'slot_size': slot_size,
+        'meta_base_0': '0x{0:08X}'.format(meta_base_0),
+        'meta_base_1': '0x{0:08X}'.format(meta_base_1),
+        'slot_a_valid': bool(post_slot_a_valid),
+        'slot_b_valid': bool(post_slot_b_valid),
+        'replica0_valid': bool(post_r0_valid),
+        'replica1_valid': bool(post_r1_valid),
+        'write_granularity': int(write_granularity),
+        'write_index': int(state['index']),
+        'faulted': bool(state['faulted']),
+        'fault_model': state['fault_model'],
+        'fault_address': '0x{0:08X}'.format(state['fault_address']),
+    },
+}
+
+with open(result_file, 'w') as f:
+    f.write(json.dumps(result, sort_keys=True))
+"""

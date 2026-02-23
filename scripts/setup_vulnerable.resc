@@ -4,7 +4,7 @@ mach create
 
 python """
 repo_root = str(monitor.GetVariable('repo_root'))
-monitor.ExecuteCommand('machine LoadPlatformDescription @' + repo_root + '/platforms/cortex_m0_mram.repl')
+monitor.ExecuteCommand('machine LoadPlatformDescription @' + repo_root + '/platforms/cortex_m0_nvm.repl')
 
 bus = monitor.Machine.SystemBus
 bus.LoadELF(repo_root + '/examples/vulnerable_ota/firmware.elf')

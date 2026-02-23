@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   renode-tests:
     runs-on: ubuntu-22.04
@@ -40,7 +44,8 @@ jobs:
         with:
           renode-revision: ${{ env.RENODE_REVISION }}
           tests-to-run: |
-            tests/mram_peripheral.robot
+            tests/nvm_peripheral.robot
+            tests/ota_fault_point.robot
             tests/ota_resilience.robot
           artifacts-path: results/ci_artifacts
 

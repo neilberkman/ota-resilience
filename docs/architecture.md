@@ -1,30 +1,30 @@
 # Architecture
 
-## MRAM memory layout
+## NVM memory layout
 
-The platform maps a single 512 KB MRAM backing store at three bus addresses:
+The platform maps a single 512 KB NVM backing store at three bus addresses:
 
 ```mermaid
 block-beta
     columns 1
-    block:mram["MRAM (0x10000000 -- 0x1007FFFF, 512 KB)"]
+    block:nvm["NVM (0x10000000 -- 0x1007FFFF, 512 KB)"]
         columns 5
         A["Slot A\n0x10002000\n216 KB"] B["Staging/Slot B\n0x10038000\n224 KB"] META["Metadata\n0x10070000\n2 × 256 B"] PERSIST["Persistence\n0x10070200+"] PAD["Reserved"]
     end
 ```
 
-| Region           | Address range              | Size         | Purpose                                                  |
-| ---------------- | -------------------------- | ------------ | -------------------------------------------------------- |
-| Boot alias       | `0x00000000`               | mirrors MRAM | CPU fetches vectors/code from here at reset              |
-| Slot A (active)  | `0x10002000 -- 0x10037FFF` | 216 KB       | Active firmware image                                    |
-| Staging / Slot B | `0x10038000 -- 0x1006FFFF` | 224 KB       | Download/staging area (vulnerable) or slot B (resilient) |
-| Boot metadata    | `0x10070000 -- 0x100701FF` | 512 B        | Two 256-byte CRC-protected replicas                      |
-| Persistence      | `0x10070200+`              | remainder    | Boot counters, copy markers                              |
-| NV read alias    | `0x10080000`               | mirrors MRAM | Read-only mirror; writes silently dropped                |
-| Controller regs  | `0x40001000`               | 0x28         | STATUS, CONFIG, CONTROL, ECC counters                    |
+| Region           | Address range              | Size        | Purpose                                                  |
+| ---------------- | -------------------------- | ----------- | -------------------------------------------------------- |
+| Boot alias       | `0x00000000`               | mirrors NVM | CPU fetches vectors/code from here at reset              |
+| Slot A (active)  | `0x10002000 -- 0x10037FFF` | 216 KB      | Active firmware image                                    |
+| Staging / Slot B | `0x10038000 -- 0x1006FFFF` | 224 KB      | Download/staging area (vulnerable) or slot B (resilient) |
+| Boot metadata    | `0x10070000 -- 0x100701FF` | 512 B       | Two 256-byte CRC-protected replicas                      |
+| Persistence      | `0x10070200+`              | remainder   | Boot counters, copy markers                              |
+| NV read alias    | `0x10080000`               | mirrors NVM | Read-only mirror; writes silently dropped                |
+| Controller regs  | `0x40001000`               | 0x28        | STATUS, CONFIG, CONTROL, ECC counters                    |
 
 The boot alias at `0x00000000` means the Cortex-M0+ vector table fetch
-reads directly from MRAM. Corrupting the first 8 bytes of the active slot
+reads directly from NVM. Corrupting the first 8 bytes of the active slot
 is equivalent to bricking the device.
 
 ## Vulnerable copy-based OTA flow
@@ -104,7 +104,7 @@ first, falls back to the other if vectors are invalid.
 
 The campaign runner (`scripts/ota_fault_campaign.py`) iterates over
 write indices and injects a partial-write fault at each one via the
-MRAM controller's `InjectPartialWrite` method. This zeros the upper
+NVM controller's `InjectPartialWrite` method. This zeros the upper
 half of the 8-byte word being written, simulating a power loss
 mid-program cycle.
 
@@ -114,10 +114,10 @@ flowchart LR
     B --> C[Load scenario .resc]
     C --> D[Execute writes 0..N-1 normally]
     D --> E["InjectPartialWrite at write N"]
-    E --> F[Evaluate boot outcome from MRAM state]
+    E --> F[Evaluate boot outcome from NVM state]
     F --> G[Write per-point JSON result]
     G --> A
 ```
 
-Outcomes are determined by reading MRAM state (vector table validity,
+Outcomes are determined by reading NVM state (vector table validity,
 metadata CRC, slot markers) -- not by log text parsing.

@@ -1,11 +1,11 @@
-include @../peripherals/MRAMController.cs
+include @../peripherals/NVMemoryController.cs
 
 mach create
-machine LoadPlatformDescription @../platforms/cortex_m0_mram.repl
+machine LoadPlatformDescription @../platforms/cortex_m0_nvm.repl
 
 macro reset
 """
-    # Reset CPU execution state while preserving MRAM backing store.
+    # Reset CPU execution state while preserving NVM backing store.
     $sp=`sysbus ReadDoubleWord 0x0`
     $pc=`sysbus ReadDoubleWord 0x4`
     cpu SP $sp

@@ -4,10 +4,10 @@
 
 1. Create a `.resc` script in `scripts/` that implements the OTA write
    sequence and fault injection logic. Use `InjectPartialWrite` from the
-   MRAM controller to simulate power loss at a specific write index.
+   NVM controller to simulate power loss at a specific write index.
 
 2. The script must write a JSON result to `$result_file` with at minimum:
-   `fault_at`, `boot_outcome`, `boot_slot`, and `mram_state`.
+   `fault_at`, `boot_outcome`, `boot_slot`, and `nvm_state`.
 
 3. Add a load keyword in `tests/ota_fault_point.robot` for the new scenario
    name, following the existing `Load Vulnerable Scenario` / `Load Resilient
@@ -16,17 +16,17 @@ Scenario` pattern.
 4. Add the scenario name to the `--scenario` choices in
    `scripts/ota_fault_campaign.py` and wire up the `run_campaign` call.
 
-5. Determine boot outcome from MRAM state (vector table validity, metadata
+5. Determine boot outcome from NVM state (vector table validity, metadata
    CRC, slot markers). Do not parse log text.
 
-## Modifying the MRAM model
+## Modifying the NVM model
 
-`peripherals/MRAMController.cs` contains two classes:
+`peripherals/NVMemoryController.cs` contains two classes:
 
-- `MRAMMemory`: the persistent backing store. Writes go through
+- `NVMemory`: the persistent backing store. Writes go through
   word-aligned erase/program cycles. `Reset()` intentionally preserves
   storage contents.
-- `MRAMController`: register block + fault injection API
+- `NVMemoryController`: register block + fault injection API
   (`InjectFault`, `InjectPartialWrite`).
 
 Key constraints:
@@ -37,8 +37,8 @@ Key constraints:
 - `EnforceWordWriteSemantics` controls whether writes go through the
   erase/program cycle or bypass directly.
 
-The platform description (`platforms/cortex_m0_mram.repl`) maps the memory
-instances and aliases. If you change the MRAM geometry, update the address
+The platform description (`platforms/cortex_m0_nvm.repl`) maps the memory
+instances and aliases. If you change the NVM geometry, update the address
 constants in both the `.repl` file and the firmware sources.
 
 ## Reporting results

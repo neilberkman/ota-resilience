@@ -18,11 +18,11 @@ cd ../resilient_ota && make
 
 ## Verify installation
 
-Run the MRAM peripheral unit tests to confirm Renode and renode-test are
+Run the NVM peripheral unit tests to confirm Renode and renode-test are
 working correctly:
 
 ```bash
-renode-test tests/mram_peripheral.robot
+renode-test tests/nvm_peripheral.robot
 ```
 
 Expected: all 5 test cases pass (persistence, word-write semantics,
@@ -59,7 +59,7 @@ python3 scripts/update_readme_from_report.py \
 
 ## Run Robot tests
 
-`tests/mram_peripheral.robot` validates MRAM model behavior.
+`tests/nvm_peripheral.robot` validates NVM model behavior.
 `tests/ota_resilience.robot` validates campaign-level resilience expectations.
 
 ## Outcome taxonomy

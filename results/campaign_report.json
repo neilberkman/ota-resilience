@@ -5,15 +5,7 @@
     "campaign_command": "python3 scripts/ota_fault_campaign.py --scenario comparative --fault-range 0:28672 --fault-step 5000 --output results/campaign_report.json --chart-output results/money_chart.txt",
     "run_utc": "2026-02-22T05:10:54Z"
   },
-  "fault_points": [
-    0,
-    5000,
-    10000,
-    15000,
-    20000,
-    25000,
-    28672
-  ],
+  "fault_points": [0, 5000, 10000, 15000, 20000, 25000, 28672],
   "git": {
     "commit": "unknown",
     "dirty": "true",
@@ -23,7 +15,7 @@
   "inputs": {
     "firmware": "examples/vulnerable_ota/firmware.elf",
     "ota_image": "examples/test_image.bin",
-    "platform": "platforms/cortex_m0_mram.repl",
+    "platform": "platforms/cortex_m0_nvm.repl",
     "renode_test": "renode-test",
     "robot_suite": "tests/ota_fault_point.robot"
   },
@@ -34,7 +26,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 0,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x10039000",
           "faulted": true,
@@ -52,7 +44,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 5000,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x10042C40",
           "faulted": true,
@@ -70,7 +62,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 10000,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x1004C880",
           "faulted": true,
@@ -88,7 +80,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 15000,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x100564C0",
           "faulted": true,
@@ -106,7 +98,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 20000,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x10060100",
           "faulted": true,
@@ -124,7 +116,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 25000,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 0,
           "fault_address": "0x10069D40",
           "faulted": true,
@@ -142,7 +134,7 @@
         "boot_outcome": "success",
         "boot_slot": "B",
         "fault_at": 28672,
-        "mram_state": {
+        "nvm_state": {
           "chosen_slot": 1,
           "fault_address": "0x00000000",
           "faulted": false,
@@ -162,7 +154,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 0,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -176,7 +168,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 5000,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -190,7 +182,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 10000,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -204,7 +196,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 15000,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -218,7 +210,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 20000,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -232,7 +224,7 @@
         "boot_outcome": "hard_fault",
         "boot_slot": null,
         "fault_at": 25000,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0x00000000",
           "fault_injected": true,
@@ -246,7 +238,7 @@
         "boot_outcome": "success",
         "boot_slot": "A",
         "fault_at": 28672,
-        "mram_state": {
+        "nvm_state": {
           "boot_counter": 0,
           "copy_marker": "0xC0FEBEEF",
           "fault_injected": false,

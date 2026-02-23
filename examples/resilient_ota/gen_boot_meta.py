@@ -15,11 +15,14 @@ words[4] = 0   # state: confirmed
 words[5] = 0   # boot_count
 words[6] = 3   # max_boot_count
 
-crc = 0x1EDC6F41
+crc = 0xFFFFFFFF
 for w in words[:-1]:
-    crc ^= (w + 0x9E3779B9 + ((crc << 6) & 0xFFFFFFFF) + (crc >> 2)) & 0xFFFFFFFF
-crc &= 0xFFFFFFFF
-words[-1] = crc
+    for shift in (0, 8, 16, 24):
+        crc ^= (w >> shift) & 0xFF
+        for _ in range(8):
+            crc = (crc >> 1) ^ (0xEDB88320 if (crc & 1) else 0)
+        crc &= 0xFFFFFFFF
+words[-1] = (~crc) & 0xFFFFFFFF
 
 replica = struct.pack('<' + 'I' * len(words), *words)
 Path('boot_meta.bin').write_bytes(replica + replica)
