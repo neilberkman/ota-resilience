@@ -15,6 +15,12 @@ __pycache__/
 !examples/test_image.bin
 !examples/fault_variants/*.elf
 !examples/fault_variants/*.bin
+!examples/naive_copy/*.elf
+!examples/naive_copy/*.bin
+!examples/nxboot_style/*.elf
+!examples/nxboot_style/*.bin
+!results/oss_validation/assets/*.elf
+!results/oss_validation/assets/*.bin
 
 # Robot outputs
 output.xml

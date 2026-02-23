@@ -47,6 +47,15 @@ VARIANTS = [
     ("security_counter_early",  "examples/fault_variants/bootloader_security_counter_early.elf",   True),
     ("wrong_erased_value",      "examples/fault_variants/bootloader_wrong_erased_value.elf",       True),
     ("trailer_wrong_offset",    "examples/fault_variants/bootloader_trailer_wrong_offset.elf",     True),
+    # Naive copy-to-address variants (no real bootloader — worst-case baseline)
+    ("naive_bare_copy",         "examples/naive_copy/bootloader_bare_copy.elf",                    True),
+    ("naive_crc_pre_copy",      "examples/naive_copy/bootloader_crc_pre_copy.elf",                 True),
+    ("naive_crc_post_copy",     "examples/naive_copy/bootloader_crc_post_copy.elf",                True),
+    # NuttX nxboot-style three-partition bootloader variants
+    ("nxboot_none",             "examples/nxboot_style/bootloader_nxboot_none.elf",               False),
+    ("nxboot_no_recovery",      "examples/nxboot_style/bootloader_nxboot_no_recovery.elf",         True),
+    ("nxboot_no_revert",        "examples/nxboot_style/bootloader_nxboot_no_revert.elf",           True),
+    ("nxboot_no_crc",           "examples/nxboot_style/bootloader_nxboot_no_crc.elf",              True),
 ]
 
 
