@@ -13,6 +13,8 @@ __pycache__/
 !examples/resilient_ota/*.elf
 !examples/resilient_ota/*.bin
 !examples/test_image.bin
+!examples/fault_variants/*.elf
+!examples/fault_variants/*.bin
 
 # Robot outputs
 output.xml
