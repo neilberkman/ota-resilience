@@ -25,6 +25,10 @@
 #   $run_duration      - how long to let bootloader run (seconds)
 #   $scenario_id       - integer ID for result correlation
 #   $ota_header_size   - offset from slot base to vector table
+#   $boot_cycles       - number of boot cycles to simulate (default: 1)
+#   $runtime_fault_write - if > 0, set NVMemoryController FaultAtWordWrite
+#                          to inject fault during bootloader's own NVM writes
+#                          (0 = disabled, N = fault at Nth word write)
 
 $result_file?="audit_result.json"
 $replica0_file?=""
@@ -48,6 +52,8 @@ $nvm_ctrl_path?="sysbus.nvm_ctrl"
 $run_duration?="0.01"
 $scenario_id?=0
 $ota_header_size?=0
+$boot_cycles?=1
+$runtime_fault_write?=0
 
 python """
 import json
@@ -97,6 +103,12 @@ scenario_id = as_long(monitor.GetVariable('scenario_id'))
 ota_header_size = as_long(monitor.GetVariable('ota_header_size'))
 if ota_header_size < 0:
     ota_header_size = 0
+boot_cycles = as_long(monitor.GetVariable('boot_cycles'))
+if boot_cycles < 1:
+    boot_cycles = 1
+runtime_fault_write = as_long(monitor.GetVariable('runtime_fault_write'))
+if runtime_fault_write < 0:
+    runtime_fault_write = 0
 
 ctrl = None
 if nvm_ctrl_path:
@@ -307,38 +319,100 @@ elif fault_phase == "slot_copy" and fault_at >= 0:
         if not maybe_write_chunk(dst_base + offset, chunk):
             break
 
-# --- 3) Boot the bootloader ---
+# --- 3) Optionally enable runtime fault injection ---
+# When runtime_fault_write > 0, configure the NVMemoryController to inject
+# a partial write at the Nth word-write the bootloader itself performs.
+# This catches bugs in the bootloader's own metadata repair / boot_count
+# increment when interrupted mid-write.
 
-# Copy bootloader vectors to low alias for reset.
-for offset in range(0, 0x100, 4):
-    bus.WriteDoubleWord(offset, as_int(bus.ReadDoubleWord(bootloader_entry + offset)))
+runtime_fault_active = False
+if runtime_fault_write > 0 and ctrl is not None:
+    try:
+        ctrl.FaultAtWordWrite = int(runtime_fault_write)
+        runtime_fault_active = True
+    except Exception:
+        pass  # Controller may not support this property.
 
-try:
-    cpu.VectorTableOffset = bootloader_entry
-except Exception:
-    pass
+# --- 4) Boot the bootloader (multi-cycle) ---
 
-monitor.Parse('machine Reset')
-monitor.Parse('emulation RunFor "{}"'.format(run_duration))
+def do_one_boot():
+    """Reset CPU and run bootloader for run_duration. Returns (pc, vtor, slot, outcome)."""
+    # Copy bootloader vectors to low alias for reset.
+    for offset in range(0, 0x100, 4):
+        bus.WriteDoubleWord(offset, as_int(bus.ReadDoubleWord(bootloader_entry + offset)))
+    try:
+        cpu.VectorTableOffset = bootloader_entry
+    except Exception:
+        pass
+    monitor.Parse('machine Reset')
+    monitor.Parse('emulation RunFor "{}"'.format(run_duration))
 
-# --- 4) Read post-boot state ---
+    cyc_pc = as_int(cpu.PC)
+    cyc_vtor = as_int(bus.ReadDoubleWord(0xE000ED08))
+    cyc_slot = None
+    if slot_a_base <= cyc_vtor < (slot_a_base + slot_size):
+        cyc_slot = 'A'
+    elif slot_b_base <= cyc_vtor < (slot_b_base + slot_size):
+        cyc_slot = 'B'
+    elif slot_a_base <= cyc_pc < (slot_a_base + slot_size):
+        cyc_slot = 'A'
+    elif slot_b_base <= cyc_pc < (slot_b_base + slot_size):
+        cyc_slot = 'B'
+    cyc_outcome = 'success' if cyc_slot is not None else 'hard_fault'
+    return cyc_pc, cyc_vtor, cyc_slot, cyc_outcome
 
-pc = as_int(cpu.PC)
-vtor = as_int(bus.ReadDoubleWord(0xE000ED08))
+def read_nvm_snapshot():
+    """Capture current NVM metadata + slot validity as a dict."""
+    r0 = read_chunk(meta_base_0, meta_size)
+    r1 = read_chunk(meta_base_1, meta_size)
+    r0v = metadata_valid(r0)
+    r1v = metadata_valid(r1)
+    return {
+        'replica0_valid': bool(r0v),
+        'replica1_valid': bool(r1v),
+        'replica0_fields': metadata_fields(r0) if r0v else {},
+        'replica1_fields': metadata_fields(r1) if r1v else {},
+        'slot_a_valid': bool(slot_vector_valid(slot_a_base)),
+        'slot_b_valid': bool(slot_vector_valid(slot_b_base)),
+    }
 
-boot_slot = None
-if slot_a_base <= vtor < (slot_a_base + slot_size):
-    boot_slot = 'A'
-elif slot_b_base <= vtor < (slot_b_base + slot_size):
-    boot_slot = 'B'
-elif slot_a_base <= pc < (slot_a_base + slot_size):
-    boot_slot = 'A'
-elif slot_b_base <= pc < (slot_b_base + slot_size):
-    boot_slot = 'B'
+# Execute boot_cycles iterations, recording per-cycle state.
+boot_cycle_records = []
+for cycle_i in range(boot_cycles):
+    # For runtime fault mode: only arm the fault on the first boot cycle.
+    # Subsequent cycles run clean to observe recovery behavior.
+    if runtime_fault_active and cycle_i == 1 and ctrl is not None:
+        try:
+            ctrl.FaultAtWordWrite = 0
+        except Exception:
+            pass
 
-boot_outcome = 'success' if boot_slot is not None else 'hard_fault'
+    cyc_pc, cyc_vtor, cyc_slot, cyc_outcome = do_one_boot()
+    cyc_nvm = read_nvm_snapshot()
+    boot_cycle_records.append({
+        'cycle': cycle_i,
+        'pc': '0x{0:08X}'.format(cyc_pc),
+        'vtor': '0x{0:08X}'.format(cyc_vtor),
+        'boot_slot': cyc_slot,
+        'boot_outcome': cyc_outcome,
+        'nvm_snapshot': cyc_nvm,
+    })
 
-# Derive requested_slot from pre-boot metadata (what the metadata said to boot).
+# Disable runtime fault after all cycles (clean up).
+if runtime_fault_active and ctrl is not None:
+    try:
+        ctrl.FaultAtWordWrite = 0
+    except Exception:
+        pass
+
+# Use the LAST cycle as the authoritative result.
+pc = as_int(int(boot_cycle_records[-1]['pc'], 16))
+vtor = as_int(int(boot_cycle_records[-1]['vtor'], 16))
+boot_slot = boot_cycle_records[-1]['boot_slot']
+boot_outcome = boot_cycle_records[-1]['boot_outcome']
+
+# --- 5) Derive requested_slot from pre-boot metadata ---
+
 requested_slot = None
 if pre_r0_valid and pre_r1_valid:
     r0_seq = pre_r0_fields.get('seq', 0)
@@ -358,7 +432,7 @@ else:
 # Map numeric slot to letter for consistency.
 requested_slot_str = 'A' if requested_slot == 0 else ('B' if requested_slot == 1 else None)
 
-# Post-boot NVM state.
+# Post-boot NVM state (final cycle).
 post_r0_blob = read_chunk(meta_base_0, meta_size)
 post_r1_blob = read_chunk(meta_base_1, meta_size)
 post_r0_valid = metadata_valid(post_r0_blob)
@@ -368,7 +442,52 @@ post_r1_fields = metadata_fields(post_r1_blob) if post_r1_valid else {}
 post_slot_a_valid = slot_vector_valid(slot_a_base)
 post_slot_b_valid = slot_vector_valid(slot_b_base)
 
-# --- 5) Build fault diagnostics ---
+# --- 6) Multi-boot convergence analysis ---
+# Detect: no_boot_count (trial boot never expires), stuck_revert (oscillates),
+# converged (stabilized after N cycles).
+
+multi_boot_analysis = {}
+if boot_cycles > 1:
+    slots_seen = [r['boot_slot'] for r in boot_cycle_records]
+    outcomes_seen = [r['boot_outcome'] for r in boot_cycle_records]
+
+    # Check convergence: did the last 2 cycles agree?
+    if len(slots_seen) >= 2 and slots_seen[-1] == slots_seen[-2]:
+        converged_at = boot_cycles - 1
+        # Walk backwards to find earliest convergence point.
+        for ci in range(len(slots_seen) - 2, -1, -1):
+            if slots_seen[ci] == slots_seen[-1]:
+                converged_at = ci
+            else:
+                break
+        multi_boot_analysis['status'] = 'converged'
+        multi_boot_analysis['converged_at_cycle'] = converged_at
+        multi_boot_analysis['final_slot'] = slots_seen[-1]
+    elif len(set(slots_seen[-2:])) > 1:
+        multi_boot_analysis['status'] = 'stuck_revert'
+        multi_boot_analysis['slots_observed'] = slots_seen
+    else:
+        multi_boot_analysis['status'] = 'unknown'
+
+    # Check for no_boot_count: if boot_count never decrements across cycles.
+    boot_counts = []
+    for r in boot_cycle_records:
+        snap = r.get('nvm_snapshot', {})
+        r0f = snap.get('replica0_fields', {})
+        r1f = snap.get('replica1_fields', {})
+        # Use whichever replica is valid and has higher seq.
+        bc = r0f.get('boot_count', r1f.get('boot_count', None))
+        boot_counts.append(bc)
+    multi_boot_analysis['boot_counts'] = boot_counts
+
+    # Detect: trial boot count never reaches zero / never changes.
+    non_none = [bc for bc in boot_counts if bc is not None]
+    if len(non_none) >= 2 and all(bc == non_none[0] for bc in non_none) and non_none[0] is not None and non_none[0] > 0:
+        multi_boot_analysis['no_boot_count_expiry'] = True
+    else:
+        multi_boot_analysis['no_boot_count_expiry'] = False
+
+# --- 7) Build fault diagnostics ---
 fault_diag = {}
 if state['faulted']:
     fa = int(state['fault_address'])
@@ -388,7 +507,11 @@ if state['faulted']:
     else:
         fault_diag['region'] = 'unknown'
 
-# --- 6) Emit result ---
+if runtime_fault_active:
+    fault_diag['runtime_fault_write'] = int(runtime_fault_write)
+    fault_diag['runtime_fault_mode'] = True
+
+# --- 8) Emit result ---
 result = {
     'scenario_id': int(scenario_id),
     'fault_at': int(fault_at),
@@ -431,8 +554,14 @@ result = {
         'faulted': bool(state['faulted']),
         'fault_model': state['fault_model'],
         'fault_address': '0x{0:08X}'.format(state['fault_address']),
+        'runtime_fault_write': int(runtime_fault_write),
     },
 }
+
+# Add multi-boot data if boot_cycles > 1.
+if boot_cycles > 1:
+    result['boot_cycles'] = boot_cycle_records
+    result['multi_boot_analysis'] = multi_boot_analysis
 
 with open(result_file, 'w') as f:
     f.write(json.dumps(result, sort_keys=True))

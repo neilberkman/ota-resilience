@@ -16,7 +16,11 @@ VARIANTS := \
 	bootloader_both_replicas_race \
 	bootloader_crc_off_by_one \
 	bootloader_seq_naive \
-	bootloader_no_boot_count
+	bootloader_no_boot_count \
+	bootloader_geometry_last_sector \
+	bootloader_security_counter_early \
+	bootloader_wrong_erased_value \
+	bootloader_trailer_wrong_offset
 
 ELF_TARGETS := $(addsuffix .elf,$(VARIANTS))
 BIN_TARGETS := $(addsuffix .bin,$(VARIANTS))
@@ -45,6 +49,18 @@ bootloader_seq_naive.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(L
 
 bootloader_no_boot_count.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(LINKER)
 	$(CC) $(CFLAGS) $(INCLUDES) -DDEFECT=DEFECT_NO_BOOT_COUNT $(LDFLAGS) -T $(LINKER) -o $@ $<
+
+bootloader_geometry_last_sector.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(LINKER)
+	$(CC) $(CFLAGS) $(INCLUDES) -DDEFECT=DEFECT_GEOMETRY_LAST_SECTOR $(LDFLAGS) -T $(LINKER) -o $@ $<
+
+bootloader_security_counter_early.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(LINKER)
+	$(CC) $(CFLAGS) $(INCLUDES) -DDEFECT=DEFECT_SECURITY_COUNTER_EARLY $(LDFLAGS) -T $(LINKER) -o $@ $<
+
+bootloader_wrong_erased_value.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(LINKER)
+	$(CC) $(CFLAGS) $(INCLUDES) -DDEFECT=DEFECT_WRONG_ERASED_VALUE $(LDFLAGS) -T $(LINKER) -o $@ $<
+
+bootloader_trailer_wrong_offset.elf: bootloader_variants.c ../resilient_ota/boot_meta.h $(LINKER)
+	$(CC) $(CFLAGS) $(INCLUDES) -DDEFECT=DEFECT_TRAILER_WRONG_OFFSET $(LDFLAGS) -T $(LINKER) -o $@ $<
 
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@

@@ -118,6 +118,7 @@ class AuditPoint:
     fault_at: int
     fault_phase: str
     expected: BootOutcome
+    runtime_fault_write: int = 0  # 0 = disabled; N = fault at Nth internal NVM write
 
 
 @dataclasses.dataclass
@@ -142,9 +143,13 @@ def run_audit_point(
     robot_vars: List[str],
     scenario_files: Dict[str, str],
     renode_remote_server_dir: str,
+    boot_cycles: int = 1,
 ) -> AuditResult:
     """Execute a single audit point and return the result."""
-    point_dir = work_dir / "s{}_f{}".format(point.scenario_idx, point.fault_at)
+    if point.runtime_fault_write > 0:
+        point_dir = work_dir / "s{}_rf{}".format(point.scenario_idx, point.runtime_fault_write)
+    else:
+        point_dir = work_dir / "s{}_f{}".format(point.scenario_idx, point.fault_at)
     point_dir.mkdir(parents=True, exist_ok=True)
 
     result_file = point_dir / "result.json"
@@ -163,6 +168,14 @@ def run_audit_point(
         "--variable", "FAULT_PHASE:{}".format(point.fault_phase),
         "--variable", "SCENARIO_ID:{}".format(point.scenario_idx),
     ]
+
+    # Multi-boot cycles.
+    if boot_cycles > 1:
+        cmd.extend(["--variable", "BOOT_CYCLES:{}".format(boot_cycles)])
+
+    # Runtime fault injection (fault during bootloader's own NVM writes).
+    if point.runtime_fault_write > 0:
+        cmd.extend(["--variable", "RUNTIME_FAULT_WRITE:{}".format(point.runtime_fault_write)])
 
     # Scenario-specific state files.
     for key, value in scenario_files.items():
@@ -227,7 +240,7 @@ def run_audit_point(
         boot_slot=data.get("boot_slot"),
         nvm_state=data.get("nvm_state"),
         raw_log="",
-        is_control=(point.fault_at < 0),
+        is_control=(point.fault_at < 0 and point.runtime_fault_write == 0),
     )
 
     # Run invariants.
@@ -245,7 +258,8 @@ def run_audit_point(
     actual_slot_str = data.get("boot_slot")
     actual_slot_int = {"A": 0, "B": 1}.get(actual_slot_str) if actual_slot_str else None
 
-    if point.fault_at < 0:
+    is_faulted = (point.fault_at >= 0 or point.runtime_fault_write > 0)
+    if not is_faulted:
         # No fault — oracle should match exactly (outcome AND slot).
         matches = (expected_boots == actual_boots)
         if matches and expected_boots and expected_slot is not None:
@@ -291,8 +305,15 @@ def build_audit_points(
     scenarios: List[FuzzScenario],
     fault_points_per_scenario: List[int],
     fault_phase: str,
+    runtime_fault_values: Optional[List[int]] = None,
 ) -> List[AuditPoint]:
-    """Generate the full matrix of (scenario, fault_point) combinations."""
+    """Generate the full matrix of (scenario, fault_point) combinations.
+
+    When runtime_fault_values is provided, additional audit points are
+    generated that use the NVMemoryController's FaultAtWordWrite property
+    to inject faults during the bootloader's own internal NVM writes
+    (metadata repair, boot_count increment, etc.).
+    """
     points: List[AuditPoint] = []
     for idx, scenario in enumerate(scenarios):
         outcome = expected_outcome(scenario)
@@ -316,6 +337,18 @@ def build_audit_points(
                 expected=outcome,
             ))
 
+        # Runtime fault points: fault during bootloader's own NVM writes.
+        if runtime_fault_values:
+            for rfv in runtime_fault_values:
+                points.append(AuditPoint(
+                    scenario_idx=idx,
+                    scenario=scenario,
+                    fault_at=-1,  # No write-phase fault.
+                    fault_phase="none",
+                    expected=outcome,
+                    runtime_fault_write=rfv,
+                ))
+
     return points
 
 
@@ -329,9 +362,14 @@ def run_audit_campaign(
     work_dir: Path,
     renode_remote_server_dir: str,
     workers: int,
+    boot_cycles: int = 1,
+    runtime_fault_values: Optional[List[int]] = None,
 ) -> List[AuditResult]:
     """Run the full audit campaign, optionally in parallel."""
-    points = build_audit_points(scenarios, fault_points_per_scenario, fault_phase)
+    points = build_audit_points(
+        scenarios, fault_points_per_scenario, fault_phase,
+        runtime_fault_values=runtime_fault_values,
+    )
 
     # Pre-materialize all scenario files.
     scenario_file_cache: Dict[int, Dict[str, str]] = {}
@@ -350,12 +388,16 @@ def run_audit_campaign(
             robot_vars=robot_vars,
             scenario_files=scenario_file_cache[point.scenario_idx],
             renode_remote_server_dir=renode_remote_server_dir,
+            boot_cycles=boot_cycles,
         )
 
     if workers <= 1:
         for i, point in enumerate(points):
-            print("\r  [{}/{}] scenario {} fault_at={}".format(
-                i + 1, total, point.scenario_idx, point.fault_at
+            label = "fault_at={}".format(point.fault_at)
+            if point.runtime_fault_write > 0:
+                label = "runtime_fault={}".format(point.runtime_fault_write)
+            print("\r  [{}/{}] scenario {} {}".format(
+                i + 1, total, point.scenario_idx, label
             ), end="", flush=True, file=sys.stderr)
             results.append(execute_point(point))
         print("", file=sys.stderr)
@@ -370,8 +412,11 @@ def run_audit_campaign(
             for future in concurrent.futures.as_completed(future_to_point):
                 completed += 1
                 point = future_to_point[future]
-                print("\r  [{}/{}] scenario {} fault_at={}".format(
-                    completed, total, point.scenario_idx, point.fault_at
+                label = "fault_at={}".format(point.fault_at)
+                if point.runtime_fault_write > 0:
+                    label = "runtime_fault={}".format(point.runtime_fault_write)
+                print("\r  [{}/{}] scenario {} {}".format(
+                    completed, total, point.scenario_idx, label
                 ), end="", flush=True, file=sys.stderr)
                 try:
                     results.append(future.result())
@@ -398,8 +443,8 @@ def run_audit_campaign(
 
 def summarize_audit(results: List[AuditResult]) -> Dict[str, Any]:
     """Build human-readable summary from audit results."""
-    control_results = [r for r in results if r.point.fault_at < 0]
-    faulted_results = [r for r in results if r.point.fault_at >= 0]
+    control_results = [r for r in results if r.point.fault_at < 0 and r.point.runtime_fault_write == 0]
+    faulted_results = [r for r in results if r.point.fault_at >= 0 or r.point.runtime_fault_write > 0]
     errors = [r for r in results if r.error is not None]
 
     # Control run stats.
@@ -507,6 +552,19 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--fault-step", type=int, default=4000, help="Step between fault points")
     p.add_argument("--quick", action="store_true", help="Quick mode: 3 fault points, 10 scenarios")
 
+    # Multi-boot and runtime faults.
+    p.add_argument("--boot-cycles", type=int, default=1,
+                   help="Number of boot cycles per audit point (default: 1). "
+                        "Values > 1 detect trial-boot expiry bugs, stuck reverts, "
+                        "and convergence failures.")
+    p.add_argument("--runtime-faults", action="store_true",
+                   help="Enable runtime fault injection: generate additional audit "
+                        "points that fault during the bootloader's own internal NVM "
+                        "writes (metadata repair, boot_count increment, etc.)")
+    p.add_argument("--runtime-fault-values", default="1,2,3,5,10",
+                   help="Comma-separated write indices for runtime fault injection "
+                        "(default: 1,2,3,5,10). Only used when --runtime-faults is set.")
+
     # Execution.
     p.add_argument("--workers", type=int, default=1, help="Parallel workers (default: 1)")
     p.add_argument("--renode-test", default=DEFAULT_RENODE_TEST)
@@ -556,10 +614,22 @@ def main() -> int:
             mid = fault_points[len(fault_points) // 2]
             fault_points = [fault_points[0], mid, fault_points[-1]]
 
-        total_points = num_scenarios * (1 + len(fault_points))  # +1 for control
-        print("Audit plan: {} scenarios x ({} fault points + 1 control) = {} total runs".format(
-            num_scenarios, len(fault_points), total_points
+        # Parse runtime fault values.
+        runtime_fault_values: Optional[List[int]] = None
+        if args.runtime_faults:
+            runtime_fault_values = [int(x.strip()) for x in args.runtime_fault_values.split(",") if x.strip()]
+            runtime_fault_values = [v for v in runtime_fault_values if v > 0]
+
+        runtime_count = len(runtime_fault_values) if runtime_fault_values else 0
+        total_points = num_scenarios * (1 + len(fault_points) + runtime_count)  # +1 for control
+        parts = ["{} fault points".format(len(fault_points)), "1 control"]
+        if runtime_count:
+            parts.append("{} runtime fault points".format(runtime_count))
+        print("Audit plan: {} scenarios x ({}) = {} total runs".format(
+            num_scenarios, " + ".join(parts), total_points
         ), file=sys.stderr)
+        if args.boot_cycles > 1:
+            print("  Multi-boot: {} cycles per audit point".format(args.boot_cycles), file=sys.stderr)
 
         # Work directory.
         if args.keep_artifacts:
@@ -582,6 +652,8 @@ def main() -> int:
             robot_vars.append("SLOT_B_IMAGE_FILE:{}".format(str((repo_root / args.slot_b_image).resolve())))
         if args.peripheral_includes:
             robot_vars.append("PERIPHERAL_INCLUDES:{}".format(args.peripheral_includes))
+        if args.boot_cycles > 1:
+            robot_vars.append("BOOT_CYCLES:{}".format(args.boot_cycles))
         for rv in args.robot_var:
             key, sep, value = rv.partition(":")
             if sep:
@@ -600,6 +672,8 @@ def main() -> int:
             work_dir=work_dir,
             renode_remote_server_dir=args.renode_remote_server_dir,
             workers=args.workers,
+            boot_cycles=args.boot_cycles,
+            runtime_fault_values=runtime_fault_values,
         )
         elapsed = time.monotonic() - start_time
 
@@ -621,6 +695,9 @@ def main() -> int:
                 "bootloader_elf": args.bootloader_elf,
                 "platform": args.platform,
                 "quick": args.quick,
+                "boot_cycles": args.boot_cycles,
+                "runtime_faults": args.runtime_faults,
+                "runtime_fault_values": runtime_fault_values,
             },
             "execution": {
                 "run_utc": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
@@ -640,6 +717,7 @@ def main() -> int:
                     "scenario_idx": r.point.scenario_idx,
                     "fault_at": r.point.fault_at,
                     "fault_phase": r.point.fault_phase,
+                    "runtime_fault_write": r.point.runtime_fault_write,
                     "actual_outcome": r.actual_outcome,
                     "actual_boot_slot": r.actual_boot_slot,
                     "matches_oracle": r.matches_oracle,

@@ -37,6 +37,8 @@ ${BOOTLOADER_ENTRY}            ${EMPTY}
 ${NVM_CTRL_PATH}               ${EMPTY}
 ${RUN_DURATION}                ${EMPTY}
 ${OTA_HEADER_SIZE}             ${EMPTY}
+${BOOT_CYCLES}                 ${EMPTY}
+${RUNTIME_FAULT_WRITE}         ${EMPTY}
 
 *** Keywords ***
 Resolve Path
@@ -90,6 +92,8 @@ Run Audit Point
     Run Keyword If    '${NVM_CTRL_PATH}' != '${EMPTY}'    Execute Command    $nvm_ctrl_path="${NVM_CTRL_PATH}"
     Run Keyword If    '${RUN_DURATION}' != '${EMPTY}'    Execute Command    $run_duration="${RUN_DURATION}"
     Run Keyword If    '${OTA_HEADER_SIZE}' != '${EMPTY}'    Execute Command    $ota_header_size=${OTA_HEADER_SIZE}
+    Run Keyword If    '${BOOT_CYCLES}' != '${EMPTY}'    Execute Command    $boot_cycles=${BOOT_CYCLES}
+    Run Keyword If    '${RUNTIME_FAULT_WRITE}' != '${EMPTY}'    Execute Command    $runtime_fault_write=${RUNTIME_FAULT_WRITE}
 
     # Load platform + firmware.
     Execute Command    include "${ROOT}/peripherals/NVMemoryController.cs"

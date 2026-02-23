@@ -36,13 +36,17 @@ from typing import Any, Dict, List, Optional, Tuple
 
 VARIANTS = [
     # (name, elf_path, should_find_issues)
-    ("none",               "examples/fault_variants/bootloader_none.elf",               False),
-    ("no_fallback",        "examples/fault_variants/bootloader_no_fallback.elf",         True),
-    ("no_vector_check",    "examples/fault_variants/bootloader_no_vector_check.elf",     True),
-    ("both_replicas_race", "examples/fault_variants/bootloader_both_replicas_race.elf",  True),
-    ("crc_off_by_one",     "examples/fault_variants/bootloader_crc_off_by_one.elf",      True),
-    ("seq_naive",          "examples/fault_variants/bootloader_seq_naive.elf",            True),
-    ("no_boot_count",      "examples/fault_variants/bootloader_no_boot_count.elf",        True),
+    ("none",                    "examples/fault_variants/bootloader_none.elf",                    False),
+    ("no_fallback",             "examples/fault_variants/bootloader_no_fallback.elf",              True),
+    ("no_vector_check",         "examples/fault_variants/bootloader_no_vector_check.elf",          True),
+    ("both_replicas_race",      "examples/fault_variants/bootloader_both_replicas_race.elf",       True),
+    ("crc_off_by_one",          "examples/fault_variants/bootloader_crc_off_by_one.elf",           True),
+    ("seq_naive",               "examples/fault_variants/bootloader_seq_naive.elf",                True),
+    ("no_boot_count",           "examples/fault_variants/bootloader_no_boot_count.elf",            True),
+    ("geometry_last_sector",    "examples/fault_variants/bootloader_geometry_last_sector.elf",     True),
+    ("security_counter_early",  "examples/fault_variants/bootloader_security_counter_early.elf",   True),
+    ("wrong_erased_value",      "examples/fault_variants/bootloader_wrong_erased_value.elf",       True),
+    ("trailer_wrong_offset",    "examples/fault_variants/bootloader_trailer_wrong_offset.elf",     True),
 ]
 
 

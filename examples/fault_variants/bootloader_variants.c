@@ -10,6 +10,10 @@
  *   DEFECT_CRC_OFF_BY_ONE     - CRC covers one fewer byte (silent metadata corruption)
  *   DEFECT_SEQ_NAIVE          - use plain < instead of wrapping comparison for seq numbers
  *   DEFECT_NO_BOOT_COUNT      - never increment boot_count (trial boot can't expire)
+ *   DEFECT_GEOMETRY_LAST_SECTOR  - off-by-one in copy length overruns slot boundary (MCUboot #2205, #2206)
+ *   DEFECT_SECURITY_COUNTER_EARLY - security counter bumped before image confirmation (MCUboot #2282)
+ *   DEFECT_WRONG_ERASED_VALUE    - checks erased==0x00 instead of 0xFF (MCUboot #2320, #2442)
+ *   DEFECT_TRAILER_WRONG_OFFSET  - metadata trailer offset off by 4 bytes (MCUboot #2433, #2498)
  *
  * These mirror real-world bug classes found in MCUboot and other bootloaders.
  * The audit tool should detect each defect's failure mode.
@@ -38,13 +42,26 @@
 #define DEFECT DEFECT_NONE
 #endif
 
-#define DEFECT_NONE               0
-#define DEFECT_NO_FALLBACK        1
-#define DEFECT_NO_VECTOR_CHECK    2
-#define DEFECT_BOTH_REPLICAS_RACE 3
-#define DEFECT_CRC_OFF_BY_ONE     4
-#define DEFECT_SEQ_NAIVE          5
-#define DEFECT_NO_BOOT_COUNT      6
+#define DEFECT_NONE                  0
+#define DEFECT_NO_FALLBACK           1
+#define DEFECT_NO_VECTOR_CHECK       2
+#define DEFECT_BOTH_REPLICAS_RACE    3
+#define DEFECT_CRC_OFF_BY_ONE        4
+#define DEFECT_SEQ_NAIVE             5
+#define DEFECT_NO_BOOT_COUNT         6
+#define DEFECT_GEOMETRY_LAST_SECTOR  7
+#define DEFECT_SECURITY_COUNTER_EARLY 8
+#define DEFECT_WRONG_ERASED_VALUE    9
+#define DEFECT_TRAILER_WRONG_OFFSET  10
+
+/* NVM write granularity (8 bytes for MRAM word writes) */
+#define WRITE_GRANULARITY    (8u)
+
+/* Size of the metadata trailer region at the end of each slot */
+#define META_TRAILER_SIZE    (BOOT_META_REPLICA_SIZE * 2u)
+
+/* Address for the anti-rollback security counter in persistent storage */
+#define SECURITY_COUNTER_ADDR (PERSIST_BOOT_ADDR + 4u)
 
 extern uint32_t __stack_top;
 
@@ -126,8 +143,21 @@ static int variant_seq_ge(uint32_t lhs, uint32_t rhs)
 /* --- Meta select that uses our variant overrides --- */
 static const boot_meta_t* variant_meta_select(uintptr_t meta_base)
 {
+#if (DEFECT == DEFECT_TRAILER_WRONG_OFFSET)
+    /*
+     * Bug: compute the metadata/trailer offset from end of slot using the
+     * wrong constant. Adds a +4 byte error to the base address, so all
+     * reads are misaligned. The CRC/magic checks will fail on both replicas,
+     * making the bootloader think no valid metadata exists and defaulting
+     * to slot A unconditionally -- even when slot B was confirmed.
+     * Model: MCUboot #2433, #2498.
+     */
+    const boot_meta_t* r0 = (const boot_meta_t*)(meta_base + 4u);
+    const boot_meta_t* r1 = (const boot_meta_t*)(meta_base + BOOT_META_REPLICA_SIZE + 4u);
+#else
     const boot_meta_t* r0 = (const boot_meta_t*)meta_base;
     const boot_meta_t* r1 = (const boot_meta_t*)(meta_base + BOOT_META_REPLICA_SIZE);
+#endif
 
 #if (DEFECT == DEFECT_CRC_OFF_BY_ONE)
     const int valid0 = (r0->magic == BOOT_META_MAGIC) && (r0->crc == variant_meta_crc(r0));
@@ -159,6 +189,32 @@ static const boot_meta_t* variant_meta_select(uintptr_t meta_base)
     return (const boot_meta_t*)0;
 }
 
+/* --- Copy-in-place fallback for slot repair --- */
+static void copy_slot_in_place(uintptr_t dst_base, uintptr_t src_base)
+{
+#if (DEFECT == DEFECT_GEOMETRY_LAST_SECTOR)
+    /*
+     * Bug: off-by-one in copy range computation. Uses sector_count instead of
+     * (sector_count - 1) for the last sector's size, resulting in copying
+     * slot_size + WRITE_GRANULARITY bytes instead of slot_size. The extra
+     * write overwrites the first bytes of whatever is adjacent to the slot
+     * (metadata region, other slot, etc.).
+     * Model: MCUboot #2205, #2206.
+     */
+    const uint32_t copy_len = SLOT_SIZE + WRITE_GRANULARITY;
+#else
+    const uint32_t copy_len = SLOT_SIZE;
+#endif
+
+    volatile uint32_t* dst = (volatile uint32_t*)dst_base;
+    const volatile uint32_t* src = (const volatile uint32_t*)src_base;
+
+    for(uint32_t i = 0u; i < (copy_len / 4u); i++)
+    {
+        dst[i] = src[i];
+    }
+}
+
 static void repair_meta_to_confirmed_slot(const boot_meta_t* meta, uint32_t slot)
 {
     boot_meta_t updated;
@@ -180,6 +236,21 @@ static void repair_meta_to_confirmed_slot(const boot_meta_t* meta, uint32_t slot
     updated.target_slot = slot;
     updated.state = BOOT_STATE_CONFIRMED;
     updated.boot_count = 0u;
+
+#if (DEFECT == DEFECT_SECURITY_COUNTER_EARLY)
+    /*
+     * Bug: bump the anti-rollback security counter BEFORE writing the
+     * confirmed boot_meta. If power fails between the counter write and
+     * the meta write, the old image can no longer boot because its
+     * security counter is now too low, but the new image isn't confirmed.
+     * Correct behavior: write counter AFTER meta is fully committed.
+     * Model: MCUboot #2282.
+     */
+    {
+        volatile uint32_t* counter = (volatile uint32_t*)SECURITY_COUNTER_ADDR;
+        *counter = updated.seq;
+    }
+#endif
 
 #if (DEFECT == DEFECT_BOTH_REPLICAS_RACE)
     /*
@@ -243,6 +314,27 @@ static int slot_vector_is_valid(uintptr_t slot_base)
     {
         return 0;
     }
+
+#if (DEFECT == DEFECT_WRONG_ERASED_VALUE)
+    /*
+     * Bug: check if the slot is "erased" by comparing a sentinel byte to 0x00.
+     * On flash, erased state is 0xFF, so this check always passes (non-erased
+     * looks non-zero) and the bootloader skips erase-before-write, corrupting
+     * updates. On MRAM (erased=0x00) the check is coincidentally correct.
+     * The wrong constant means the bootloader misidentifies programmed flash
+     * as erased and treats valid slot content as empty.
+     * Model: MCUboot #2320, #2442.
+     */
+    {
+        const uint8_t sentinel = *(const uint8_t*)(slot_base + SLOT_SIZE - 1u);
+
+        if(sentinel == 0x00u)
+        {
+            /* Erased (wrong check: should compare to 0xFF) -- treat as invalid */
+            return 0;
+        }
+    }
+#endif
 
     return 1;
 #endif
@@ -374,6 +466,10 @@ void Reset_Handler(void)
 
         if(slot_vector_is_valid(fallback_base))
         {
+            /* Copy-in-place: copy fallback slot image to active slot.
+             * DEFECT_GEOMETRY_LAST_SECTOR: copies one WRITE_GRANULARITY past end. */
+            copy_slot_in_place(chosen_base, fallback_base);
+
             active_slot = fallback_slot;
             chosen_base = fallback_base;
             repair_meta_to_confirmed_slot(variant_meta_select(META_BASE), fallback_slot);
