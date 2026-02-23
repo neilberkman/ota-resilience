@@ -41,6 +41,27 @@ The platform description (`platforms/cortex_m0_nvm.repl`) maps the memory
 instances and aliases. If you change the NVM geometry, update the address
 constants in both the `.repl` file and the firmware sources.
 
+## Adding a new bootloader family
+
+1. Create a directory under `examples/` with the bootloader source, Makefile,
+   and linker script. Follow the patterns in `naive_copy/` or `nxboot_style/`.
+
+2. Build with `arm-none-eabi-gcc`, strip debug info (`objcopy --strip-debug`),
+   and commit the ELFs.
+
+3. Add entries to `scripts/self_test.py` VARIANTS list. The correct variant
+   should have `should_find_issues=False`, defect variants `True`.
+
+4. Add an OSS validation profile to `docs/oss_validation_profiles.json` if
+   the bootloader represents a real-world OTA architecture.
+
+5. Update `.gitignore` to allow the new ELF/BIN paths.
+
+## Testing your own firmware
+
+See `docs/dirty_room_prompt.md` for a template that instructs a separate agent
+to configure the audit tool for proprietary firmware.
+
 ## Reporting results
 
 Campaign output goes to `results/`. The JSON schema is documented in
