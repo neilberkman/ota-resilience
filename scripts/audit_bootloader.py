@@ -178,14 +178,28 @@ def run_audit_point(
     env = os.environ.copy()
     env.setdefault("DOTNET_BUNDLE_EXTRACT_BASE_DIR", str(bundle_dir))
 
-    proc = subprocess.run(
-        cmd,
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
-    )
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            check=False,
+            env=env,
+            timeout=120,  # 2 minutes per point; Renode can hang.
+        )
+    except subprocess.TimeoutExpired:
+        return AuditResult(
+            point=point,
+            actual_outcome="infra_error",
+            actual_boot_slot=None,
+            matches_oracle=False,
+            violations=[],
+            pre_state={},
+            post_state={},
+            fault_diagnostics={},
+            error="renode-test timed out after 120s",
+        )
 
     if proc.returncode != 0 or not result_file.exists():
         return AuditResult(
@@ -232,14 +246,21 @@ def run_audit_point(
     actual_slot_int = {"A": 0, "B": 1}.get(actual_slot_str) if actual_slot_str else None
 
     if point.fault_at < 0:
-        # No fault — oracle should match exactly.
+        # No fault — oracle should match exactly (outcome AND slot).
         matches = (expected_boots == actual_boots)
         if matches and expected_boots and expected_slot is not None:
             matches = (expected_slot == actual_slot_int)
     else:
-        # With fault — oracle was computed on the pre-fault state.
-        # A resilient bootloader should still boot if the pre-state had valid slots.
-        matches = (expected_boots == actual_boots) or (not expected_boots and not actual_boots)
+        # With fault — a resilient bootloader should still boot if the
+        # pre-state had valid slots. We're lenient on WHICH slot (a fault
+        # may cause a legitimate fallback), but we still check that if the
+        # oracle says "should boot" then it actually boots.
+        if expected_boots and actual_boots:
+            matches = True  # Boot succeeded; slot may differ due to fault-induced fallback.
+        elif not expected_boots and not actual_boots:
+            matches = True  # Both agree: no boot possible.
+        else:
+            matches = False  # Divergence: one says boot, other says no boot.
 
     violations_dicts = [
         {
@@ -340,7 +361,7 @@ def run_audit_campaign(
         print("", file=sys.stderr)
     else:
         completed = 0
-        with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             # Submit all points.
             future_to_point = {
                 executor.submit(execute_point, point): point
@@ -420,7 +441,7 @@ def summarize_audit(results: List[AuditResult]) -> Dict[str, Any]:
             {"scenario_idx": idx, "violation_count": count}
             for idx, count in worst_scenarios
         ],
-        "verdict": _verdict(control_boots, len(control_results), faulted_bricks, faulted_total, faulted_violations),
+        "verdict": _verdict(control_boots, len(control_results), faulted_bricks, faulted_total, faulted_violations, len(errors)),
     }
 
 
@@ -430,7 +451,12 @@ def _verdict(
     faulted_bricks: int,
     faulted_total: int,
     faulted_violations: int,
+    infra_errors: int = 0,
 ) -> str:
+    if infra_errors > 0 and faulted_total == 0:
+        return "ERROR: {} infrastructure errors, 0 successful runs — cannot evaluate bootloader".format(
+            infra_errors
+        )
     if control_total > 0 and control_boots < control_total:
         return "FAIL: {} of {} control runs did not boot (bootloader may be broken independent of faults)".format(
             control_total - control_boots, control_total
@@ -447,6 +473,10 @@ def _verdict(
             )
         return "WARN: {:.1f}% brick rate ({}/{}) — some fault scenarios cause bricks".format(
             rate, faulted_bricks, faulted_total
+        )
+    if infra_errors > 0:
+        return "WARN: 0 bricks, 0 violations but {} infra errors across {} total runs".format(
+            infra_errors, faulted_total + infra_errors
         )
     return "PASS: 0 bricks, 0 violations across {} faulted runs".format(faulted_total)
 

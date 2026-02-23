@@ -338,6 +338,26 @@ elif slot_b_base <= pc < (slot_b_base + slot_size):
 
 boot_outcome = 'success' if boot_slot is not None else 'hard_fault'
 
+# Derive requested_slot from pre-boot metadata (what the metadata said to boot).
+requested_slot = None
+if pre_r0_valid and pre_r1_valid:
+    r0_seq = pre_r0_fields.get('seq', 0)
+    r1_seq = pre_r1_fields.get('seq', 0)
+    # Wrapping comparison: same as boot_meta_seq_ge.
+    if ((r0_seq - r1_seq) & 0xFFFFFFFF) < 0x80000000:
+        requested_slot = pre_r0_fields.get('active_slot', 0)
+    else:
+        requested_slot = pre_r1_fields.get('active_slot', 0)
+elif pre_r0_valid:
+    requested_slot = pre_r0_fields.get('active_slot', 0)
+elif pre_r1_valid:
+    requested_slot = pre_r1_fields.get('active_slot', 0)
+else:
+    requested_slot = 0  # Default to slot A.
+
+# Map numeric slot to letter for consistency.
+requested_slot_str = 'A' if requested_slot == 0 else ('B' if requested_slot == 1 else None)
+
 # Post-boot NVM state.
 post_r0_blob = read_chunk(meta_base_0, meta_size)
 post_r1_blob = read_chunk(meta_base_1, meta_size)
@@ -395,6 +415,8 @@ result = {
         'vtor': '0x{0:08X}'.format(vtor),
     },
     'nvm_state': {
+        'requested_slot': requested_slot_str,
+        'chosen_slot': boot_slot,
         'slot_a_base': '0x{0:08X}'.format(slot_a_base),
         'slot_b_base': '0x{0:08X}'.format(slot_b_base),
         'slot_size': slot_size,

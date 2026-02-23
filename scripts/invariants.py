@@ -77,8 +77,11 @@ def check_at_least_one_bootable(
         return
 
     # Determine whether the pre-state had at least one valid slot.
-    pre_slot_a_valid = pre_state.get("replica0_valid", pre_state.get("slot_a_valid", False))
-    pre_slot_b_valid = pre_state.get("replica1_valid", pre_state.get("slot_b_valid", False))
+    # IMPORTANT: use slot_a_valid/slot_b_valid (vector table checks), NOT
+    # replica0_valid/replica1_valid (metadata CRC checks). These are different:
+    # a valid metadata replica does NOT mean the corresponding slot has valid vectors.
+    pre_slot_a_valid = pre_state.get("slot_a_valid", False)
+    pre_slot_b_valid = pre_state.get("slot_b_valid", False)
 
     if not (pre_slot_a_valid or pre_slot_b_valid):
         # Pre-state already had no valid slots — nothing to assert.

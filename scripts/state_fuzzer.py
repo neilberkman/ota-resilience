@@ -318,9 +318,25 @@ def expected_outcome(scenario: FuzzScenario) -> BootOutcome:
     else:
         selection_reason = "no valid replica, defaulting to slot A"
 
-    # Determine requested slot.
+    # Determine requested slot, accounting for PENDING_TEST revert.
     if selected is not None:
         requested_slot = selected.active_slot
+
+        # If in PENDING_TEST state and boot_count >= max_boot_count,
+        # the bootloader reverts to the alternate slot.
+        if selected.state == STATE_PENDING_TEST:
+            effective_max = selected.max_boot_count if selected.max_boot_count > 0 else 3
+            if selected.boot_count >= effective_max:
+                # Revert: switch to the other slot and mark confirmed.
+                if requested_slot == 0:
+                    requested_slot = 1
+                elif requested_slot == 1:
+                    requested_slot = 0
+                else:
+                    requested_slot = 0  # Invalid slot ID -> slot_base_for_id returns A
+                selection_reason += "; PENDING_TEST exhausted (boot_count={} >= max={}), reverted".format(
+                    selected.boot_count, effective_max
+                )
     else:
         requested_slot = 0  # Default to slot A.
 
