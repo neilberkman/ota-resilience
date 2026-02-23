@@ -9,43 +9,49 @@ write point during an OTA update. You bring your firmware and OTA logic,
 wire up a scenario script, and the campaign runner sweeps every write index
 through Renode with a simulated fault.
 
-## Included examples
+## Included bootloader families
 
-Two built-in scenarios:
+Four bootloader architectures, from worst-case to fully resilient:
 
-| Scenario     | Strategy                                   | Brick rate | Why                                              |
-| ------------ | ------------------------------------------ | ---------- | ------------------------------------------------ |
-| `vulnerable` | Copy-in-place, no checks                   | ~88%       | Overwrites only image; any mid-copy fault bricks |
-| `resilient`  | A/B slots + bootloader + metadata replicas | 0%         | Active slot never touched during update          |
+| Family         | Architecture                        | Brick rate | Why                                          |
+| -------------- | ----------------------------------- | ---------- | -------------------------------------------- |
+| `naive_copy`   | Copy staging to exec, no fallback   | ~100%      | Any mid-copy fault bricks; no recovery path  |
+| `vulnerable`   | Copy-in-place with pending flag     | ~88%       | Overwrites only image; mid-copy fault bricks |
+| `nxboot_style` | Three-partition copy, CRC, recovery | ~0%        | Recovery slot enables revert on corruption   |
+| `resilient`    | A/B slots + metadata replicas       | 0%         | Active slot never touched during update      |
 
-```mermaid
-flowchart LR
-    subgraph V["vulnerable"]
-        V1[Copy staging → active] -->|power loss| V2[BRICK]
-    end
-    subgraph R["resilient"]
-        R1[Write to inactive slot B] -->|power loss| R2[Slot A still valid → OK]
-        R1 -->|completes| R3[Flip metadata → OK]
-    end
+### Intentional-defect variants
 
-    style V2 fill:#d32f2f,color:#fff
-    style R2 fill:#388e3c,color:#fff
-    style R3 fill:#388e3c,color:#fff
-```
+Each family includes defect variants for self-testing (proving the audit tool
+detects known bugs):
 
-See [docs/architecture.md](docs/architecture.md) for detailed flow diagrams
-and NVM memory layout.
+- **fault_variants/** (11 variants): no_fallback, no_vector_check, crc_off_by_one,
+  both_replicas_race, seq_naive, no_boot_count, and MCUboot-modeled defects
+- **naive_copy/** (3 variants): bare_copy, crc_pre_copy, crc_post_copy
+- **nxboot_style/** (4 variants): correct, no_recovery, no_revert, no_crc
+
+### OSS validation targets
+
+- **MCUboot** (swap-using-move on nRF52840): pre-built ELFs from CI, known-good
+  and known-bad commit guards
+- **NuttX nxboot** (modeled): three-partition copy-based bootloader with
+  magic-flip commit protocol
+
+See [docs/architecture.md](docs/architecture.md) for flow diagrams and memory layout.
 
 ## What this project provides
 
-- Custom Renode NVM peripheral with persistent backing store across reset:
-  `peripherals/NVMemoryController.cs`
-- Fault-point scenario execution for vulnerable and resilient flows:
-  `scripts/run_vulnerable_fault_point.resc`, `scripts/run_resilient_fault_point.resc`
-- Canonical campaign runner using Robot + `renode-test` with thin Python orchestration:
-  `tests/ota_fault_point.robot`, `scripts/ota_fault_campaign.py`
-- Campaign reports and comparative table generation:
-  `results/campaign_report.json`, `results/comparative_table.txt`
+- **Unguided bootloader audit**: `scripts/audit_bootloader.py` -- state-space
+  fuzzing + fault injection to find brick conditions automatically
+- **Self-test harness**: `scripts/self_test.py` -- validates the audit tool
+  catches all known defects across 18 bootloader variants
+- **OSS validation**: `scripts/run_oss_validation.py` -- runs named profiles
+  against real OSS bootloaders (MCUboot, nxboot)
+- **NVM peripheral**: `peripherals/NVMemoryController.cs` -- persistent
+  non-volatile memory with partial-write fault injection
+- **MCUboot state fuzzer**: `scripts/mcuboot_state_fuzzer.py` -- property-based
+  trailer state exploration with oracle predictions
+- **Campaign runner**: `scripts/ota_fault_campaign.py` + Robot suites
 
 ## Design principles
 
@@ -93,21 +99,16 @@ works without a cross-compiler.
 If you modify example firmware sources:
 
 ```bash
-cd examples/vulnerable_ota && make
-cd ../resilient_ota && make
+make -C examples/vulnerable_ota
+make -C examples/resilient_ota
+make -C examples/fault_variants
+make -C examples/naive_copy
+make -C examples/nxboot_style
+python3 examples/nxboot_style/gen_nxboot_images.py --output-dir examples/nxboot_style
 ```
 
-Requires `arm-none-eabi-gcc` on `PATH`.
-
-For physical Cortex-M0+ targets, enable VTOR relocation in the resilient
-bootloader build:
-
-```bash
-make -C examples/resilient_ota CFLAGS="-DENABLE_VTOR_RELOCATION=1 ${CFLAGS}"
-```
-
-The bootloader defaults this to `0` so the same source still builds for
-cores without VTOR.
+Requires `arm-none-eabi-gcc` on `PATH`. Prebuilt ELFs are committed so
+clone-and-run works without a cross-compiler.
 
 ## Validation and tests
 
@@ -169,13 +170,26 @@ tell it what "success" and "failure" look like for your design.
 
 ```text
 ota-resilience/
-├── peripherals/NVMemoryController.cs
-├── platforms/cortex_m0_nvm.repl
+├── peripherals/NVMemoryController.cs       # Custom NVM peripheral for Renode
+├── platforms/                              # Renode platform descriptions
+│   ├── cortex_m0_nvm.repl                  # Generic Cortex-M0+ with 512KB NVM
+│   └── nrf52840_nvmc_psel.repl             # nRF52840 for MCUboot testing
 ├── scripts/
+│   ├── audit_bootloader.py                 # Unguided bootloader resilience audit
+│   ├── self_test.py                        # Meta-test: validate audit catches defects
+│   ├── run_oss_validation.py               # OSS profile orchestrator
+│   ├── mcuboot_state_fuzzer.py             # MCUboot trailer state exploration
+│   ├── ota_fault_campaign.py               # Fault sweep campaign runner
+│   └── geometry_matrix.py                  # Multi-geometry configuration matrix
 ├── examples/
-├── tests/
-├── docs/
-└── results/
+│   ├── naive_copy/                         # Worst-case: copy-to-address, no bootloader
+│   ├── vulnerable_ota/                     # Copy-in-place with pending flag
+│   ├── nxboot_style/                       # NuttX nxboot three-partition model
+│   ├── resilient_ota/                      # Full A/B with metadata replicas
+│   └── fault_variants/                     # 11 intentional-defect variants
+├── tests/                                  # Robot Framework test suites
+├── docs/                                   # Architecture, guides, dirty-room prompt
+└── results/oss_validation/assets/          # Pre-built MCUboot ELFs + slot images
 ```
 
 ## Limitations

@@ -34,7 +34,8 @@ RUN curl -L "${RENODE_URL}" -o /tmp/renode.tar.gz && \
     rm /tmp/renode.tar.gz
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir west robotframework
+    python3 -m pip install --no-cache-dir west robotframework && \
+    python3 -m pip install --no-cache-dir -r /opt/renode/tests/requirements.txt
 
 ENV GNUARMEMB_TOOLCHAIN_PATH=/root/tools/gcc-arm-none-eabi-8-2018-q4-major
 ENV PATH=/root/tools/gcc-arm-none-eabi-8-2018-q4-major/bin:/opt/renode:${PATH}

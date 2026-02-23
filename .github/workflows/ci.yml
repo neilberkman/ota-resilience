@@ -36,6 +36,10 @@ jobs:
           set -euxo pipefail
           make -C examples/vulnerable_ota
           make -C examples/resilient_ota
+          make -C examples/fault_variants
+          make -C examples/naive_copy
+          make -C examples/nxboot_style
+          python3 examples/nxboot_style/gen_nxboot_images.py --output-dir examples/nxboot_style
 
       - name: Run Robot suites in pinned Renode
         uses: antmicro/renode-test-action@0705567acf04d7b998d7deac1e05d9067d70d901
