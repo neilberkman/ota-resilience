@@ -1,30 +1,19 @@
 #!/usr/bin/env python3
-"""Self-test: validate that the audit tool detects known defects.
+"""Self-test: validate the audit tool against known bootloader profiles.
 
-Runs audit_bootloader.py against each intentional-fault variant and the
-correct resilient bootloader. Asserts:
+Runs audit_bootloader.py against every profile in profiles/ and checks
+that the verdict matches the profile's expect section.
 
-  - Correct bootloader (bootloader_none): 0 bricks, 0 violations
-  - Each defective variant: either bricks or invariant violations detected
+Usage::
 
-This is the meta-test that proves the audit tool actually works. If the
-tool can't distinguish a broken bootloader from a correct one, it's useless
-for finding novel bugs.
-
-Usage:
-    python3 scripts/self_test.py --renode-test /path/to/renode-test
-
-    # Quick smoke (fewer scenarios/fault points):
+    python3 scripts/self_test.py
     python3 scripts/self_test.py --quick
-
-    # Parallel (one audit per variant, each audit uses 1 worker internally):
-    python3 scripts/self_test.py --parallel
+    python3 scripts/self_test.py --profile profiles/naive_bare_copy.yaml
 """
 
 from __future__ import annotations
 
 import argparse
-import concurrent.futures
 import json
 import os
 import subprocess
@@ -33,194 +22,180 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-
-VARIANTS = [
-    # (name, elf_path, should_find_issues)
-    ("none",                    "examples/fault_variants/bootloader_none.elf",                    False),
-    ("no_fallback",             "examples/fault_variants/bootloader_no_fallback.elf",              True),
-    ("no_vector_check",         "examples/fault_variants/bootloader_no_vector_check.elf",          True),
-    ("both_replicas_race",      "examples/fault_variants/bootloader_both_replicas_race.elf",       True),
-    ("crc_off_by_one",          "examples/fault_variants/bootloader_crc_off_by_one.elf",           True),
-    ("seq_naive",               "examples/fault_variants/bootloader_seq_naive.elf",                True),
-    ("no_boot_count",           "examples/fault_variants/bootloader_no_boot_count.elf",            True),
-    ("geometry_last_sector",    "examples/fault_variants/bootloader_geometry_last_sector.elf",     True),
-    ("security_counter_early",  "examples/fault_variants/bootloader_security_counter_early.elf",   True),
-    ("wrong_erased_value",      "examples/fault_variants/bootloader_wrong_erased_value.elf",       True),
-    ("trailer_wrong_offset",    "examples/fault_variants/bootloader_trailer_wrong_offset.elf",     True),
-    # Naive copy-to-address variants (no real bootloader — worst-case baseline)
-    ("naive_bare_copy",         "examples/naive_copy/bootloader_bare_copy.elf",                    True),
-    ("naive_crc_pre_copy",      "examples/naive_copy/bootloader_crc_pre_copy.elf",                 True),
-    ("naive_crc_post_copy",     "examples/naive_copy/bootloader_crc_post_copy.elf",                True),
-    # NuttX nxboot-style three-partition bootloader variants
-    ("nxboot_none",             "examples/nxboot_style/bootloader_nxboot_none.elf",               False),
-    ("nxboot_no_recovery",      "examples/nxboot_style/bootloader_nxboot_no_recovery.elf",         True),
-    ("nxboot_no_revert",        "examples/nxboot_style/bootloader_nxboot_no_revert.elf",           True),
-    ("nxboot_no_crc",           "examples/nxboot_style/bootloader_nxboot_no_crc.elf",              True),
-]
+from profile_loader import load_profile_raw
 
 
-def run_audit_for_variant(
+def discover_profiles(repo_root: Path) -> List[Path]:
+    """Find all .yaml profiles in the profiles/ directory."""
+    profiles_dir = repo_root / "profiles"
+    if not profiles_dir.is_dir():
+        return []
+    profiles = sorted(profiles_dir.glob("*.yaml"))
+    return profiles
+
+
+def run_audit(
     repo_root: Path,
-    name: str,
-    elf_path: str,
-    output_dir: Path,
+    profile_path: Path,
+    output_path: Path,
+    quick: bool,
+    renode_test: str,
     extra_args: List[str],
-) -> Tuple[str, Dict[str, Any]]:
-    """Run audit_bootloader.py for one variant and return (name, summary)."""
-    output_file = output_dir / "{}_audit.json".format(name)
-
+) -> Tuple[int, Dict[str, Any]]:
+    """Run audit_bootloader.py for a single profile and return (exit_code, report)."""
     cmd = [
         sys.executable,
         str(repo_root / "scripts" / "audit_bootloader.py"),
-        "--bootloader-elf", elf_path,
-        "--output", str(output_file),
-    ] + extra_args
+        "--profile", str(profile_path),
+        "--output", str(output_path),
+    ]
+    if quick:
+        cmd.append("--quick")
+    if renode_test:
+        cmd.extend(["--renode-test", renode_test])
+    cmd.extend(extra_args)
 
     proc = subprocess.run(
-        cmd,
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True,
-        check=False,
+        cmd, cwd=str(repo_root),
+        capture_output=True, text=True, check=False,
     )
 
-    if not output_file.exists():
-        return name, {
-            "error": "audit did not produce output",
-            "stdout": proc.stdout[-1000:] if proc.stdout else "",
-            "stderr": proc.stderr[-1000:] if proc.stderr else "",
-            "returncode": proc.returncode,
-        }
+    report: Dict[str, Any] = {}
+    if output_path.exists():
+        try:
+            report = json.loads(output_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
 
-    report = json.loads(output_file.read_text(encoding="utf-8"))
-    return name, report.get("summary", {})
+    return proc.returncode, report
+
+
+def check_verdict(
+    profile_path: Path,
+    profile_raw: Dict[str, Any],
+    report: Dict[str, Any],
+    exit_code: int,
+) -> Tuple[bool, str]:
+    """Check whether the audit result matches the profile's expectations.
+
+    Returns (passed, reason).
+    """
+    expect = profile_raw.get("expect", {})
+    should_find_issues = expect.get("should_find_issues", True)
+    brick_rate_min = float(expect.get("brick_rate_min", 0.0))
+
+    verdict = report.get("verdict", "")
+    summary = report.get("summary", {})
+    sweep = summary.get("runtime_sweep", {})
+    brick_rate = float(sweep.get("brick_rate", 0.0))
+    bricks = int(sweep.get("bricks", 0))
+
+    if should_find_issues:
+        if bricks == 0:
+            return False, "Expected bricks but found none"
+        if brick_rate_min > 0 and brick_rate < brick_rate_min:
+            return False, "Brick rate {:.1%} below minimum {:.1%}".format(
+                brick_rate, brick_rate_min
+            )
+        return True, "Found {} bricks ({:.1%}), as expected".format(bricks, brick_rate)
+    else:
+        if bricks > 0:
+            return False, "Expected no bricks but found {} ({:.1%})".format(
+                bricks, brick_rate
+            )
+        return True, "No bricks found, as expected"
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Self-test: validate audit tool detects known defects")
+    parser = argparse.ArgumentParser(description="Self-test for audit_bootloader.py")
+    parser.add_argument(
+        "--quick", action="store_true",
+        help="Pass --quick to each audit run.",
+    )
+    parser.add_argument(
+        "--profile", action="append", default=[],
+        help="Test specific profile(s) instead of all.",
+    )
     parser.add_argument("--renode-test", default=os.environ.get("RENODE_TEST", "renode-test"))
-    parser.add_argument("--quick", action="store_true", help="Quick mode (fewer scenarios)")
-    parser.add_argument("--parallel", action="store_true", help="Run variant audits in parallel")
-    parser.add_argument("--output-dir", default="", help="Directory for audit reports (default: temp)")
-    parser.add_argument("--seed", type=int, default=42, help="RNG seed for reproducibility")
+    parser.add_argument(
+        "--fault-step", type=int, default=None,
+        help="Pass --fault-step to audit runs.",
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
 
-    # Build extra args for audit_bootloader.py.
-    extra_args = [
-        "--renode-test", args.renode_test,
-        "--seed", str(args.seed),
-    ]
-    if args.quick:
-        extra_args.append("--quick")
-
-    # Output directory.
-    if args.output_dir:
-        output_dir = Path(args.output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
-        temp_ctx = None
+    # Discover profiles.
+    if args.profile:
+        profiles = [Path(p) for p in args.profile]
     else:
-        temp_ctx = tempfile.TemporaryDirectory(prefix="self_test_")
-        output_dir = Path(temp_ctx.name)
+        profiles = discover_profiles(repo_root)
 
-    try:
-        results: Dict[str, Dict[str, Any]] = {}
-        print("Self-test: running audit against {} variants".format(len(VARIANTS)), file=sys.stderr)
+    if not profiles:
+        print("No profiles found.", file=sys.stderr)
+        return 1
 
-        if args.parallel:
-            with concurrent.futures.ProcessPoolExecutor(max_workers=len(VARIANTS)) as executor:
-                futures = {
-                    executor.submit(
-                        run_audit_for_variant, repo_root, name, elf, output_dir, extra_args
-                    ): (name, should_find)
-                    for name, elf, should_find in VARIANTS
-                }
-                for future in concurrent.futures.as_completed(futures):
-                    name, summary = future.result()
-                    results[name] = summary
-                    print("  {} done".format(name), file=sys.stderr)
-        else:
-            for name, elf, should_find in VARIANTS:
-                print("  Running audit for {}...".format(name), file=sys.stderr, end="", flush=True)
-                _, summary = run_audit_for_variant(repo_root, name, elf, output_dir, extra_args)
-                results[name] = summary
-                print(" done", file=sys.stderr)
+    print("Self-test: {} profiles".format(len(profiles)))
+    print("=" * 60)
 
-        # Evaluate results.
-        print("\n" + "=" * 70, file=sys.stderr)
-        print("SELF-TEST RESULTS", file=sys.stderr)
-        print("=" * 70, file=sys.stderr)
+    results: List[Tuple[str, bool, str]] = []
 
-        passes = 0
-        failures = 0
-        errors = 0
+    with tempfile.TemporaryDirectory(prefix="self_test_") as tmp:
+        for profile_path in profiles:
+            name = profile_path.stem
+            output_path = Path(tmp) / "{}_result.json".format(name)
 
-        for name, elf, should_find_issues in VARIANTS:
-            summary = results.get(name, {})
+            print("\n--- {} ---".format(name))
 
-            if "error" in summary:
-                status = "ERROR"
-                detail = summary.get("error", "unknown error")
-                errors += 1
-            else:
-                bricks = summary.get("faulted_bricks", 0)
-                violations = summary.get("faulted_with_violations", 0)
-                has_issues = (bricks > 0) or (violations > 0)
+            # Read raw YAML for expect section.
+            try:
+                profile_raw = load_profile_raw(profile_path)
+            except Exception as exc:
+                print("  SKIP: failed to load profile: {}".format(exc))
+                results.append((name, False, "profile load error: {}".format(exc)))
+                continue
 
-                if should_find_issues:
-                    if has_issues:
-                        status = "PASS"
-                        detail = "detected: {} bricks, {} violations".format(bricks, violations)
-                        passes += 1
-                    else:
-                        status = "FAIL"
-                        detail = "defect NOT detected (0 bricks, 0 violations)"
-                        failures += 1
-                else:
-                    if not has_issues:
-                        status = "PASS"
-                        detail = "correct: 0 bricks, 0 violations"
-                        passes += 1
-                    else:
-                        status = "FAIL"
-                        detail = "false positive: {} bricks, {} violations on correct bootloader".format(
-                            bricks, violations
-                        )
-                        failures += 1
+            extra_args: List[str] = []
+            if args.fault_step is not None:
+                extra_args.extend(["--fault-step", str(args.fault_step)])
 
-            verdict_str = summary.get("verdict", "")
-            print("  [{:>5s}] {:30s} {}".format(status, name, detail), file=sys.stderr)
-            if verdict_str:
-                print("          verdict: {}".format(verdict_str), file=sys.stderr)
+            try:
+                exit_code, report = run_audit(
+                    repo_root=repo_root,
+                    profile_path=profile_path,
+                    output_path=output_path,
+                    quick=args.quick,
+                    renode_test=args.renode_test,
+                    extra_args=extra_args,
+                )
+            except Exception as exc:
+                print("  FAIL: audit crashed: {}".format(exc))
+                results.append((name, False, "audit crash: {}".format(exc)))
+                continue
 
-        print("=" * 70, file=sys.stderr)
-        print("{} passed, {} failed, {} errors".format(passes, failures, errors), file=sys.stderr)
+            if not report:
+                print("  FAIL: no report produced (exit={})".format(exit_code))
+                results.append((name, False, "no report (exit={})".format(exit_code)))
+                continue
 
-        # Write machine-readable summary.
-        summary_file = output_dir / "self_test_summary.json"
-        summary_data = {
-            "total": len(VARIANTS),
-            "passes": passes,
-            "failures": failures,
-            "errors": errors,
-            "variants": {
-                name: {
-                    "elf": elf,
-                    "should_find_issues": should_find,
-                    "summary": results.get(name, {}),
-                }
-                for name, elf, should_find in VARIANTS
-            },
-        }
-        summary_file.write_text(json.dumps(summary_data, indent=2, sort_keys=True), encoding="utf-8")
-        print("\nDetailed reports in: {}".format(output_dir), file=sys.stderr)
+            passed, reason = check_verdict(profile_path, profile_raw, report, exit_code)
+            status = "PASS" if passed else "FAIL"
+            print("  {}: {}".format(status, reason))
+            results.append((name, passed, reason))
 
-        return 0 if (failures == 0 and errors == 0) else 1
+    # Summary.
+    print("\n" + "=" * 60)
+    total = len(results)
+    passed_count = sum(1 for _, p, _ in results if p)
+    failed_count = total - passed_count
 
-    finally:
-        if temp_ctx is not None:
-            temp_ctx.cleanup()
+    for name, passed, reason in results:
+        mark = "PASS" if passed else "FAIL"
+        print("  [{}] {}: {}".format(mark, name, reason))
+
+    print("\n{}/{} passed, {} failed".format(passed_count, total, failed_count))
+
+    return 0 if failed_count == 0 else 1
 
 
 if __name__ == "__main__":

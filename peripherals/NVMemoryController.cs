@@ -1,625 +1,108 @@
-//
-// Copyright 2026 ota-resilience contributors
-//
-// Licensed under the Apache License, Version 2.0.
-//
+// Copyright (c) 2026
+// SPDX-License-Identifier: Apache-2.0
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using Antmicro.Renode.Core;
 using Antmicro.Renode.Core.Structure.Registers;
-using Antmicro.Renode.Logging;
+using Antmicro.Renode.Peripherals;
 using Antmicro.Renode.Peripherals.Bus;
-using Antmicro.Renode.Peripherals.Memory;
 
-namespace Antmicro.Renode.Peripherals
+namespace Antmicro.Renode.Peripherals.Memory
 {
-    public class NVMemoryController : BasicDoubleWordPeripheral, IKnownSize
+    // Persistent non-volatile memory model with configurable write granularity and optional sector erase.
+    // Supports MRAM (word-write, no sector erase), flash (sector erase + word program), FRAM, and other NVM.
+    public class NVMemory : IMemory, IBytePeripheral, IWordPeripheral, IDoubleWordPeripheral, IQuadWordPeripheral, IKnownSize
     {
-        public NVMemoryController(IMachine machine) : base(machine)
+        public NVMemory(long size = DefaultSize, long wordSize = DefaultWordSize)
         {
-            DefineRegisters();
-            Reset();
-        }
-
-        public override void Reset()
-        {
-            base.Reset();
-
-            programEnable = true;
-            eraseEnable = true;
-            forceReady = false;
-
-            faultAddress = 0;
-            faultLength = (ulong)writeGranularity;
-            faultPattern = 0;
-
-            partialWriteFaultCount = 0;
-            regionFaultCount = 0;
-            errorCount = 0;
-            lastFaultInjected = false;
-            lastError = ErrorCode.None;
-        }
-
-        public void InjectPartialWrite(long address)
-        {
-            if(Nvm == null)
+            if(size <= 0 || size > int.MaxValue)
             {
-                SetError(ErrorCode.NotLinked);
-                return;
+                throw new ArgumentException("NVM size must be between 1 and Int32.MaxValue");
             }
 
-            long normalized;
-            if(!TryNormalizeAddress(address, out normalized))
+            this.size = size;
+            WordSize = wordSize;
+            storage = new byte[size];
+
+            // Default: fill with EraseFill so fresh memory looks erased.
+            for(var i = 0L; i < size; i++)
             {
-                return;
+                storage[i] = EraseFill;
             }
-
-            Nvm.InjectPartialWrite(normalized);
-            partialWriteFaultCount++;
-            lastFaultInjected = true;
-        }
-
-        public void EraseSector(long address)
-        {
-            if(Nvm == null)
-            {
-                SetError(ErrorCode.NotLinked);
-                return;
-            }
-
-            long normalized;
-            if(!TryNormalizeAddress(address, out normalized))
-            {
-                return;
-            }
-
-            if(!Nvm.EraseSector(normalized))
-            {
-                SetError(ErrorCode.InvalidConfiguration);
-            }
-        }
-
-        public void InjectPartialErase(long address)
-        {
-            if(Nvm == null)
-            {
-                SetError(ErrorCode.NotLinked);
-                return;
-            }
-
-            long normalized;
-            if(!TryNormalizeAddress(address, out normalized))
-            {
-                return;
-            }
-
-            if(!Nvm.InjectPartialErase(normalized))
-            {
-                SetError(ErrorCode.InvalidConfiguration);
-                return;
-            }
-
-            lastFaultInjected = true;
-        }
-
-        public void InjectFault(long address, long length)
-        {
-            if(Nvm == null)
-            {
-                SetError(ErrorCode.NotLinked);
-                return;
-            }
-
-            if(length <= 0)
-            {
-                SetError(ErrorCode.InvalidLength);
-                return;
-            }
-
-            long normalized;
-            if(!TryNormalizeAddress(address, out normalized))
-            {
-                return;
-            }
-
-            if(normalized + length > GetNvmSize())
-            {
-                SetError(ErrorCode.AddressOutOfRange);
-                return;
-            }
-
-            Nvm.InjectFault(normalized, length, faultPattern);
-            regionFaultCount++;
-            lastFaultInjected = true;
-        }
-
-        public bool WriteInProgress
-        {
-            get
-            {
-                if(Nvm == null)
-                {
-                    return false;
-                }
-
-                return Nvm.WriteInProgress;
-            }
-        }
-
-        public ulong WordWriteCount
-        {
-            get
-            {
-                if(Nvm == null)
-                {
-                    return 0;
-                }
-
-                return Nvm.GetWordWriteCount();
-            }
-        }
-
-        public List<long> GetWriteLog()
-        {
-            return Nvm != null ? Nvm.WriteLog : new List<long>();
-        }
-
-        public void ClearWriteLog()
-        {
-            Nvm?.ClearWriteLog();
-        }
-
-        public LocalNVMemory Nvm
-        {
-            get
-            {
-                return nvm;
-            }
-            set
-            {
-                nvm = value;
-                ApplyNvmConfiguration();
-            }
-        }
-
-        public ulong NvmBaseAddress { get; set; } = 0x10000000UL;
-
-        public ulong NvReadOffset { get; set; } = 0x80000UL;
-
-        public bool FullMode { get; set; }
-
-        public int WriteGranularity
-        {
-            get
-            {
-                return Nvm != null ? Nvm.WordSize : writeGranularity;
-            }
-            set
-            {
-                if(value <= 0 || (value & (value - 1)) != 0)
-                {
-                    throw new ArgumentException("WriteGranularity must be a positive power of two");
-                }
-
-                writeGranularity = value;
-                ApplyNvmConfiguration();
-            }
-        }
-
-        public int SectorSize
-        {
-            get
-            {
-                return Nvm != null ? Nvm.SectorSize : sectorSize;
-            }
-            set
-            {
-                if(value < 0 || (value != 0 && (value & (value - 1)) != 0))
-                {
-                    throw new ArgumentException("SectorSize must be 0 or a positive power of two");
-                }
-
-                sectorSize = value;
-                ApplyNvmConfiguration();
-            }
-        }
-
-        public byte EraseValue
-        {
-            get
-            {
-                return Nvm != null ? Nvm.EraseFill : eraseValue;
-            }
-            set
-            {
-                eraseValue = value;
-                ApplyNvmConfiguration();
-            }
-        }
-
-        public bool EnforceEraseBeforeWrite
-        {
-            get
-            {
-                return Nvm != null ? Nvm.EnforceEraseBeforeWrite : enforceEraseBeforeWrite;
-            }
-            set
-            {
-                enforceEraseBeforeWrite = value;
-                ApplyNvmConfiguration();
-            }
-        }
-
-        public long Size => 0x100;
-
-        private void DefineRegisters()
-        {
-            Registers.Status.Define(this)
-                .WithFlag(0, FieldMode.Read, valueProviderCallback: _ => forceReady || !WriteInProgress, name: "READY")
-                .WithFlag(1, FieldMode.Read, valueProviderCallback: _ => WriteInProgress, name: "WRITE_IN_PROGRESS")
-                .WithFlag(2, FieldMode.Read, valueProviderCallback: _ => lastFaultInjected, name: "LAST_FAULT")
-                .WithFlag(3, FieldMode.Read, valueProviderCallback: _ => programEnable, name: "PROGRAM_ENABLE")
-                .WithFlag(4, FieldMode.Read, valueProviderCallback: _ => eraseEnable, name: "ERASE_ENABLE")
-                .WithFlag(5, FieldMode.Read, valueProviderCallback: _ => FullMode, name: "FULL_MODE")
-                .WithFlag(6, FieldMode.Read, valueProviderCallback: _ => Nvm != null, name: "NVM_LINKED")
-                .WithReservedBits(7, 9)
-                .WithValueField(16, 16, FieldMode.Read, valueProviderCallback: _ => (uint)lastError, name: "LAST_ERROR");
-
-            Registers.Configuration.Define(this)
-                .WithFlag(0, name: "FULL_MODE",
-                    writeCallback: (_, value) => FullMode = value)
-                .WithFlag(1, FieldMode.Read | FieldMode.Write, name: "ENFORCE_WORD_WRITES",
-                    valueProviderCallback: _ => Nvm != null && Nvm.EnforceWordWriteSemantics,
-                    writeCallback: (_, value) =>
-                    {
-                        if(Nvm != null)
-                        {
-                            Nvm.EnforceWordWriteSemantics = value;
-                        }
-                    })
-                .WithReservedBits(2, 30);
-
-            Registers.NvmBaseAddress.Define(this)
-                .WithValueField(0, 32, name: "NVM_BASE_ADDRESS",
-                    writeCallback: (_, value) => NvmBaseAddress = value);
-
-            Registers.NvReadOffset.Define(this)
-                .WithValueField(0, 32, name: "NV_READ_OFFSET",
-                    writeCallback: (_, value) => NvReadOffset = value);
-
-            Registers.Control.Define(this)
-                .WithFlag(0, name: "PROGRAM_ENABLE",
-                    writeCallback: (_, value) => programEnable = value)
-                .WithFlag(1, name: "ERASE_ENABLE",
-                    writeCallback: (_, value) => eraseEnable = value)
-                .WithFlag(2, name: "FORCE_READY",
-                    writeCallback: (_, value) => forceReady = value)
-                .WithFlag(3, FieldMode.Write, name: "CLEAR_FAULT_LATCH",
-                    writeCallback: (_, value) =>
-                    {
-                        if(value)
-                        {
-                            lastFaultInjected = false;
-                        }
-                    })
-                .WithFlag(4, FieldMode.Write, name: "CLEAR_ERRORS",
-                    writeCallback: (_, value) =>
-                    {
-                        if(value)
-                        {
-                            lastError = ErrorCode.None;
-                            errorCount = 0;
-                        }
-                    })
-                .WithFlag(5, FieldMode.Write, name: "RESET_COUNTS",
-                    writeCallback: (_, value) =>
-                    {
-                        if(value)
-                        {
-                            partialWriteFaultCount = 0;
-                            regionFaultCount = 0;
-                        }
-                    })
-                .WithReservedBits(6, 26);
-
-            Registers.FaultAddress.Define(this)
-                .WithValueField(0, 32, name: "FAULT_ADDRESS",
-                    writeCallback: (_, value) => faultAddress = value);
-
-            Registers.FaultLength.Define(this)
-                .WithValueField(0, 32, name: "FAULT_LENGTH",
-                    writeCallback: (_, value) => faultLength = value);
-
-            Registers.FaultPattern.Define(this)
-                .WithValueField(0, 8, name: "FAULT_PATTERN",
-                    writeCallback: (_, value) => faultPattern = (byte)value)
-                .WithReservedBits(8, 24);
-
-            Registers.Command.Define(this)
-                .WithFlag(0, FieldMode.Write, name: "INJECT_PARTIAL_WRITE",
-                    writeCallback: (_, value) =>
-                    {
-                        if(value)
-                        {
-                            InjectPartialWrite((long)faultAddress);
-                        }
-                    })
-                .WithFlag(1, FieldMode.Write, name: "INJECT_REGION_FAULT",
-                    writeCallback: (_, value) =>
-                    {
-                        if(value)
-                        {
-                            InjectFault((long)faultAddress, (long)faultLength);
-                        }
-                    })
-                .WithReservedBits(2, 30);
-
-            Registers.WordWriteCountLow.Define(this)
-                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => (uint)(WordWriteCount & 0xFFFFFFFFUL), name: "WORD_WRITE_COUNT_LO");
-
-            Registers.WordWriteCountHigh.Define(this)
-                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => (uint)((WordWriteCount >> 32) & 0xFFFFFFFFUL), name: "WORD_WRITE_COUNT_HI");
-
-            Registers.PartialWriteFaultCount.Define(this)
-                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => partialWriteFaultCount, name: "PARTIAL_FAULT_COUNT");
-
-            Registers.RegionFaultCount.Define(this)
-                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => regionFaultCount, name: "REGION_FAULT_COUNT");
-
-            Registers.ErrorCount.Define(this)
-                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => errorCount, name: "ERROR_COUNT");
-        }
-
-        private long GetNvmSize()
-        {
-            if(Nvm == null)
-            {
-                return 0;
-            }
-
-            return (long)Nvm.Size;
-        }
-
-        private bool TryNormalizeAddress(long address, out long normalized)
-        {
-            normalized = -1;
-
-            var size = GetNvmSize();
-            if(size <= 0)
-            {
-                SetError(ErrorCode.NotLinked);
-                return false;
-            }
-
-            if(address >= 0 && address < size)
-            {
-                normalized = address;
-                return true;
-            }
-
-            var directBase = (long)NvmBaseAddress;
-            var directEnd = directBase + size;
-            if(address >= directBase && address < directEnd)
-            {
-                normalized = address - directBase;
-                return true;
-            }
-
-            var nvReadBase = (long)(NvmBaseAddress + NvReadOffset);
-            var nvReadEnd = nvReadBase + size;
-            if(address >= nvReadBase && address < nvReadEnd)
-            {
-                normalized = address - nvReadBase;
-                return true;
-            }
-
-            if(FullMode)
-            {
-                var mask = size - 1;
-                if((size & mask) == 0)
-                {
-                    normalized = address & mask;
-                    return true;
-                }
-            }
-
-            SetError(ErrorCode.AddressOutOfRange);
-            this.Log(LogLevel.Warning, "Address normalization failed for 0x{0:X}; valid bases: 0x{1:X} and 0x{2:X}",
-                address, directBase, nvReadBase);
-            return false;
-        }
-
-        private void SetError(ErrorCode error)
-        {
-            lastError = error;
-            errorCount++;
-            this.Log(LogLevel.Warning, "NVM controller error: {0}", error);
-        }
-
-        private void ApplyNvmConfiguration()
-        {
-            if(Nvm == null)
-            {
-                return;
-            }
-
-            Nvm.WordSize = writeGranularity;
-            Nvm.SectorSize = sectorSize;
-            Nvm.EraseFill = eraseValue;
-            Nvm.EnforceEraseBeforeWrite = enforceEraseBeforeWrite;
-        }
-
-        private bool programEnable;
-        private bool eraseEnable;
-        private bool forceReady;
-        private bool lastFaultInjected;
-
-        private uint partialWriteFaultCount;
-        private uint regionFaultCount;
-        private uint errorCount;
-
-        private LocalNVMemory nvm;
-        private int writeGranularity = 8;
-        private int sectorSize;
-        private byte eraseValue = 0xFF;
-        private bool enforceEraseBeforeWrite;
-
-        private ulong faultAddress;
-        private ulong faultLength;
-        private byte faultPattern;
-
-        private ErrorCode lastError;
-
-        private enum Registers : long
-        {
-            Status = 0x00,
-            Configuration = 0x04,
-            NvmBaseAddress = 0x08,
-            NvReadOffset = 0x0C,
-            Control = 0x10,
-            FaultAddress = 0x14,
-            FaultLength = 0x18,
-            FaultPattern = 0x1C,
-            Command = 0x20,
-            WordWriteCountLow = 0x24,
-            WordWriteCountHigh = 0x28,
-            PartialWriteFaultCount = 0x2C,
-            RegionFaultCount = 0x30,
-            ErrorCount = 0x34,
-        }
-
-        private enum ErrorCode : ushort
-        {
-            None = 0,
-            NotLinked = 1,
-            AddressOutOfRange = 2,
-            InvalidLength = 3,
-            InvalidConfiguration = 4,
-        }
-    }
-
-    public class NVReadOnlyAlias : IBytePeripheral, IWordPeripheral, IDoubleWordPeripheral, IQuadWordPeripheral, IMultibyteWritePeripheral, IKnownSize
-    {
-        public NVReadOnlyAlias(IMachine machine)
-        {
-            systemBus = machine.GetSystemBus(this);
-        }
-
-        public byte ReadByte(long offset)
-        {
-            return systemBus.ReadByte(Translate(offset));
-        }
-
-        public void WriteByte(long offset, byte value)
-        {
-            // Read-only alias by design: writes are intentionally dropped.
-        }
-
-        public ushort ReadWord(long offset)
-        {
-            return systemBus.ReadWord(Translate(offset));
-        }
-
-        public void WriteWord(long offset, ushort value)
-        {
-            // Read-only alias by design: writes are intentionally dropped.
-        }
-
-        public uint ReadDoubleWord(long offset)
-        {
-            return systemBus.ReadDoubleWord(Translate(offset));
-        }
-
-        public void WriteDoubleWord(long offset, uint value)
-        {
-            // Read-only alias by design: writes are intentionally dropped.
-        }
-
-        public ulong ReadQuadWord(long offset)
-        {
-            return systemBus.ReadQuadWord(Translate(offset));
-        }
-
-        public void WriteQuadWord(long offset, ulong value)
-        {
-            // Read-only alias by design: writes are intentionally dropped.
-        }
-
-        public byte[] ReadBytes(long offset, int count, IPeripheral context = null)
-        {
-            return systemBus.ReadBytes(Translate(offset), count, context: context);
-        }
-
-        public void WriteBytes(long offset, byte[] array, int startingIndex, int count, IPeripheral context = null)
-        {
-            // Read-only alias by design: writes are intentionally dropped.
         }
 
         public void Reset()
         {
-        }
-
-        public ulong BaseAddress { get; set; } = 0x10000000UL;
-
-        public long Size => 0x80000;
-
-        private ulong Translate(long offset)
-        {
-            return BaseAddress + checked((ulong)offset);
-        }
-
-        private readonly IBusController systemBus;
-    }
-}
-
-namespace Antmicro.Renode.Peripherals.Memory
-{
-    // Local NVM model for Renode builds that do not yet include NVMemory upstream.
-    // API and behavior are aligned with the expected upstream interface.
-    public class LocalNVMemory : ArrayMemory, Antmicro.Renode.Peripherals.IPeripheral
-    {
-        public LocalNVMemory(ulong size = DefaultSize, int wordSize = DefaultWordSize) : base(size)
-        {
-            if(wordSize <= 0 || (wordSize & (wordSize - 1)) != 0)
-            {
-                throw new ArgumentException("WordSize must be a positive power of two");
-            }
-
-            this.wordSize = wordSize;
-            ResetVolatileState();
-        }
-
-        void Antmicro.Renode.Peripherals.IPeripheral.Reset()
-        {
-            ResetVolatileState();
-        }
-
-        private void ResetVolatileState()
-        {
-            // Non-volatile behavior: preserve storage and write counts across machine reset.
+            // Intentionally do NOT clear storage: this models non-volatile memory.
             WriteInProgress = false;
             LastFaultInjected = false;
         }
 
-        public override void WriteByte(long offset, byte value)
+        public byte ReadByte(long offset)
         {
-            WriteBytesWithWordSemantics(offset, new[] { value });
+            if(AliasTarget != null)
+            {
+                return AliasTarget.ReadByte(offset);
+            }
+            ValidateRange(offset, 1);
+            return storage[offset];
         }
 
-        public override void WriteWord(long offset, ushort value)
+        public ushort ReadWord(long offset)
         {
-            WriteBytesWithWordSemantics(offset, new[]
+            if(AliasTarget != null)
+            {
+                return AliasTarget.ReadWord(offset);
+            }
+            ValidateRange(offset, 2);
+            return (ushort)(ReadByte(offset)
+                | (ReadByte(offset + 1) << 8));
+        }
+
+        public uint ReadDoubleWord(long offset)
+        {
+            if(AliasTarget != null)
+            {
+                return AliasTarget.ReadDoubleWord(offset);
+            }
+            ValidateRange(offset, 4);
+            return (uint)(ReadByte(offset)
+                | (ReadByte(offset + 1) << 8)
+                | (ReadByte(offset + 2) << 16)
+                | (ReadByte(offset + 3) << 24));
+        }
+
+        public ulong ReadQuadWord(long offset)
+        {
+            if(AliasTarget != null)
+            {
+                return AliasTarget.ReadQuadWord(offset);
+            }
+            ValidateRange(offset, 8);
+            return ReadDoubleWord(offset)
+                | ((ulong)ReadDoubleWord(offset + 4) << 32);
+        }
+
+        public void WriteByte(long offset, byte value)
+        {
+            WriteBytesInternal(offset, new[] { value });
+        }
+
+        public void WriteWord(long offset, ushort value)
+        {
+            WriteBytesInternal(offset, new[]
             {
                 (byte)(value & 0xFF),
                 (byte)((value >> 8) & 0xFF),
             });
         }
 
-        public override void WriteDoubleWord(long offset, uint value)
+        public void WriteDoubleWord(long offset, uint value)
         {
-            WriteBytesWithWordSemantics(offset, new[]
+            WriteBytesInternal(offset, new[]
             {
                 (byte)(value & 0xFF),
                 (byte)((value >> 8) & 0xFF),
@@ -628,9 +111,9 @@ namespace Antmicro.Renode.Peripherals.Memory
             });
         }
 
-        public override void WriteQuadWord(long offset, ulong value)
+        public void WriteQuadWord(long offset, ulong value)
         {
-            WriteBytesWithWordSemantics(offset, new[]
+            WriteBytesInternal(offset, new[]
             {
                 (byte)(value & 0xFF),
                 (byte)((value >> 8) & 0xFF),
@@ -643,136 +126,173 @@ namespace Antmicro.Renode.Peripherals.Memory
             });
         }
 
-        public void InjectPartialWrite(long address)
+        public byte[] ReadBytes(long offset, int count, IPeripheral context)
         {
-            var aligned = AlignDown(address);
-            if(aligned < 0 || aligned + wordSize > Size)
+            if(AliasTarget != null)
             {
-                this.Log(LogLevel.Error, "InjectPartialWrite at 0x{0:X} is outside memory bounds", address);
-                return;
+                return AliasTarget.ReadBytes(offset, count, context);
             }
 
-            var half = wordSize / 2;
-            if(EnforceEraseBeforeWrite)
+            ValidateRange(offset, count);
+            var result = new byte[count];
+            Array.Copy(storage, offset, result, 0, count);
+            return result;
+        }
+
+        public void WriteBytes(long offset, byte[] array, int startingIndex, int count, IPeripheral context)
+        {
+            if(array == null)
             {
-                for(var i = 0; i < half; i++)
-                {
-                    // Flash-like partial program: clear bits in the first half,
-                    // leave the remainder at pre-write state.
-                    array[aligned + i] = (byte)(array[aligned + i] & 0x00);
-                }
-            }
-            else
-            {
-                for(var i = half; i < wordSize; i++)
-                {
-                    array[aligned + i] = EraseFill;
-                }
+                throw new ArgumentNullException(nameof(array));
             }
 
-            LastFaultInjected = true;
-            LastFaultPattern = EnforceEraseBeforeWrite ? (byte)0x00 : EraseFill;
+            if(startingIndex < 0 || count < 0 || startingIndex + count > array.Length)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid write window start={startingIndex}, count={count}, arrayLength={array.Length}");
+            }
+
+            var data = new byte[count];
+            Array.Copy(array, startingIndex, data, 0, count);
+            WriteBytesInternal(offset, data);
         }
 
         public void InjectFault(long address, long length, byte pattern = 0x00)
         {
+            if(AliasTarget != null)
+            {
+                AliasTarget.InjectFault(address, length, pattern);
+                return;
+            }
+
             if(length <= 0)
             {
                 return;
             }
 
-            if(address < 0 || address + length > Size)
-            {
-                this.Log(LogLevel.Error, "InjectFault at 0x{0:X} length {1} is outside memory bounds", address, length);
-                return;
-            }
-
+            ValidateRange(address, length);
             for(var i = 0L; i < length; i++)
             {
-                array[address + i] = pattern;
+                storage[address + i] = pattern;
             }
             LastFaultInjected = true;
             LastFaultPattern = pattern;
         }
 
-        public bool EraseSector(long address)
+        public void InjectPartialWrite(long address)
         {
-            long sectorStart;
-            if(!TryGetSectorStart(address, out sectorStart))
+            if(AliasTarget != null)
             {
-                return false;
+                AliasTarget.InjectPartialWrite(address);
+                return;
             }
 
-            for(var i = 0; i < SectorSize; i++)
-            {
-                array[sectorStart + i] = EraseFill;
-            }
+            var aligned = AlignDown(address, WordSize);
+            ValidateRange(aligned, WordSize);
 
-            TotalSectorErases++;
-            return true;
-        }
-
-        public bool InjectPartialErase(long address)
-        {
-            long sectorStart;
-            if(!TryGetSectorStart(address, out sectorStart))
+            var half = WordSize / 2;
+            for(var i = half; i < WordSize; i++)
             {
-                return false;
-            }
-
-            var partialBytes = Math.Max(1, SectorSize / 2);
-            for(var i = 0; i < partialBytes; i++)
-            {
-                array[sectorStart + i] = EraseFill;
+                storage[aligned + i] = 0x00;
             }
 
             LastFaultInjected = true;
-            LastFaultPattern = EraseFill;
-            TotalSectorErases++;
-            return true;
+            LastFaultPattern = 0x00;
         }
 
         public ulong GetWordWriteCount()
         {
+            if(AliasTarget != null)
+            {
+                return AliasTarget.GetWordWriteCount();
+            }
             return TotalWordWrites;
         }
 
-        public int WordSize
+        public bool IsWriteInProgress()
+        {
+            if(AliasTarget != null)
+            {
+                return AliasTarget.IsWriteInProgress();
+            }
+            return WriteInProgress;
+        }
+
+        public long Size
+        {
+            get { return size; }
+            set
+            {
+                if(AliasTarget != null)
+                {
+                    // Aliases inherit target geometry.
+                    return;
+                }
+
+                if(value <= 0)
+                {
+                    throw new ArgumentException("NVM size must be > 0");
+                }
+
+                if(value > int.MaxValue)
+                {
+                    throw new ArgumentException("NVM size exceeds max supported backing array size");
+                }
+
+                if(value == size)
+                {
+                    return;
+                }
+
+                var newStorage = new byte[value];
+                var bytesToCopy = Math.Min(size, value);
+                Array.Copy(storage, newStorage, bytesToCopy);
+                storage = newStorage;
+                size = value;
+            }
+        }
+
+        public long WordSize
         {
             get { return wordSize; }
             set
             {
-                if(value <= 0 || (value & (value - 1)) != 0)
+                if(value <= 0)
                 {
-                    throw new ArgumentException("WordSize must be a positive power of two");
+                    throw new ArgumentException("WordSize must be > 0");
                 }
+
+                // Keep word boundaries power-of-two for efficient alignment logic.
+                if((value & (value - 1)) != 0)
+                {
+                    throw new ArgumentException("WordSize must be a power-of-two");
+                }
+
                 wordSize = value;
             }
         }
 
+        public byte EraseFill { get; set; }
+
         public bool EnforceWordWriteSemantics { get; set; } = true;
 
-        public byte EraseFill { get; set; } = 0xFF;
+        public bool ReadOnly { get; set; }
 
-        public int SectorSize { get; set; }
+        // Optional alias to expose NV_READ_OFFSET style mirrored view.
+        public NVMemory AliasTarget { get; set; }
 
-        public bool EnforceEraseBeforeWrite { get; set; }
+        public ulong FaultAtWordWrite { get; set; } = ulong.MaxValue;
+
+        public uint WriteLatencyMicros { get; set; }
 
         public bool WriteInProgress { get; private set; }
 
         public bool LastFaultInjected { get; private set; }
 
-        public bool LastWriteRejected { get; private set; }
+        public byte LastFaultPattern { get; private set; }
 
         public ulong TotalWordWrites { get; private set; }
 
-        public ulong TotalSectorErases { get; private set; }
-
-        public byte LastFaultPattern { get; private set; }
-
         public long LastWriteAddress { get; private set; }
-
-        public ulong FaultAtWordWrite { get; set; } = ulong.MaxValue;
 
         public List<long> WriteLog { get { return writeLog; } }
 
@@ -781,112 +301,105 @@ namespace Antmicro.Renode.Peripherals.Memory
             writeLog.Clear();
         }
 
-        private void WriteBytesWithWordSemantics(long offset, byte[] data)
+        public void ResetWriteLog()
         {
+            writeLog.Clear();
+        }
+
+        private void WriteBytesInternal(long offset, byte[] data)
+        {
+            if(AliasTarget != null)
+            {
+                if(ReadOnly)
+                {
+                    return;
+                }
+
+                AliasTarget.WriteBytesInternal(offset, data);
+                return;
+            }
+
+            if(ReadOnly)
+            {
+                return;
+            }
+
             if(data.Length == 0)
             {
                 return;
             }
 
+            ValidateRange(offset, data.Length);
             LastWriteAddress = offset;
 
             if(!EnforceWordWriteSemantics)
             {
                 for(var i = 0; i < data.Length; i++)
                 {
-                    base.WriteByte(offset + i, data[i]);
+                    storage[offset + i] = data[i];
                 }
                 return;
             }
 
-            var firstWordStart = AlignDown(offset);
-            var lastWordStart = AlignDown(offset + data.Length - 1);
+            var firstWordStart = AlignDown(offset, WordSize);
+            var lastWordStart = AlignDown(offset + data.Length - 1, WordSize);
 
             WriteInProgress = true;
             LastFaultInjected = false;
-            LastWriteRejected = false;
 
             try
             {
-                for(var wordStart = firstWordStart; wordStart <= lastWordStart; wordStart += wordSize)
+                for(var wordStart = firstWordStart; wordStart <= lastWordStart; wordStart += WordSize)
                 {
-                    var currentWord = new byte[wordSize];
-                    var mergedWord = new byte[wordSize];
-                    for(var i = 0; i < wordSize; i++)
+                    var mergedWord = new byte[WordSize];
+                    for(var i = 0L; i < WordSize; i++)
                     {
-                        currentWord[i] = array[wordStart + i];
-                        mergedWord[i] = currentWord[i];
+                        mergedWord[i] = storage[wordStart + i];
                     }
 
                     for(var i = 0; i < data.Length; i++)
                     {
                         var absoluteAddress = offset + i;
-                        if(absoluteAddress < wordStart || absoluteAddress >= wordStart + wordSize)
+                        if(absoluteAddress < wordStart || absoluteAddress >= wordStart + WordSize)
                         {
                             continue;
                         }
+
                         mergedWord[absoluteAddress - wordStart] = data[i];
                     }
 
-                    if(EnforceEraseBeforeWrite && !CanProgramWithoutErase(currentWord, mergedWord))
-                    {
-                        LastWriteRejected = true;
-                        this.Log(LogLevel.Warning, "Rejected write at 0x{0:X}: attempted to set programmed bits without erase", wordStart);
-                        continue;
-                    }
+                    EraseWord(wordStart);
 
                     var currentWriteIndex = TotalWordWrites + 1;
                     if(currentWriteIndex == FaultAtWordWrite)
                     {
-                        var partialBytes = wordSize / 2;
-                        for(var i = 0; i < partialBytes; i++)
+                        var partialBytes = WordSize / 2;
+                        for(var i = 0L; i < partialBytes; i++)
                         {
-                            if(EnforceEraseBeforeWrite)
-                            {
-                                array[wordStart + i] = (byte)(currentWord[i] & mergedWord[i]);
-                            }
-                            else
-                            {
-                                array[wordStart + i] = mergedWord[i];
-                            }
+                            storage[wordStart + i] = mergedWord[i];
                         }
 
-                        if(!EnforceEraseBeforeWrite)
+                        for(var i = partialBytes; i < WordSize; i++)
                         {
-                            for(var i = partialBytes; i < wordSize; i++)
-                            {
-                                array[wordStart + i] = EraseFill;
-                            }
+                            storage[wordStart + i] = 0x00;
                         }
 
                         LastFaultInjected = true;
-                        LastFaultPattern = EraseFill;
+                        LastFaultPattern = 0x00;
                         TotalWordWrites++;
                         writeLog.Add(wordStart);
                         break;
                     }
 
-                    if(EnforceEraseBeforeWrite)
-                    {
-                        for(var i = 0; i < wordSize; i++)
-                        {
-                            array[wordStart + i] = (byte)(currentWord[i] & mergedWord[i]);
-                        }
-                    }
-                    else
-                    {
-                        for(var i = 0; i < wordSize; i++)
-                        {
-                            array[wordStart + i] = EraseFill;
-                        }
-
-                        for(var i = 0; i < wordSize; i++)
-                        {
-                            array[wordStart + i] = mergedWord[i];
-                        }
-                    }
+                    ProgramWord(wordStart, mergedWord);
                     TotalWordWrites++;
                     writeLog.Add(wordStart);
+
+                    if(WriteLatencyMicros > 0)
+                    {
+                        var milliseconds = (int)Math.Max(1, WriteLatencyMicros / 1000);
+                        Thread.Sleep(milliseconds);
+                    }
                 }
             }
             finally
@@ -895,54 +408,290 @@ namespace Antmicro.Renode.Peripherals.Memory
             }
         }
 
-        private long AlignDown(long value)
+        private void EraseWord(long wordStart)
         {
-            return value & ~((long)wordSize - 1);
+            for(var i = 0L; i < WordSize; i++)
+            {
+                storage[wordStart + i] = EraseFill;
+            }
         }
 
-        private bool TryGetSectorStart(long address, out long sectorStart)
+        private void ProgramWord(long wordStart, byte[] mergedWord)
         {
-            sectorStart = -1;
-
-            if(SectorSize <= 0 || (SectorSize & (SectorSize - 1)) != 0)
+            for(var i = 0L; i < WordSize; i++)
             {
-                this.Log(LogLevel.Error, "Sector operation requested but SectorSize is invalid ({0})", SectorSize);
-                return false;
+                storage[wordStart + i] = mergedWord[i];
             }
-
-            if(address < 0 || address >= Size)
-            {
-                this.Log(LogLevel.Error, "Sector operation at 0x{0:X} is outside memory bounds", address);
-                return false;
-            }
-
-            sectorStart = address - (address % SectorSize);
-            if(sectorStart < 0 || sectorStart + SectorSize > Size)
-            {
-                this.Log(LogLevel.Error, "Sector operation at 0x{0:X} exceeds memory bounds", address);
-                return false;
-            }
-
-            return true;
         }
 
-        private static bool CanProgramWithoutErase(byte[] currentWord, byte[] targetWord)
+        private long AlignDown(long value, long alignment)
         {
-            for(var i = 0; i < currentWord.Length; i++)
-            {
-                if((targetWord[i] | currentWord[i]) != currentWord[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return value & ~(alignment - 1);
         }
 
-        private int wordSize;
+        private void ValidateRange(long offset, long length)
+        {
+            if(offset < 0 || length < 0 || (offset + length) > size)
+            {
+                throw new ArgumentOutOfRangeException($"NVM access out of range: offset={offset}, length={length}, size={size}");
+            }
+        }
+
+        private long size;
+        private long wordSize;
+        private byte[] storage;
         private readonly List<long> writeLog = new List<long>();
 
-        private const ulong DefaultSize = 0x80000;
-        private const int DefaultWordSize = 8;
+        private const long DefaultSize = 0x80000;
+        private const long DefaultWordSize = 8;
+    }
+}
+
+namespace Antmicro.Renode.Peripherals
+{
+    // Control/register block companion for NVMemory.
+    public class NVMemoryController : BasicDoubleWordPeripheral, IKnownSize
+    {
+        public NVMemoryController(Machine machine) : base(machine)
+        {
+            DefineRegisters();
+            Reset();
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+
+            efuseStrobeLen.Value = 0;
+            efuseCtrl.Value = 0;
+            efuseOp.Value = 0;
+            nvmCfg.Value = 0;
+            nvmOverride.Value = 0;
+            nvmCtrlWriteableBits = 0;
+            nvmUe.Value = 0;
+
+            for(var i = 0; i < eccCounters.Length; i++)
+            {
+                eccCounters[i] = 0;
+            }
+
+            illegalOperation = false;
+
+            // Intentionally do not touch Nvm.Reset() here; memory persistence is critical.
+        }
+
+        public void InjectFault(long address, long length)
+        {
+            if(Nvm == null)
+            {
+                illegalOperation = true;
+                return;
+            }
+
+            try
+            {
+                Nvm.InjectFault(NormalizeAddress(address), length);
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                illegalOperation = true;
+            }
+        }
+
+        public void InjectPartialWrite(long address)
+        {
+            if(Nvm == null)
+            {
+                illegalOperation = true;
+                return;
+            }
+
+            try
+            {
+                Nvm.InjectPartialWrite(NormalizeAddress(address));
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                illegalOperation = true;
+            }
+        }
+
+        public bool WriteInProgress
+        {
+            get { return Nvm != null && Nvm.IsWriteInProgress(); }
+        }
+
+        public ulong WordWriteCount
+        {
+            get { return Nvm == null ? 0UL : Nvm.GetWordWriteCount(); }
+        }
+
+        public List<long> GetWriteLog()
+        {
+            return Nvm != null ? Nvm.WriteLog : new List<long>();
+        }
+
+        public void ClearWriteLog()
+        {
+            Nvm?.ClearWriteLog();
+        }
+
+        public long Size
+        {
+            get { return ControllerWindowSize; }
+        }
+
+        public bool FullMode { get; set; } = true;
+
+        public Antmicro.Renode.Peripherals.Memory.NVMemory Nvm { get; set; }
+
+        public long NvmBaseAddress { get; set; } = 0x10000000;
+
+        public long NvReadOffset { get; set; } = 0x80000;
+
+        private void DefineRegisters()
+        {
+            Registers.MiscStatus.Define(this)
+                .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => ComposeMiscStatus());
+
+            Registers.EfuseStrobeLen.Define(this)
+                .WithValueField(0, 32, out efuseStrobeLen, FieldMode.Read | FieldMode.Write);
+
+            Registers.EfuseCtrl.Define(this)
+                .WithValueField(0, 32, out efuseCtrl, FieldMode.Read | FieldMode.Write);
+
+            Registers.EfuseOp.Define(this)
+                .WithValueField(0, 32, out efuseOp, FieldMode.Read | FieldMode.Write);
+
+            Registers.NvmCfg.Define(this)
+                .WithValueField(0, 32, out nvmCfg, FieldMode.Read | FieldMode.Write);
+
+            Registers.NvmOverride.Define(this)
+                .WithValueField(0, 32, out nvmOverride, FieldMode.Read | FieldMode.Write);
+
+            Registers.NvmCtrl.Define(this)
+                .WithValueField(0, 32,
+                    valueProviderCallback: _ => ComposeNvmCtrl(),
+                    writeCallback: (_, value) =>
+                    {
+                        // Writable bits: ECC_BYPASS[0], ERASE_EN[2:1], PROG_EN[3].
+                        nvmCtrlWriteableBits = (uint)(value & 0xF);
+                    });
+
+            Registers.NvmEc0.Define(this)
+                .WithValueField(0, 32, valueProviderCallback: _ => eccCounters[0], writeCallback: (_, value) => eccCounters[0] = (uint)value);
+            Registers.NvmEc1.Define(this)
+                .WithValueField(0, 32, valueProviderCallback: _ => eccCounters[1], writeCallback: (_, value) => eccCounters[1] = (uint)value);
+            Registers.NvmEc2.Define(this)
+                .WithValueField(0, 32, valueProviderCallback: _ => eccCounters[2], writeCallback: (_, value) => eccCounters[2] = (uint)value);
+            Registers.NvmEc3.Define(this)
+                .WithValueField(0, 32, valueProviderCallback: _ => eccCounters[3], writeCallback: (_, value) => eccCounters[3] = (uint)value);
+
+            Registers.NvmUe.Define(this)
+                .WithValueField(0, 32, out nvmUe, FieldMode.Read | FieldMode.Write);
+
+            Registers.NvmEcUeRst.Define(this)
+                .WithValueField(0, 32, FieldMode.Write, writeCallback: (_, value) =>
+                {
+                    if(value == 0)
+                    {
+                        return;
+                    }
+
+                    for(var i = 0; i < eccCounters.Length; i++)
+                    {
+                        eccCounters[i] = 0;
+                    }
+                    nvmUe.Value = 0;
+                });
+        }
+
+        private uint ComposeMiscStatus()
+        {
+            // Keep ROM-useful flags set while emulating operational bits 8..11.
+            var status = 0U;
+            status |= (1U << 2); // TRIM_FUSED
+            status |= (1U << 3); // NVM_PROGRAMMED
+
+            if(Nvm != null && Nvm.IsWriteInProgress())
+            {
+                status |= (1U << 9);  // PROG_ACTIVE
+                status |= (1U << 10); // ERASE_ACTIVE
+            }
+
+            if(illegalOperation)
+            {
+                status |= (1U << 11); // ILLEGAL_OPERATION
+            }
+
+            return status;
+        }
+
+        private uint ComposeNvmCtrl()
+        {
+            var ctrl = nvmCtrlWriteableBits;
+
+            // Model immediate readiness in the simplified timing model.
+            ctrl |= (1U << 8); // RDY_FOR_ERASE
+            ctrl |= (1U << 9); // RDY_FOR_PROG
+
+            return ctrl;
+        }
+
+        private long NormalizeAddress(long address)
+        {
+            if(Nvm == null)
+            {
+                return address;
+            }
+
+            if(address >= 0 && address < Nvm.Size)
+            {
+                return address;
+            }
+
+            if(address >= NvmBaseAddress && address < NvmBaseAddress + Nvm.Size)
+            {
+                return address - NvmBaseAddress;
+            }
+
+            var nvReadBase = NvmBaseAddress + NvReadOffset;
+            if(address >= nvReadBase && address < nvReadBase + Nvm.Size)
+            {
+                return address - nvReadBase;
+            }
+
+            throw new ArgumentOutOfRangeException($"Address 0x{address:X} is outside modeled NVM windows");
+        }
+
+        private IValueRegisterField efuseStrobeLen;
+        private IValueRegisterField efuseCtrl;
+        private IValueRegisterField efuseOp;
+        private IValueRegisterField nvmCfg;
+        private IValueRegisterField nvmOverride;
+        private IValueRegisterField nvmUe;
+
+        private uint nvmCtrlWriteableBits;
+        private readonly uint[] eccCounters = new uint[4];
+        private bool illegalOperation;
+
+        private const long ControllerWindowSize = 0x58;
+
+        private enum Registers : long
+        {
+            MiscStatus = 0x00,
+            EfuseStrobeLen = 0x04,
+            EfuseCtrl = 0x08,
+            EfuseOp = 0x0C,
+            NvmCfg = 0x20,
+            NvmOverride = 0x24,
+            NvmCtrl = 0x30,
+            NvmEc0 = 0x40,
+            NvmEc1 = 0x44,
+            NvmEc2 = 0x48,
+            NvmEc3 = 0x4C,
+            NvmUe = 0x50,
+            NvmEcUeRst = 0x54,
+        }
     }
 }

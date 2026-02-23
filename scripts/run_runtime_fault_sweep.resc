@@ -1,0 +1,311 @@
+# Runtime fault sweep for profile-driven OTA bootloader auditing.
+#
+# Two evaluation modes:
+#   state   — Python-side simulation: read staging, write to exec word-by-word,
+#             inject partial write at fault_at.  Fast (~seconds).
+#   execute — Full CPU boot: arm FaultAtWordWrite, machine Reset, RunFor.
+#             Slow but truly zero-knowledge.
+#
+# Batch mode: set $fault_points_csv to a comma-separated list of fault point
+# indices (e.g. "0,100,500,1000").  The script loops over all points in a
+# single Renode session, reloading images between iterations.  Result file
+# contains a JSON array of per-point results.
+#
+# Single mode: leave $fault_points_csv empty and set $fault_at to run one point.
+#
+# Required monitor variables:
+#   $result_file (string)     — where to write JSON result
+#   $repo_root (string)       — repository root path
+#
+# Required from profile (via robot vars):
+#   $bootloader_elf (string)  — path to bootloader ELF
+#   $bootloader_entry (int)   — entry point / VTOR base
+#   $run_duration (string)    — emulation run time in seconds
+#   $max_writes_cap (int)     — safety cap for calibration
+#   $evaluation_mode (string) — "state" or "execute"
+
+$fault_at?=0
+$fault_points_csv?=""
+$calibration_mode?=false
+$evaluation_mode?="state"
+$run_duration?="0.01"
+$max_writes_cap?=100000
+$pre_boot_state_bin?=""
+$setup_script?=""
+$success_vtor_slot?="exec"
+$success_pc_slot?=""
+$success_marker_addr?=0
+$success_marker_value?=0
+$image_staging_path?=""
+$image_exec_path?=""
+
+python """
+import json
+import struct
+
+bus = monitor.Machine.SystemBus
+ctrl = monitor.Machine['sysbus.nvm_ctrl']
+
+# Read monitor variables.
+result_file = str(monitor.GetVariable('result_file'))
+calibration_mode = str(monitor.GetVariable('calibration_mode')).lower() in ('1', 'true', 'yes')
+evaluation_mode = str(monitor.GetVariable('evaluation_mode')).strip().lower()
+if evaluation_mode not in ('execute', 'state'):
+    evaluation_mode = 'state'
+run_duration = str(monitor.GetVariable('run_duration'))
+max_writes_cap = int(monitor.GetVariable('max_writes_cap'))
+
+# Batch vs single mode.
+fault_points_csv = str(monitor.GetVariable('fault_points_csv')).strip()
+if fault_points_csv:
+    fault_points = [int(x.strip()) for x in fault_points_csv.split(',') if x.strip()]
+else:
+    fault_points = [int(monitor.GetVariable('fault_at'))]
+batch_mode = len(fault_points) > 1 or bool(fault_points_csv)
+
+# Slot geometry.
+slot_exec_base = int(str(monitor.GetVariable('slot_exec_base')), 0)
+slot_exec_size = int(str(monitor.GetVariable('slot_exec_size')), 0)
+slot_staging_base = int(str(monitor.GetVariable('slot_staging_base')), 0)
+slot_staging_size = int(str(monitor.GetVariable('slot_staging_size')), 0)
+sram_start = int(str(monitor.GetVariable('sram_start')), 0)
+sram_end = int(str(monitor.GetVariable('sram_end')), 0)
+bootloader_entry = int(str(monitor.GetVariable('bootloader_entry')), 0)
+bootloader_elf = str(monitor.GetVariable('bootloader_elf')).strip()
+
+# Image paths for reload between batch iterations.
+image_staging_path = str(monitor.GetVariable('image_staging_path')).strip()
+image_exec_path = str(monitor.GetVariable('image_exec_path')).strip()
+
+# Success criteria.
+success_vtor_slot = str(monitor.GetVariable('success_vtor_slot')).strip()
+success_pc_slot_raw = str(monitor.GetVariable('success_pc_slot')).strip()
+success_pc_slot = success_pc_slot_raw if success_pc_slot_raw else None
+
+success_marker_addr_raw = str(monitor.GetVariable('success_marker_addr')).strip()
+success_marker_value_raw = str(monitor.GetVariable('success_marker_value')).strip()
+success_marker_addr = int(success_marker_addr_raw, 0) if success_marker_addr_raw and success_marker_addr_raw != '0' else 0
+success_marker_value = int(success_marker_value_raw, 0) if success_marker_value_raw and success_marker_value_raw != '0' else 0
+
+# Pre-boot state binary.
+pre_boot_bin = str(monitor.GetVariable('pre_boot_state_bin')).strip()
+
+# Setup script.
+setup_script = str(monitor.GetVariable('setup_script')).strip()
+
+# Slot lookup table.
+slot_ranges = {
+    'exec': (slot_exec_base, slot_exec_base + slot_exec_size),
+    'staging': (slot_staging_base, slot_staging_base + slot_staging_size),
+}
+
+# Total words in the copy (for state mode).
+total_copy_writes = slot_exec_size // 8
+
+def as_int(value):
+    try:
+        return int(value)
+    except Exception:
+        return int(str(value), 0)
+
+def apply_pre_boot_state():
+    if pre_boot_bin:
+        with open(pre_boot_bin, 'rb') as f:
+            pbs_data = f.read()
+        for i in range(0, len(pbs_data), 8):
+            addr, val = struct.unpack_from('<II', pbs_data, i)
+            bus.WriteDoubleWord(addr, val)
+    if setup_script:
+        monitor.Parse('include @' + setup_script)
+
+def reload_images():
+    # Restore NVM to pre-test state by reloading ELF and images.
+    bus.LoadELF(bootloader_elf, True)  # True = use file offset
+    if image_staging_path:
+        bus.LoadBinary(image_staging_path, slot_staging_base)
+    if image_exec_path:
+        bus.LoadBinary(image_exec_path, slot_exec_base)
+
+def run_state_fault(fault_at):
+    # State mode: simulate staging->exec copy, fault at given index.
+    fault_injected = False
+    fault_address = 0
+    actual_writes = 0
+
+    for i in range(total_copy_writes):
+        src = slot_staging_base + i * 8
+        dst = slot_exec_base + i * 8
+
+        if i == fault_at:
+            ctrl.InjectPartialWrite(dst)
+            fault_injected = True
+            fault_address = dst
+            actual_writes = i
+            break
+
+        bus.WriteQuadWord(dst, bus.ReadQuadWord(src))
+        actual_writes = i + 1
+
+    copy_completed = not fault_injected
+
+    sp = as_int(bus.ReadDoubleWord(slot_exec_base))
+    reset_vector = as_int(bus.ReadDoubleWord(slot_exec_base + 4))
+    reset_pc = reset_vector & ~1
+
+    vector_valid = (
+        (sram_start <= sp <= sram_end)
+        and ((reset_vector & 1) == 1)
+        and (slot_exec_base <= reset_pc < (slot_exec_base + slot_exec_size))
+    )
+
+    if copy_completed and vector_valid:
+        boot_outcome = 'success'
+    else:
+        boot_outcome = 'hard_fault'
+
+    boot_slot = None
+    if vector_valid:
+        for slot_name, (slot_lo, slot_hi) in slot_ranges.items():
+            if slot_lo <= slot_exec_base < slot_hi:
+                boot_slot = slot_name
+                break
+
+    if success_marker_addr != 0 and boot_outcome == 'success':
+        actual_marker = as_int(bus.ReadDoubleWord(success_marker_addr))
+        if actual_marker != success_marker_value:
+            boot_outcome = 'hard_fault'
+            boot_slot = None
+
+    return {
+        'fault_at': fault_at,
+        'fault_requested': fault_at,
+        'fault_injected': fault_injected,
+        'fault_address': '0x{0:08X}'.format(fault_address),
+        'boot_outcome': boot_outcome,
+        'boot_slot': boot_slot,
+        'actual_writes': actual_writes,
+        'signals': {
+            'vector_sp': '0x{0:08X}'.format(sp),
+            'vector_reset': '0x{0:08X}'.format(reset_vector),
+            'vector_valid': vector_valid,
+            'copy_completed': copy_completed,
+        },
+    }
+
+def run_execute_fault(fault_at):
+    # Execute mode: full CPU boot with fault injection.
+    base_writes = int(ctrl.Nvm.TotalWordWrites)
+    arm_at = base_writes + fault_at + 1
+    if arm_at > base_writes + max_writes_cap:
+        arm_at = base_writes + max_writes_cap + 1
+
+    ctrl.Nvm.FaultAtWordWrite = arm_at
+    monitor.Parse('machine Reset')
+    monitor.Parse('emulation RunFor "' + run_duration + '"')
+
+    ctrl.Nvm.FaultAtWordWrite = 18446744073709551615
+
+    fault_injected = bool(ctrl.Nvm.LastFaultInjected)
+    fault_address = int(ctrl.Nvm.LastWriteAddress)
+    actual_writes = int(ctrl.Nvm.TotalWordWrites) - base_writes
+
+    vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
+    pc_value = 0
+    try:
+        pc_value = int(monitor.Machine['sysbus.cpu'].PC)
+    except Exception:
+        pass
+
+    vtor_ok = False
+    if success_vtor_slot and success_vtor_slot in slot_ranges:
+        slot_lo, slot_hi = slot_ranges[success_vtor_slot]
+        vtor_ok = (slot_lo <= vtor_value < slot_hi)
+
+    pc_ok = True
+    if success_pc_slot and success_pc_slot in slot_ranges:
+        slot_lo, slot_hi = slot_ranges[success_pc_slot]
+        pc_ok = (slot_lo <= (pc_value & ~1) < slot_hi)
+
+    marker_ok = True
+    if success_marker_addr != 0:
+        actual_marker = as_int(bus.ReadDoubleWord(success_marker_addr))
+        marker_ok = (actual_marker == success_marker_value)
+
+    if vtor_ok and pc_ok and marker_ok:
+        boot_outcome = 'success'
+    else:
+        boot_outcome = 'hard_fault'
+
+    boot_slot = None
+    for slot_name, (slot_lo, slot_hi) in slot_ranges.items():
+        if slot_lo <= vtor_value < slot_hi:
+            boot_slot = slot_name
+            break
+
+    return {
+        'fault_at': fault_at,
+        'fault_requested': fault_at,
+        'fault_injected': fault_injected,
+        'fault_address': '0x{0:08X}'.format(fault_address),
+        'boot_outcome': boot_outcome,
+        'boot_slot': boot_slot,
+        'actual_writes': actual_writes,
+        'signals': {
+            'vtor': '0x{0:08X}'.format(vtor_value),
+            'vtor_ok': vtor_ok,
+            'pc': '0x{0:08X}'.format(pc_value),
+            'pc_ok': pc_ok,
+            'marker_ok': marker_ok,
+        },
+    }
+
+# ---------------------------------------------------------------------------
+# Apply initial pre-boot state
+# ---------------------------------------------------------------------------
+apply_pre_boot_state()
+
+# ---------------------------------------------------------------------------
+# Calibration mode
+# ---------------------------------------------------------------------------
+if calibration_mode:
+    if evaluation_mode == 'state':
+        result = {
+            'calibration': True,
+            'total_writes': total_copy_writes,
+            'base_writes': int(ctrl.Nvm.TotalWordWrites),
+        }
+    else:
+        base_writes = int(ctrl.Nvm.TotalWordWrites)
+        ctrl.Nvm.FaultAtWordWrite = 18446744073709551615
+        monitor.Parse('machine Reset')
+        monitor.Parse('emulation RunFor "' + run_duration + '"')
+        total_writes = int(ctrl.Nvm.TotalWordWrites) - base_writes
+        result = {
+            'calibration': True,
+            'total_writes': total_writes,
+            'base_writes': base_writes,
+        }
+    with open(result_file, 'w') as f:
+        f.write(json.dumps(result, sort_keys=True))
+
+else:
+    # -------------------------------------------------------------------
+    # Fault sweep (batch or single)
+    # -------------------------------------------------------------------
+    results = []
+    run_fn = run_state_fault if evaluation_mode == 'state' else run_execute_fault
+
+    for idx, fp in enumerate(fault_points):
+        if idx > 0:
+            reload_images()
+            apply_pre_boot_state()
+        results.append(run_fn(fp))
+
+    # Write results.
+    if batch_mode:
+        with open(result_file, 'w') as f:
+            f.write(json.dumps(results, sort_keys=True))
+    else:
+        with open(result_file, 'w') as f:
+            f.write(json.dumps(results[0], sort_keys=True))
+"""
