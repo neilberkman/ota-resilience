@@ -86,7 +86,7 @@ class SuccessCriteria:
 
 
 class FaultSweepConfig:
-    __slots__ = ("mode", "max_writes", "max_writes_cap", "run_duration", "fault_types")
+    __slots__ = ("mode", "max_writes", "max_writes_cap", "run_duration", "fault_types", "evaluation_mode")
 
     def __init__(
         self,
@@ -95,12 +95,14 @@ class FaultSweepConfig:
         max_writes_cap: int = 100000,
         run_duration: str = "0.5",
         fault_types: Optional[List[str]] = None,
+        evaluation_mode: Optional[str] = None,
     ) -> None:
         self.mode = mode
         self.max_writes = max_writes
         self.max_writes_cap = max_writes_cap
         self.run_duration = run_duration
         self.fault_types = fault_types or ["power_loss"]
+        self.evaluation_mode = evaluation_mode
 
 
 class StateFuzzerConfig:
@@ -127,6 +129,9 @@ class PreBootWrite:
         self.u32 = u32
 
 
+VALID_SCENARIOS = {"runtime", "resilient", "vulnerable"}
+
+
 class ProfileConfig:
     """Fully-parsed bootloader profile."""
 
@@ -147,6 +152,7 @@ class ProfileConfig:
         state_fuzzer: StateFuzzerConfig,
         expect: ExpectConfig,
         profile_path: Optional[Path] = None,
+        scenario: str = "runtime",
     ) -> None:
         self.schema_version = schema_version
         self.name = name
@@ -163,6 +169,7 @@ class ProfileConfig:
         self.state_fuzzer = state_fuzzer
         self.expect = expect
         self.profile_path = profile_path
+        self.scenario = scenario
 
     def resolve_path(self, repo_root: Path, value: str) -> str:
         """Resolve a path relative to the repo root."""
@@ -198,6 +205,10 @@ class ProfileConfig:
         sc = self.success_criteria
         fs = self.fault_sweep
 
+        # Classic scenario routing: resilient/vulnerable use legacy robot path.
+        if self.scenario == "resilient":
+            return self._resilient_robot_vars(repo_root)
+
         vars_list: List[str] = [
             "PLATFORM_REPL:{}".format(self.resolve_path(repo_root, self.platform)),
             "BOOTLOADER_ELF:{}".format(self.resolve_path(repo_root, self.bootloader_elf)),
@@ -225,6 +236,8 @@ class ProfileConfig:
         # Success criteria.
         if sc.vtor_in_slot:
             vars_list.append("SUCCESS_VTOR_SLOT:{}".format(sc.vtor_in_slot))
+        else:
+            vars_list.append("SUCCESS_VTOR_SLOT:")
         if sc.pc_in_slot:
             vars_list.append("SUCCESS_PC_SLOT:{}".format(sc.pc_in_slot))
         if sc.marker_address is not None:
@@ -241,6 +254,47 @@ class ProfileConfig:
         if self.setup_script:
             vars_list.append(
                 "SETUP_SCRIPT:{}".format(self.resolve_path(repo_root, self.setup_script))
+            )
+
+        return vars_list
+
+    def _resilient_robot_vars(self, repo_root: Path) -> List[str]:
+        """Generate robot vars for resilient A/B scenario (legacy path)."""
+        mem = self.memory
+        fs = self.fault_sweep
+
+        include_meta = "true" if self.state_fuzzer.enabled else "false"
+
+        # Compute total writes if not set explicitly.
+        total_writes = fs.max_writes
+        if total_writes == "auto" and "exec" in mem.slots:
+            total_writes = mem.slots["exec"].size // mem.write_granularity
+
+        vars_list: List[str] = [
+            "SCENARIO:resilient",
+            "RUNTIME_MODE:false",
+            "PLATFORM_REPL:{}".format(self.resolve_path(repo_root, self.platform)),
+            "RESILIENT_BOOTLOADER_ELF:{}".format(
+                self.resolve_path(repo_root, self.bootloader_elf)
+            ),
+            "INCLUDE_METADATA_FAULTS:{}".format(include_meta),
+            "TOTAL_WRITES:{}".format(total_writes),
+        ]
+
+        # Slot B image for OTA simulation.
+        if "staging" in self.images:
+            vars_list.append(
+                "RESILIENT_SLOT_B_BIN:{}".format(
+                    self.resolve_path(repo_root, self.images["staging"])
+                )
+            )
+
+        # Slot A image.
+        if "exec" in self.images:
+            vars_list.append(
+                "RESILIENT_SLOT_A_BIN:{}".format(
+                    self.resolve_path(repo_root, self.images["exec"])
+                )
             )
 
         return vars_list
@@ -315,12 +369,16 @@ def _parse_fault_sweep(raw: Optional[Dict[str, Any]]) -> FaultSweepConfig:
         if ft in KNOWN_FAULT_TYPES and ft not in IMPLEMENTED_FAULT_TYPES:
             import warnings
             warnings.warn("Fault type '{}' is not yet implemented; skipping.".format(ft))
+    eval_mode = raw.get("evaluation_mode")
+    if eval_mode is not None:
+        eval_mode = str(eval_mode)
     return FaultSweepConfig(
         mode=raw.get("mode", "runtime"),
         max_writes=raw.get("max_writes", "auto"),
         max_writes_cap=int(raw.get("max_writes_cap", 100000)),
         run_duration=str(raw.get("run_duration", "0.5")),
         fault_types=fault_types,
+        evaluation_mode=eval_mode,
     )
 
 
@@ -423,6 +481,12 @@ def load_profile(path: str | Path) -> ProfileConfig:
     state_fuzzer = _parse_state_fuzzer(data.get("state_fuzzer"))
     expect = _parse_expect(data.get("expect"))
 
+    scenario = str(data.get("scenario", "runtime"))
+    if scenario not in VALID_SCENARIOS:
+        raise ProfileError(
+            "Invalid scenario '{}'. Valid: {}".format(scenario, sorted(VALID_SCENARIOS))
+        )
+
     return ProfileConfig(
         schema_version=schema_version,
         name=name,
@@ -439,6 +503,7 @@ def load_profile(path: str | Path) -> ProfileConfig:
         state_fuzzer=state_fuzzer,
         expect=expect,
         profile_path=path,
+        scenario=scenario,
     )
 
 

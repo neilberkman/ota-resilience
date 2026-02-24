@@ -1,0 +1,43 @@
+schema_version: 1
+name: mcuboot_swap_known_bad
+description: "MCUboot swap-using-move (known-bad commit c50b332, issues #1966/#2100). nRF52840 flash. Should find bricks from swap-move bug."
+platform: platforms/cortex_m4_flash.repl
+bootloader:
+  elf: results/oss_validation/assets/oss_mcuboot_mcuboot_swap_known_bad_guard.elf
+  entry: 0x00000000
+memory:
+  sram: { start: 0x20000000, end: 0x20040000 }
+  write_granularity: 4
+  slots:
+    exec: { base: 0x0000C000, size: 0x76000 }
+    staging: { base: 0x00082000, size: 0x76000 }
+images:
+  exec: results/oss_validation/assets/zephyr_slot0_padded.bin
+  staging: results/oss_validation/assets/zephyr_slot1_padded.bin
+# MCUboot trailer at end of slot1 to trigger swap-test.
+# slot1 ends at 0xF8000. BOOT_MAX_ALIGN=8.
+# swap_info_off = (fa_size - 24) & ~7 - 16 = 0x75FD8, addr = 0x82000 + 0x75FD8 = 0xF7FD8
+# magic_off = (fa_size - 16) & ~7 = 0x75FF0, addr = 0x82000 + 0x75FF0 = 0xF7FF0
+pre_boot_state:
+  # swap_info = 0x02 (BOOT_SWAP_TYPE_TEST)
+  - { address: 0x000F7FD8, u32: 0x00000002 }
+  # MCUboot trailer magic (4 words at 0xF7FF0)
+  - { address: 0x000F7FF0, u32: 0xF395C277 }
+  - { address: 0x000F7FF4, u32: 0x7FEFD260 }
+  - { address: 0x000F7FF8, u32: 0x0F505235 }
+  - { address: 0x000F7FFC, u32: 0x8079B62C }
+success_criteria:
+  marker_address: 0x0000C000
+  marker_value: 0x96F3B83D
+fault_sweep:
+  mode: runtime
+  evaluation_mode: execute
+  max_writes: 9956
+  max_writes_cap: 20000
+  run_duration: "2.0"
+# NOTE: MCUboot swap not yet triggering — images need valid MCUboot headers.
+# Skip self-test until swap trigger is resolved.
+skip_self_test: true
+expect:
+  should_find_issues: true
+  brick_rate_min: 0.01

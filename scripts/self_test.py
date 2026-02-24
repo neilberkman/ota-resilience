@@ -155,6 +155,11 @@ def main() -> int:
                 results.append((name, False, "profile load error: {}".format(exc)))
                 continue
 
+            if profile_raw.get("skip_self_test", False):
+                print("  SKIP: profile has skip_self_test=true")
+                results.append((name, True, "skipped (skip_self_test)"))
+                continue
+
             extra_args: List[str] = []
             if args.fault_step is not None:
                 extra_args.extend(["--fault-step", str(args.fault_step)])

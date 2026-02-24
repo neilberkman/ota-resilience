@@ -192,11 +192,11 @@ namespace Antmicro.Renode.Peripherals.Memory
             var half = WordSize / 2;
             for(var i = half; i < WordSize; i++)
             {
-                storage[aligned + i] = 0x00;
+                storage[aligned + i] = EraseFill;
             }
 
             LastFaultInjected = true;
-            LastFaultPattern = 0x00;
+            LastFaultPattern = EraseFill;
         }
 
         public ulong GetWordWriteCount()
@@ -296,6 +296,21 @@ namespace Antmicro.Renode.Peripherals.Memory
 
         public List<long> WriteLog { get { return writeLog; } }
 
+        public void EraseSector(long offset, int sectorSize)
+        {
+            if(AliasTarget != null)
+            {
+                AliasTarget.EraseSector(offset, sectorSize);
+                return;
+            }
+
+            ValidateRange(offset, sectorSize);
+            for(var i = 0; i < sectorSize; i++)
+            {
+                storage[offset + i] = EraseFill;
+            }
+        }
+
         public void ClearWriteLog()
         {
             writeLog.Clear();
@@ -334,10 +349,42 @@ namespace Antmicro.Renode.Peripherals.Memory
 
             if(!EnforceWordWriteSemantics)
             {
+                // Fast path: write all data first, then check for fault injection.
+                // This ensures words before the faulted word are properly written.
+                var fastFirst = AlignDown(offset, WordSize);
+                var fastLast = AlignDown(offset + data.Length - 1, WordSize);
+
+                // Write all data to storage unconditionally first.
                 for(var i = 0; i < data.Length; i++)
                 {
                     storage[offset + i] = data[i];
                 }
+
+                // Now count word writes and check for fault injection.
+                for(var wordStart = fastFirst; wordStart <= fastLast; wordStart += WordSize)
+                {
+                    var currentWriteIndex = TotalWordWrites + 1;
+                    if(currentWriteIndex == FaultAtWordWrite)
+                    {
+                        // Partial write: corrupt second half of faulted word with EraseFill.
+                        var half = WordSize / 2;
+                        for(var i = wordStart + half; i < wordStart + WordSize; i++)
+                        {
+                            if(i >= offset && i < offset + data.Length)
+                            {
+                                storage[i] = EraseFill;
+                            }
+                        }
+                        LastFaultInjected = true;
+                        LastFaultPattern = EraseFill;
+                        TotalWordWrites++;
+                        LastWriteAddress = wordStart;
+                        return;
+                    }
+
+                    TotalWordWrites++;
+                }
+
                 return;
             }
 

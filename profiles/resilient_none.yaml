@@ -1,4 +1,5 @@
 schema_version: 1
+scenario: resilient
 name: resilient_none
 description: >-
   Correct A/B bootloader with no intentional faults. Active slot is never

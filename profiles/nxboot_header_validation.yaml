@@ -1,4 +1,5 @@
 schema_version: 1
+scenario: resilient
 name: nxboot_header_validation
 description: "NxBoot with header validation: bootloader checks image headers and CRC before booting. Invalid or partially-written images are rejected and the previous good slot is used. Uses resilient bootloader as proxy."
 platform: platforms/cortex_m0_nvm.repl
@@ -22,7 +23,7 @@ success_criteria:
   marker_value: 0
 fault_sweep:
   mode: runtime
-  max_writes: 28672
+  max_writes: 28160
   max_writes_cap: 100000
   run_duration: "0.01"
 expect:

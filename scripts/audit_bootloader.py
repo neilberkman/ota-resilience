@@ -276,6 +276,77 @@ def run_batch(
     return [data]
 
 
+def normalize_classic_result(data: Dict[str, Any], fault_at: int) -> Dict[str, Any]:
+    """Normalize a classic .resc result to the runtime sweep format."""
+    nvm = data.get("nvm_state", {})
+    return {
+        "fault_at": fault_at,
+        "fault_requested": fault_at,
+        "fault_injected": nvm.get("faulted", False),
+        "fault_address": nvm.get("fault_address", "0x00000000"),
+        "boot_outcome": data.get("boot_outcome", "hard_fault"),
+        "boot_slot": data.get("boot_slot"),
+        "actual_writes": nvm.get("write_index", 0),
+        "signals": {
+            "evaluation_mode": nvm.get("evaluation_mode", "state"),
+            "chosen_slot": nvm.get("chosen_slot"),
+            "requested_slot": nvm.get("requested_slot"),
+            "replica0_valid": nvm.get("replica0_valid"),
+            "replica1_valid": nvm.get("replica1_valid"),
+        },
+    }
+
+
+def run_classic_sweep(
+    repo_root: Path,
+    renode_test: str,
+    robot_suite: str,
+    profile: ProfileConfig,
+    fault_points: List[int],
+    robot_vars: List[str],
+    work_dir: Path,
+    renode_remote_server_dir: str,
+    include_control: bool,
+) -> List[Dict[str, Any]]:
+    """Run fault sweep using classic per-point .resc (for resilient/vulnerable scenarios)."""
+    results: List[Dict[str, Any]] = []
+
+    for fp in fault_points:
+        data = run_single_point(
+            repo_root=repo_root,
+            renode_test=renode_test,
+            robot_suite=robot_suite,
+            profile=profile,
+            fault_at=fp,
+            robot_vars=robot_vars,
+            work_dir=work_dir,
+            renode_remote_server_dir=renode_remote_server_dir,
+        )
+        result = normalize_classic_result(data, fp)
+        result["is_control"] = False
+        results.append(result)
+
+    if include_control:
+        max_fp = max(fault_points) if fault_points else 999999
+        control_at = max(999999, max_fp) + 1
+        data = run_single_point(
+            repo_root=repo_root,
+            renode_test=renode_test,
+            robot_suite=robot_suite,
+            profile=profile,
+            fault_at=control_at,
+            robot_vars=robot_vars,
+            work_dir=work_dir,
+            renode_remote_server_dir=renode_remote_server_dir,
+            is_control=True,
+        )
+        result = normalize_classic_result(data, control_at)
+        result["is_control"] = True
+        results.append(result)
+
+    return results
+
+
 def run_runtime_sweep(
     repo_root: Path,
     renode_test: str,
@@ -396,9 +467,16 @@ def main() -> int:
         profile = load_profile(args.profile)
         robot_suite = args.robot_suite
 
+        # Resolve evaluation mode: profile default, then CLI override.
+        eval_mode = args.evaluation_mode
+        if profile.fault_sweep.evaluation_mode and not any(
+            a.startswith("--evaluation-mode") for a in sys.argv
+        ):
+            eval_mode = profile.fault_sweep.evaluation_mode
+
         # Build robot vars from profile + CLI extras.
         robot_vars = profile.robot_vars(repo_root) + parse_robot_vars(args.robot_var)
-        robot_vars.append("EVALUATION_MODE:{}".format(args.evaluation_mode))
+        robot_vars.append("EVALUATION_MODE:{}".format(eval_mode))
 
         # Work directory.
         if args.keep_run_artifacts:
@@ -419,7 +497,7 @@ def main() -> int:
         # -------------------------------------------------------------------
         max_writes = profile.fault_sweep.max_writes
         if max_writes == "auto":
-            if args.evaluation_mode == "state" and "exec" in profile.memory.slots:
+            if eval_mode == "state" and "exec" in profile.memory.slots:
                 # State mode: compute write count from slot geometry.
                 exec_slot = profile.memory.slots["exec"]
                 max_writes = exec_slot.size // profile.memory.write_granularity
@@ -465,19 +543,32 @@ def main() -> int:
         )
 
         # -------------------------------------------------------------------
-        # Runtime sweep
+        # Fault sweep (dispatch based on scenario)
         # -------------------------------------------------------------------
-        sweep_results = run_runtime_sweep(
-            repo_root=repo_root,
-            renode_test=renode_test,
-            robot_suite=robot_suite,
-            profile=profile,
-            fault_points=fault_points,
-            robot_vars=robot_vars,
-            work_dir=work_dir,
-            renode_remote_server_dir=args.renode_remote_server_dir,
-            include_control=not args.no_control,
-        )
+        if profile.scenario in ("resilient", "vulnerable"):
+            sweep_results = run_classic_sweep(
+                repo_root=repo_root,
+                renode_test=renode_test,
+                robot_suite=robot_suite,
+                profile=profile,
+                fault_points=fault_points,
+                robot_vars=robot_vars,
+                work_dir=work_dir,
+                renode_remote_server_dir=args.renode_remote_server_dir,
+                include_control=not args.no_control,
+            )
+        else:
+            sweep_results = run_runtime_sweep(
+                repo_root=repo_root,
+                renode_test=renode_test,
+                robot_suite=robot_suite,
+                profile=profile,
+                fault_points=fault_points,
+                robot_vars=robot_vars,
+                work_dir=work_dir,
+                renode_remote_server_dir=args.renode_remote_server_dir,
+                include_control=not args.no_control,
+            )
 
         sweep_summary = summarize_runtime_sweep(sweep_results)
 

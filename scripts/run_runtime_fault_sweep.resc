@@ -36,6 +36,7 @@ $success_vtor_slot?="exec"
 $success_pc_slot?=""
 $success_marker_addr?=0
 $success_marker_value?=0
+$write_granularity?=8
 $image_staging_path?=""
 $image_exec_path?=""
 
@@ -72,6 +73,7 @@ sram_start = int(str(monitor.GetVariable('sram_start')), 0)
 sram_end = int(str(monitor.GetVariable('sram_end')), 0)
 bootloader_entry = int(str(monitor.GetVariable('bootloader_entry')), 0)
 bootloader_elf = str(monitor.GetVariable('bootloader_elf')).strip()
+write_granularity = int(str(monitor.GetVariable('write_granularity')).strip())
 
 # Image paths for reload between batch iterations.
 image_staging_path = str(monitor.GetVariable('image_staging_path')).strip()
@@ -100,7 +102,7 @@ slot_ranges = {
 }
 
 # Total words in the copy (for state mode).
-total_copy_writes = slot_exec_size // 8
+total_copy_writes = slot_exec_size // write_granularity
 
 def as_int(value):
     try:
@@ -119,7 +121,13 @@ def apply_pre_boot_state():
         monitor.Parse('include @' + setup_script)
 
 def reload_images():
-    # Restore NVM to pre-test state by reloading ELF and images.
+    # Restore NVM to pre-test state by erasing entire NVM, then reloading.
+    # Full erase clears swap state / image trailers so bootloader re-runs swap.
+    nvm_size = int(ctrl.Nvm.Size)
+    sector = 4096
+    for offset in range(0, nvm_size, sector):
+        chunk = min(sector, nvm_size - offset)
+        ctrl.Nvm.EraseSector(offset, chunk)
     bus.LoadELF(bootloader_elf, True)  # True = use file offset
     if image_staging_path:
         bus.LoadBinary(image_staging_path, slot_staging_base)
@@ -133,8 +141,8 @@ def run_state_fault(fault_at):
     actual_writes = 0
 
     for i in range(total_copy_writes):
-        src = slot_staging_base + i * 8
-        dst = slot_exec_base + i * 8
+        src = slot_staging_base + i * write_granularity
+        dst = slot_exec_base + i * write_granularity
 
         if i == fault_at:
             ctrl.InjectPartialWrite(dst)
@@ -143,7 +151,10 @@ def run_state_fault(fault_at):
             actual_writes = i
             break
 
-        bus.WriteQuadWord(dst, bus.ReadQuadWord(src))
+        if write_granularity == 4:
+            bus.WriteDoubleWord(dst, bus.ReadDoubleWord(src))
+        else:
+            bus.WriteQuadWord(dst, bus.ReadQuadWord(src))
         actual_writes = i + 1
 
     copy_completed = not fault_injected
@@ -166,7 +177,7 @@ def run_state_fault(fault_at):
     boot_slot = None
     if vector_valid:
         for slot_name, (slot_lo, slot_hi) in slot_ranges.items():
-            if slot_lo <= slot_exec_base < slot_hi:
+            if slot_lo <= reset_pc < slot_hi:
                 boot_slot = slot_name
                 break
 
@@ -194,13 +205,17 @@ def run_state_fault(fault_at):
 
 def run_execute_fault(fault_at):
     # Execute mode: full CPU boot with fault injection.
+    # Reset clears MappedMemory, so reload ELF + images first, then arm fault.
+    monitor.Parse('machine Reset')
+    reload_images()
+    apply_pre_boot_state()
+
     base_writes = int(ctrl.Nvm.TotalWordWrites)
     arm_at = base_writes + fault_at + 1
     if arm_at > base_writes + max_writes_cap:
         arm_at = base_writes + max_writes_cap + 1
 
     ctrl.Nvm.FaultAtWordWrite = arm_at
-    monitor.Parse('machine Reset')
     monitor.Parse('emulation RunFor "' + run_duration + '"')
 
     ctrl.Nvm.FaultAtWordWrite = 18446744073709551615
@@ -216,7 +231,7 @@ def run_execute_fault(fault_at):
     except Exception:
         pass
 
-    vtor_ok = False
+    vtor_ok = not bool(success_vtor_slot)
     if success_vtor_slot and success_vtor_slot in slot_ranges:
         slot_lo, slot_hi = slot_ranges[success_vtor_slot]
         vtor_ok = (slot_lo <= vtor_value < slot_hi)
@@ -275,9 +290,11 @@ if calibration_mode:
             'base_writes': int(ctrl.Nvm.TotalWordWrites),
         }
     else:
-        base_writes = int(ctrl.Nvm.TotalWordWrites)
         ctrl.Nvm.FaultAtWordWrite = 18446744073709551615
         monitor.Parse('machine Reset')
+        reload_images()
+        apply_pre_boot_state()
+        base_writes = int(ctrl.Nvm.TotalWordWrites)
         monitor.Parse('emulation RunFor "' + run_duration + '"')
         total_writes = int(ctrl.Nvm.TotalWordWrites) - base_writes
         result = {
@@ -296,7 +313,7 @@ else:
     run_fn = run_state_fault if evaluation_mode == 'state' else run_execute_fault
 
     for idx, fp in enumerate(fault_points):
-        if idx > 0:
+        if idx > 0 and evaluation_mode == 'state':
             reload_images()
             apply_pre_boot_state()
         results.append(run_fn(fp))
