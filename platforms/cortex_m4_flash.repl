@@ -20,6 +20,24 @@ nvm: Memory.NVMemory @ sysbus 0x0000C000
 sram: Memory.MappedMemory @ sysbus 0x20000000
     size: 0x40000
 
+// FICR (Factory Information Configuration Registers) — nRF52840 defaults.
+// MCUboot reads CODEPAGESIZE (0x130) and CODESIZE (0x134) to compute flash geometry.
+ficr: Memory.MappedMemory @ sysbus 0x10000000
+    size: 0x1000
+
+// UICR (User Information Configuration Registers).
+uicr: Memory.MappedMemory @ sysbus 0x10001000
+    size: 0x1000
+
+// CLOCK peripheral stub — nRF52840 CLOCK at 0x40000000.
+// MCUboot/Zephyr init waits for HFCLKSTARTED event; without this, CPU spins forever.
+clock: Memory.MappedMemory @ sysbus 0x40000000
+    size: 0x1000
+
+// UARTE0 — nRF52840 UART at 0x40002000.
+// MCUboot logs via UARTE DMA. Auto-fires ENDTX/TXSTOPPED on STARTTX.
+uarte0: UART.NRF52UARTE @ sysbus 0x40002000
+
 nvm_ctrl: NVMemoryController @ sysbus 0x40001000
     Nvm: nvm
     NvmBaseAddress: 0x0000C000
@@ -37,3 +55,20 @@ sysbus:
         Tag <0x20000000 0x40000> "SRAM"
         Tag <0x40001000 0x100> "NVM_CTRL"
         Tag <0x4001E000 0x1000> "NVMC"
+        Tag <0x10000000 0x1000> "FICR"
+        Tag <0x10001000 0x1000> "UICR"
+        Tag <0x40000000 0x1000> "CLOCK"
+        // FICR: nRF52840 factory values.
+        // 0x10000010 = CODEPAGESIZE (4096 = 0x1000)
+        // 0x10000014 = CODESIZE (256 = 0x100, i.e. 256 x 4KB = 1MB)
+        // Offsets within FICR: CODEPAGESIZE is at 0x10, CODESIZE at 0x14 in some nRF variants.
+        // But MCUboot reads offset 0x130 and 0x134 (nRF52840 layout).
+        WriteDoubleWord 0x10000130 0x1000
+        WriteDoubleWord 0x10000134 0x100
+        // CLOCK: HFCLKSTARTED event at offset 0x100 = ready.
+        // EVENTS_HFCLKSTARTED (0x40000100) = 1 means clock is running.
+        WriteDoubleWord 0x40000100 0x1
+        // HFCLKSTAT (0x40000418) — running + source HFXO.
+        // Bit 0 = SRC (1=HFXO), bit 16 = STATE (1=running).
+        WriteDoubleWord 0x40000418 0x10001
+        Tag <0x40002000 0x1000> "UARTE0"

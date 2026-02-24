@@ -62,6 +62,7 @@ Load Runtime Scenario
     [Documentation]    Profile-driven runtime scenario: load peripheral, platform, ELF, and seed images.
     Execute Command    include "${ROOT}/peripherals/NVMemoryController.cs"
     Execute Command    include "${ROOT}/peripherals/NRF52NVMC.cs"
+    Execute Command    include "${ROOT}/peripherals/NRF52UARTE.cs"
     Execute Command    mach create
     Execute Command    machine LoadPlatformDescription @${PLATFORM_REPL}
     ${load_cmds}=    Set Variable    bus=monitor.Machine.SystemBus; bus.LoadELF(r'${BOOTLOADER_ELF}')

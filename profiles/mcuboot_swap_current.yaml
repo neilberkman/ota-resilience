@@ -35,8 +35,8 @@ fault_sweep:
   max_writes: auto
   max_writes_cap: 200000
   run_duration: "2.0"
-# NOTE: MCUboot swap not yet triggering — images need valid MCUboot headers.
-# Skip self-test until swap trigger is resolved.
+# NOTE: MCUboot's boot_go() rejects images — likely RSA-2048 signature validation
+# failure.  Same root cause as mcuboot_swap_known_bad.  See that profile for details.
 skip_self_test: true
 expect:
   should_find_issues: false

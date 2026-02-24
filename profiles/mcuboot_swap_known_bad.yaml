@@ -35,8 +35,13 @@ fault_sweep:
   max_writes: 9956
   max_writes_cap: 20000
   run_duration: "2.0"
-# NOTE: MCUboot swap not yet triggering — images need valid MCUboot headers.
-# Skip self-test until swap trigger is resolved.
+# NOTE: MCUboot's boot_go() rejects images — likely RSA-2048 signature validation
+# failure.  MCUboot was built with CONFIG_BOOT_VALIDATE_SLOT=1 +
+# CONFIG_BOOT_SIGNATURE_TYPE=RSA2048.  The CI-built images have signed TLVs, but
+# verification fails in emulation (boot_go returns FIH_FAILURE, CPU stalls at
+# 0x17E infinite loop).  Needs MCUboot rebuild without signature validation, or
+# images re-signed with matching key.  Platform stubs (FICR, CLOCK, UARTE) are
+# verified working — the bootloader runs, it just rejects the images.
 skip_self_test: true
 expect:
   should_find_issues: true
