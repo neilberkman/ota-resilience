@@ -198,6 +198,7 @@ class CalibrationResult:
     total_erases: int
     trace_file: Optional[str]
     erase_trace_file: Optional[str]
+    calibration_exec_hash: Optional[str] = None
 
 
 def run_calibration(
@@ -242,6 +243,7 @@ def run_calibration(
         total_erases=total_erases,
         trace_file=data.get("trace_file"),
         erase_trace_file=data.get("erase_trace_file"),
+        calibration_exec_hash=data.get("calibration_exec_hash"),
     )
 
 
@@ -722,6 +724,18 @@ def main() -> int:
         profile = load_profile(args.profile)
         robot_suite = args.robot_suite
 
+        if profile.success_criteria.image_hash:
+            print("Discovery mode: image hash validation enabled.", file=sys.stderr)
+        if profile.update_trigger:
+            print(
+                "Update trigger: {} on slot '{}' ({} pre_boot writes generated).".format(
+                    profile.update_trigger.type,
+                    profile.update_trigger.slot,
+                    len(profile.pre_boot_state),
+                ),
+                file=sys.stderr,
+            )
+
         # Resolve evaluation mode: profile default, then CLI override.
         eval_mode = args.evaluation_mode
         if profile.fault_sweep.evaluation_mode and not any(
@@ -783,6 +797,19 @@ def main() -> int:
                 total_erases = cal.total_erases
                 trace_file = cal.trace_file
                 erase_trace_file = cal.erase_trace_file
+                # For image hash discovery mode: use calibration-computed
+                # exec hash as the ground truth for what a successful
+                # operation produces.
+                if cal.calibration_exec_hash:
+                    robot_vars.append(
+                        "EXPECTED_EXEC_SHA256:{}".format(cal.calibration_exec_hash)
+                    )
+                    print(
+                        "Calibration: exec slot hash = {}...".format(
+                            cal.calibration_exec_hash[:16]
+                        ),
+                        file=sys.stderr,
+                    )
                 if include_erases:
                     print("Calibration: {} NVM writes, {} page erases.".format(max_writes, total_erases), file=sys.stderr)
                 else:

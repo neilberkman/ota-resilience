@@ -49,6 +49,10 @@ ${TRACE_FILE}                  ${EMPTY}
 ${ERASE_TRACE_FILE}            ${EMPTY}
 ${FAULT_TYPES}                 write
 ${FAULT_TYPE_CSV}              ${EMPTY}
+${SUCCESS_IMAGE_HASH}          false
+${IMAGE_EXEC_SHA256}           ${EMPTY}
+${IMAGE_STAGING_SHA256}        ${EMPTY}
+${EXPECTED_EXEC_SHA256}        ${EMPTY}
 
 *** Keywords ***
 Load Vulnerable Scenario
@@ -140,6 +144,10 @@ Run Runtime Fault Point
     Execute Command    $erase_trace_file="${ERASE_TRACE_FILE}"
     Execute Command    $fault_types="${FAULT_TYPES}"
     Execute Command    $fault_type_csv="${FAULT_TYPE_CSV}"
+    Execute Command    $success_image_hash="${SUCCESS_IMAGE_HASH}"
+    Execute Command    $image_exec_sha256="${IMAGE_EXEC_SHA256}"
+    Execute Command    $image_staging_sha256="${IMAGE_STAGING_SHA256}"
+    Execute Command    $expected_exec_sha256="${EXPECTED_EXEC_SHA256}"
 
     Execute Script    ${ROOT}/scripts/run_runtime_fault_sweep.resc
 

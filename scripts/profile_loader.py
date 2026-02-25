@@ -70,7 +70,8 @@ class MemoryConfig:
 
 
 class SuccessCriteria:
-    __slots__ = ("vtor_in_slot", "pc_in_slot", "marker_address", "marker_value")
+    __slots__ = ("vtor_in_slot", "pc_in_slot", "marker_address", "marker_value",
+                 "image_hash", "expected_image")
 
     def __init__(
         self,
@@ -78,11 +79,15 @@ class SuccessCriteria:
         pc_in_slot: Optional[str] = None,
         marker_address: Optional[int] = None,
         marker_value: Optional[int] = None,
+        image_hash: bool = False,
+        expected_image: Optional[str] = None,
     ) -> None:
         self.vtor_in_slot = vtor_in_slot
         self.pc_in_slot = pc_in_slot
         self.marker_address = marker_address
         self.marker_value = marker_value
+        self.image_hash = image_hash
+        self.expected_image = expected_image
 
 
 class FaultSweepConfig:
@@ -133,6 +138,20 @@ class PreBootWrite:
         self.u32 = u32
 
 
+class UpdateTrigger:
+    """Declarative update trigger -- generates pre_boot_state writes automatically."""
+    __slots__ = ("type", "slot", "fields")
+
+    def __init__(self, type: str, slot: str, fields: Optional[Dict[str, Any]] = None) -> None:
+        self.type = type
+        self.slot = slot
+        self.fields = fields or {}
+
+
+# MCUboot trailer magic: 4 words written at (slot_end - 16).
+MCUBOOT_GOOD_MAGIC = [0xF395C277, 0x7FEFD260, 0x0F505235, 0x8079B62C]
+
+
 VALID_SCENARIOS = {"runtime", "resilient", "vulnerable"}
 
 
@@ -157,6 +176,7 @@ class ProfileConfig:
         expect: ExpectConfig,
         profile_path: Optional[Path] = None,
         scenario: str = "runtime",
+        update_trigger: Optional[UpdateTrigger] = None,
     ) -> None:
         self.schema_version = schema_version
         self.name = name
@@ -174,6 +194,7 @@ class ProfileConfig:
         self.expect = expect
         self.profile_path = profile_path
         self.scenario = scenario
+        self.update_trigger = update_trigger
 
     def resolve_path(self, repo_root: Path, value: str) -> str:
         """Resolve a path relative to the repo root."""
@@ -202,6 +223,44 @@ class ProfileConfig:
         tmp.write(bytes(data))
         tmp.close()
         return tmp.name
+
+    def expand_update_trigger(self) -> List[PreBootWrite]:
+        """Expand update_trigger into PreBootWrite entries.
+
+        Returns empty list if no update_trigger is set.
+        """
+        if self.update_trigger is None:
+            return []
+
+        trigger = self.update_trigger
+        if trigger.slot not in self.memory.slots:
+            raise ProfileError(
+                "update_trigger.slot '{}' not found in memory.slots".format(trigger.slot)
+            )
+        slot = self.memory.slots[trigger.slot]
+        slot_end = slot.base + slot.size
+
+        if trigger.type == "mcuboot_trailer_magic":
+            # MCUboot GOOD magic: 4 words at slot_end - 16.
+            magic_base = slot_end - 16
+            writes: List[PreBootWrite] = []
+            for i, val in enumerate(MCUBOOT_GOOD_MAGIC):
+                writes.append(PreBootWrite(address=magic_base + i * 4, u32=val))
+            # Optional copy_done field for revert scenarios.
+            align = int(trigger.fields.get("max_align", 8))
+            if trigger.fields.get("copy_done") is not None:
+                # MCUboot trailer: magic at -16, image_ok at -16-align,
+                # copy_done at -16-2*align.
+                copy_done_addr = slot_end - 16 - 2 * align
+                writes.append(PreBootWrite(
+                    address=copy_done_addr,
+                    u32=_parse_int(trigger.fields["copy_done"], "update_trigger.copy_done"),
+                ))
+            return writes
+
+        raise ProfileError(
+            "Unknown update_trigger type '{}'.".format(trigger.type)
+        )
 
     def robot_vars(self, repo_root: Path) -> List[str]:
         """Generate Robot Framework --variable arguments for this profile."""
@@ -249,6 +308,36 @@ class ProfileConfig:
             vars_list.append("SUCCESS_MARKER_ADDR:0x{:08X}".format(sc.marker_address))
         if sc.marker_value is not None:
             vars_list.append("SUCCESS_MARKER_VALUE:0x{:08X}".format(sc.marker_value))
+
+        # Image hash mode: pre-compute SHA-256 of each image binary.
+        # Hash only the data portion (slot_size - page_size), excluding the
+        # last page where bootloaders store trailer metadata.
+        if sc.image_hash:
+            import hashlib
+            vars_list.append("SUCCESS_IMAGE_HASH:true")
+            page_size = 4096
+            exec_slot = mem.slots.get("exec")
+            data_size = (exec_slot.size - page_size) if exec_slot and exec_slot.size > page_size else None
+            image_digests: Dict[str, str] = {}
+            for img_name, img_path in self.images.items():
+                resolved = self.resolve_path(repo_root, img_path)
+                try:
+                    with open(resolved, "rb") as fh:
+                        raw = fh.read()
+                    # Truncate to data_size if image is padded to full slot.
+                    if data_size and len(raw) >= data_size:
+                        raw = raw[:data_size]
+                    digest = hashlib.sha256(raw).hexdigest()
+                    vars_list.append("IMAGE_{}_SHA256:{}".format(img_name.upper(), digest))
+                    image_digests[img_name] = digest
+                except FileNotFoundError:
+                    pass
+            # expected_image: which image should be in exec after a successful operation.
+            expected = sc.expected_image or "staging"
+            if expected in image_digests:
+                vars_list.append("EXPECTED_EXEC_SHA256:{}".format(image_digests[expected]))
+            else:
+                vars_list.append("EXPECTED_EXEC_SHA256:")
 
         # Pre-boot state.
         pre_boot_bin = self.generate_pre_boot_bin()
@@ -360,6 +449,8 @@ def _parse_success_criteria(raw: Optional[Dict[str, Any]]) -> SuccessCriteria:
         pc_in_slot=raw.get("pc_in_slot"),
         marker_address=_parse_int(raw["marker_address"], "success_criteria.marker_address") if "marker_address" in raw else None,
         marker_value=_parse_int(raw["marker_value"], "success_criteria.marker_value") if "marker_value" in raw else None,
+        image_hash=bool(raw.get("image_hash", False)),
+        expected_image=raw.get("expected_image"),
     )
 
 
@@ -405,6 +496,18 @@ def _parse_expect(raw: Optional[Dict[str, Any]]) -> ExpectConfig:
         should_find_issues=bool(raw.get("should_find_issues", True)),
         brick_rate_min=float(raw.get("brick_rate_min", 0.0)),
     )
+
+
+def _parse_update_trigger(raw: Optional[Dict[str, Any]]) -> Optional[UpdateTrigger]:
+    if raw is None:
+        return None
+    trigger_type = str(_require(raw, "type", "update_trigger"))
+    slot = str(_require(raw, "slot", "update_trigger"))
+    fields: Dict[str, Any] = {}
+    for k, v in raw.items():
+        if k not in ("type", "slot"):
+            fields[k] = v
+    return UpdateTrigger(type=trigger_type, slot=slot, fields=fields)
 
 
 def _parse_pre_boot_state(raw: Optional[list]) -> List[PreBootWrite]:
@@ -479,6 +582,7 @@ def load_profile(path: str | Path) -> ProfileConfig:
         images = {str(k): str(v) for k, v in raw_images.items()}
 
     pre_boot_state = _parse_pre_boot_state(data.get("pre_boot_state"))
+    update_trigger = _parse_update_trigger(data.get("update_trigger"))
     setup_script = data.get("setup_script")
     if setup_script is not None:
         setup_script = str(setup_script)
@@ -494,7 +598,7 @@ def load_profile(path: str | Path) -> ProfileConfig:
             "Invalid scenario '{}'. Valid: {}".format(scenario, sorted(VALID_SCENARIOS))
         )
 
-    return ProfileConfig(
+    profile = ProfileConfig(
         schema_version=schema_version,
         name=name,
         description=description,
@@ -511,7 +615,14 @@ def load_profile(path: str | Path) -> ProfileConfig:
         expect=expect,
         profile_path=path,
         scenario=scenario,
+        update_trigger=update_trigger,
     )
+
+    # If update_trigger is set and pre_boot_state is empty, expand the trigger.
+    if update_trigger and not profile.pre_boot_state:
+        profile.pre_boot_state = profile.expand_update_trigger()
+
+    return profile
 
 
 def load_profile_raw(path: str | Path) -> Dict[str, Any]:
@@ -548,6 +659,9 @@ def main() -> int:
         "max_writes": profile.fault_sweep.max_writes,
         "state_fuzzer_enabled": profile.state_fuzzer.enabled,
         "expect_should_find_issues": profile.expect.should_find_issues,
+        "image_hash": profile.success_criteria.image_hash,
+        "update_trigger": profile.update_trigger.type if profile.update_trigger else None,
+        "pre_boot_state_count": len(profile.pre_boot_state),
     }
     print(json.dumps(info, indent=2, sort_keys=True))
     return 0
