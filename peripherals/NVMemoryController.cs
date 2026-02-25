@@ -271,7 +271,35 @@ namespace Antmicro.Renode.Peripherals.Memory
             }
         }
 
-        public byte EraseFill { get; set; }
+        public byte EraseFill
+        {
+            get { return eraseFill; }
+            set
+            {
+                if(value != eraseFill)
+                {
+                    var oldFill = eraseFill;
+                    eraseFill = value;
+
+                    // Re-fill storage bytes that still hold the old erase pattern.
+                    // This handles the Renode construction order issue: the constructor
+                    // fills storage with the default EraseFill (0x00), then the .repl
+                    // property setter fires with the actual value (e.g. 0xFF for flash).
+                    // Only touch bytes that match the old fill to avoid clobbering data
+                    // loaded between construction and property-set (e.g. LoadBinary).
+                    if(storage != null)
+                    {
+                        for(var i = 0L; i < storage.Length; i++)
+                        {
+                            if(storage[i] == oldFill)
+                            {
+                                storage[i] = value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public bool EnforceWordWriteSemantics { get; set; } = true;
 
@@ -484,6 +512,7 @@ namespace Antmicro.Renode.Peripherals.Memory
             }
         }
 
+        private byte eraseFill;
         private long size;
         private long wordSize;
         private byte[] storage;

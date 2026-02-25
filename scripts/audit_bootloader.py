@@ -29,8 +29,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from fault_inject import FaultResult
 from profile_loader import ProfileConfig, load_profile
@@ -74,6 +75,14 @@ def parse_args() -> argparse.Namespace:
         "--fault-step", type=int, default=1,
         help="Step between fault points (default: 1 = test every write).",
     )
+    parser.add_argument(
+        "--fault-start", type=int, default=None,
+        help="First fault point to test (default: 0).",
+    )
+    parser.add_argument(
+        "--fault-end", type=int, default=None,
+        help="Last fault point to test (exclusive; default: max_writes).",
+    )
     parser.add_argument("--keep-run-artifacts", action="store_true")
     parser.add_argument(
         "--no-control", action="store_true",
@@ -82,6 +91,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-assert-control-boots", action="store_true",
         help="Disable control-boot assertion.",
+    )
+    parser.add_argument(
+        "--workers", type=int, default=1,
+        help="Number of parallel Renode instances (default: 1).",
     )
     return parser.parse_args()
 
@@ -183,8 +196,11 @@ def run_calibration(
     robot_vars: List[str],
     work_dir: Path,
     renode_remote_server_dir: str,
-) -> int:
-    """Run calibration to discover total NVM writes during a clean update."""
+) -> Tuple[int, Optional[str]]:
+    """Run calibration to discover total NVM writes during a clean update.
+
+    Returns (total_writes, trace_file_path_or_None).
+    """
     data = run_single_point(
         repo_root=repo_root,
         renode_test=renode_test,
@@ -211,7 +227,8 @@ def run_calibration(
             file=sys.stderr,
         )
         total_writes = cap
-    return total_writes
+    trace_file = data.get("trace_file")
+    return total_writes, trace_file
 
 
 def run_batch(
@@ -223,6 +240,7 @@ def run_batch(
     robot_vars: List[str],
     work_dir: Path,
     renode_remote_server_dir: str,
+    trace_file: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """Run multiple fault points in a single Renode session (batch mode)."""
     batch_dir = work_dir / "{}_batch".format(profile.name)
@@ -245,6 +263,7 @@ def run_batch(
         "--variable", "FAULT_AT:0",
         "--variable", "RESULT_FILE:{}".format(result_file),
         "--variable", "CALIBRATION_MODE:false",
+        "--variable", "TRACE_FILE:{}".format(trace_file or ""),
     ]
     if renode_remote_server_dir:
         cmd.extend(["--robot-framework-remote-server-full-directory", renode_remote_server_dir])
@@ -347,6 +366,67 @@ def run_classic_sweep(
     return results
 
 
+def _run_batch_worker(
+    repo_root_str: str,
+    renode_test: str,
+    robot_suite: str,
+    profile_path: str,
+    fault_points: List[int],
+    robot_vars: List[str],
+    work_dir_str: str,
+    renode_remote_server_dir: str,
+    worker_id: int,
+    trace_file: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Worker function for parallel batch execution.
+
+    Runs in a subprocess via ProcessPoolExecutor.  Reloads the profile
+    from disk so everything is picklable.
+    """
+    repo_root = Path(repo_root_str)
+    work_dir = Path(work_dir_str)
+    worker_dir = work_dir / "worker_{}".format(worker_id)
+    worker_dir.mkdir(parents=True, exist_ok=True)
+
+    # Re-create the renode config for this worker's directory.
+    renode_config = worker_dir / "renode.config"
+    renode_config.write_text(
+        "[general]\n"
+        "terminal = Termsharp\n"
+        "compiler-cache-enabled = False\n"
+        "serialization-mode = Generated\n"
+        "use-synchronous-logging = False\n"
+        "always-log-machine-name = False\n"
+        "collapse-repeated-log-entries = True\n"
+        "log-history-limit = 1000\n"
+        "store-table-bits = 41\n"
+        "[monitor]\n"
+        "consume-exceptions-from-command = True\n"
+        "break-script-on-exception = True\n"
+        "number-format = Hexadecimal\n"
+        "[plugins]\n"
+        "enabled-plugins = \n"
+        "[translation]\n"
+        "min-tb-size = 33554432\n"
+        "max-tb-size = 536870912\n",
+        encoding="utf-8",
+    )
+
+    profile = load_profile(profile_path)
+
+    return run_batch(
+        repo_root=repo_root,
+        renode_test=renode_test,
+        robot_suite=robot_suite,
+        profile=profile,
+        fault_points=fault_points,
+        robot_vars=robot_vars,
+        work_dir=worker_dir,
+        renode_remote_server_dir=renode_remote_server_dir,
+        trace_file=trace_file,
+    )
+
+
 def run_runtime_sweep(
     repo_root: Path,
     renode_test: str,
@@ -357,14 +437,67 @@ def run_runtime_sweep(
     work_dir: Path,
     renode_remote_server_dir: str,
     include_control: bool,
+    num_workers: int = 1,
+    trace_file: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """Run the full runtime fault sweep.
 
     Uses batch mode (single Renode session) for all fault points, then
-    runs the control point separately.
+    runs the control point separately.  When num_workers > 1, fault
+    points are split across parallel Renode instances.
+
+    If trace_file is provided, uses trace-replay mode: reconstructs
+    flash state from the calibration trace instead of re-emulating
+    Phase 1.  This eliminates the O(N^2) prefix cost.
     """
-    # Batch all fault points in one Renode session.
-    if fault_points:
+    if fault_points and num_workers > 1:
+        # Split fault points into roughly equal chunks.
+        n = min(num_workers, len(fault_points))
+        chunk_size = (len(fault_points) + n - 1) // n
+        chunks = [fault_points[i:i + chunk_size] for i in range(0, len(fault_points), chunk_size)]
+
+        print(
+            "Parallel sweep: {} workers, chunks of ~{} points".format(
+                len(chunks), chunk_size
+            ),
+            file=sys.stderr,
+        )
+
+        batch_results: List[Dict[str, Any]] = []
+        with ProcessPoolExecutor(max_workers=len(chunks)) as pool:
+            futures = {}
+            for wid, chunk in enumerate(chunks):
+                f = pool.submit(
+                    _run_batch_worker,
+                    repo_root_str=str(repo_root),
+                    renode_test=renode_test,
+                    robot_suite=robot_suite,
+                    profile_path=str(profile.profile_path),
+                    fault_points=chunk,
+                    robot_vars=robot_vars,
+                    work_dir_str=str(work_dir),
+                    renode_remote_server_dir=renode_remote_server_dir,
+                    worker_id=wid,
+                    trace_file=trace_file,
+                )
+                futures[f] = wid
+
+            for f in as_completed(futures):
+                wid = futures[f]
+                try:
+                    worker_results = f.result()
+                    batch_results.extend(worker_results)
+                    print(
+                        "Worker {} finished: {} results".format(wid, len(worker_results)),
+                        file=sys.stderr,
+                    )
+                except Exception as exc:
+                    print(
+                        "Worker {} FAILED: {}".format(wid, exc),
+                        file=sys.stderr,
+                    )
+                    raise
+    elif fault_points:
         batch_results = run_batch(
             repo_root=repo_root,
             renode_test=renode_test,
@@ -374,6 +507,7 @@ def run_runtime_sweep(
             robot_vars=robot_vars,
             work_dir=work_dir,
             renode_remote_server_dir=renode_remote_server_dir,
+            trace_file=trace_file,
         )
     else:
         batch_results = []
@@ -404,7 +538,63 @@ def run_runtime_sweep(
     return results
 
 
-def summarize_runtime_sweep(results: List[Dict[str, Any]]) -> Dict[str, Any]:
+def categorize_failure(
+    result: Dict[str, Any],
+    total_writes: int,
+    profile: ProfileConfig,
+) -> Dict[str, Any]:
+    """Classify a single failure by outcome type and fault region."""
+    fp = result.get("fault_at", 0)
+    outcome = result.get("boot_outcome", "unknown")
+    fault_addr = result.get("fault_address", "0x00000000")
+
+    # Parse fault address.
+    if isinstance(fault_addr, str):
+        addr = int(fault_addr, 16)
+    else:
+        addr = int(fault_addr)
+
+    # Determine which memory region the faulted write targeted.
+    # MCUboot puts trailers at the end of each slot (last page), so
+    # check trailer before data to get the more specific classification.
+    region = "unknown"
+    page_size = getattr(profile.memory, "page_size", 4096)
+    for slot_name, slot_info in profile.memory.slots.items():
+        slot_end = slot_info.base + slot_info.size
+        if slot_end - page_size <= addr < slot_end:
+            region = slot_name + "_trailer"
+            break
+        if slot_info.base <= addr < slot_end:
+            region = slot_name + "_data"
+            break
+
+    # Swap phase based on position.
+    if total_writes > 0:
+        pct = fp / total_writes
+    else:
+        pct = 0.0
+    if pct < 0.01:
+        phase = "early"
+    elif pct > 0.99:
+        phase = "late"
+    else:
+        phase = "mid"
+
+    return {
+        "fault_at": fp,
+        "outcome": outcome,
+        "fault_address": fault_addr,
+        "region": region,
+        "phase": phase,
+        "position_pct": round(pct * 100, 2),
+    }
+
+
+def summarize_runtime_sweep(
+    results: List[Dict[str, Any]],
+    total_writes: int = 0,
+    profile: Optional["ProfileConfig"] = None,
+) -> Dict[str, Any]:
     """Compute summary statistics from runtime sweep results."""
     non_control = [r for r in results if not r.get("is_control", False)]
     control = [r for r in results if r.get("is_control", False)]
@@ -414,16 +604,31 @@ def summarize_runtime_sweep(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     not_injected = [r for r in non_control if not r.get("fault_injected", False)]
 
     total = len(injected)
-    bricks = sum(1 for r in injected if r.get("boot_outcome") != "success")
+    failures = [r for r in injected if r.get("boot_outcome") != "success"]
     recoveries = sum(1 for r in injected if r.get("boot_outcome") == "success")
+
+    # Categorize failures by outcome type.
+    outcome_counts: Dict[str, int] = {}
+    categorized_failures: List[Dict[str, Any]] = []
+    for r in failures:
+        outcome = r.get("boot_outcome", "unknown")
+        outcome_counts[outcome] = outcome_counts.get(outcome, 0) + 1
+        if profile:
+            categorized_failures.append(
+                categorize_failure(r, total_writes, profile)
+            )
 
     summary: Dict[str, Any] = {
         "total_fault_points": total,
-        "bricks": bricks,
+        "bricks": len(failures),
         "recoveries": recoveries,
-        "brick_rate": (float(bricks) / float(total)) if total else 0.0,
+        "brick_rate": (float(len(failures)) / float(total)) if total else 0.0,
         "discarded_no_fault_fired": len(not_injected),
+        "failure_outcomes": outcome_counts,
     }
+
+    if categorized_failures:
+        summary["failures"] = categorized_failures
 
     if control:
         ctrl = control[-1]
@@ -496,6 +701,7 @@ def main() -> int:
         # Calibration
         # -------------------------------------------------------------------
         max_writes = profile.fault_sweep.max_writes
+        trace_file: Optional[str] = None
         if max_writes == "auto":
             if eval_mode == "state" and "exec" in profile.memory.slots:
                 # State mode: compute write count from slot geometry.
@@ -504,7 +710,7 @@ def main() -> int:
                 print("Computed write count from slot geometry: {} writes.".format(max_writes), file=sys.stderr)
             else:
                 print("Calibrating write count for '{}'...".format(profile.name), file=sys.stderr)
-                max_writes = run_calibration(
+                max_writes, trace_file = run_calibration(
                     repo_root=repo_root,
                     renode_test=renode_test,
                     robot_suite=robot_suite,
@@ -529,10 +735,63 @@ def main() -> int:
         # -------------------------------------------------------------------
         # Build fault point list
         # -------------------------------------------------------------------
-        step = max(1, args.fault_step)
-        fault_points = list(range(0, max_writes, step))
-        if max_writes - 1 not in fault_points:
-            fault_points.append(max_writes - 1)
+        heuristic_summary: Optional[Dict] = None
+        use_heuristic = (
+            trace_file
+            and os.path.exists(trace_file)
+            and not args.quick
+            and args.fault_start is None
+            and args.fault_end is None
+            and args.fault_step == 1
+            and getattr(profile.fault_sweep, "sweep_strategy", "heuristic") != "exhaustive"
+        )
+
+        if use_heuristic:
+            from write_trace_heuristic import (
+                classify_trace,
+                load_trace,
+                summarize_classification,
+            )
+
+            trace = load_trace(trace_file)
+            slot_ranges_for_heuristic: Dict[str, Tuple[int, int]] = {}
+            flash_base = int(profile.memory.slots.get("exec", profile.memory.slots[list(profile.memory.slots.keys())[0]]).base) if profile.memory.slots else 0
+            # Reconstruct slot ranges as bus addresses.
+            for sname, sinfo in profile.memory.slots.items():
+                slot_ranges_for_heuristic[sname] = (sinfo.base, sinfo.base + sinfo.size)
+            # The flash_base for heuristic is the FlashBaseAddress of the NVMC.
+            # In our platform, nvm starts at the exec slot base.
+            flash_base = min(s.base for s in profile.memory.slots.values())
+
+            fault_points = classify_trace(
+                trace=trace,
+                slot_ranges=slot_ranges_for_heuristic,
+                flash_base=flash_base,
+                page_size=getattr(profile.memory, "page_size", 4096),
+            )
+            heuristic_summary = summarize_classification(
+                trace=trace,
+                fault_points=fault_points,
+                slot_ranges=slot_ranges_for_heuristic,
+                flash_base=flash_base,
+            )
+            print(
+                "Heuristic: {} fault points from {} writes (reduction {:.1f}x). "
+                "Trailer writes: {}.".format(
+                    heuristic_summary["selected_fault_points"],
+                    heuristic_summary["total_writes"],
+                    1.0 / max(heuristic_summary["reduction_ratio"], 0.001),
+                    heuristic_summary["trailer_writes"],
+                ),
+                file=sys.stderr,
+            )
+        else:
+            step = max(1, args.fault_step)
+            fp_start = args.fault_start if args.fault_start is not None else 0
+            fp_end = args.fault_end if args.fault_end is not None else max_writes
+            fault_points = list(range(fp_start, fp_end, step))
+            if max_writes - 1 not in fault_points and args.fault_end is None:
+                fault_points.append(max_writes - 1)
 
         if args.quick:
             fault_points = quick_subset(fault_points)
@@ -568,9 +827,13 @@ def main() -> int:
                 work_dir=work_dir,
                 renode_remote_server_dir=args.renode_remote_server_dir,
                 include_control=not args.no_control,
+                num_workers=args.workers,
+                trace_file=trace_file,
             )
 
-        sweep_summary = summarize_runtime_sweep(sweep_results)
+        sweep_summary = summarize_runtime_sweep(
+            sweep_results, total_writes=max_writes, profile=profile
+        )
 
         # -------------------------------------------------------------------
         # State fuzzer (opt-in)
@@ -622,6 +885,7 @@ def main() -> int:
             "calibrated_writes": max_writes,
             "fault_points_tested": len(fault_points),
             "quick": bool(args.quick),
+            "heuristic": heuristic_summary,
             "verdict": verdict,
             "summary": {
                 "runtime_sweep": sweep_summary,
@@ -635,6 +899,7 @@ def main() -> int:
                 "run_utc": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
                 "campaign_command": " ".join(shlex.quote(a) for a in command_parts),
                 "artifacts_dir": report_artifacts_dir,
+                "workers": args.workers,
             },
             "git": git_metadata(repo_root),
         }

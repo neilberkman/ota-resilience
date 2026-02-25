@@ -1,9 +1,9 @@
 schema_version: 1
-name: mcuboot_swap_current
-description: "MCUboot swap-using-move (fixed commit 664093d). nRF52840 flash. Tests the revert path — should survive all power-loss faults."
+name: mcuboot_pr2100_broken
+description: "MCUboot swap-using-move BEFORE PR #2100 fix (commit 2ac79767). REVERT row requires BOOT_MAGIC_UNSET for secondary — power loss during fixup_revert leaves BOOT_MAGIC_BAD, no match, no revert, brick."
 platform: platforms/cortex_m4_flash_fast.repl
 bootloader:
-  elf: results/oss_validation/assets/oss_mcuboot_mcuboot_swap_current_guard.elf
+  elf: results/oss_validation/assets/oss_mcuboot_pr2100_broken.elf
   entry: 0x00000000
 memory:
   sram: { start: 0x20000000, end: 0x20040000 }
@@ -47,5 +47,12 @@ fault_sweep:
   run_duration: "2.0"
   max_step_limit: 20000000
 expect:
-  should_find_issues: false
-  brick_rate_min: 0.0
+  # Two distinct failure classes:
+  # 1. fixup_revert magic brick (fp 3-5): partial boot_write_magic leaves
+  #    BOOT_MAGIC_BAD, REVERT row requires UNSET, no match, brick.
+  #    FIXED by PR #2100 (UNSET→ANY).
+  # 2. Tail-of-swap integrity (fp 14952-14956): power loss during final
+  #    secondary-slot writes / trailer finalization → wrong image after recovery.
+  #    Shared with fixed profile — separate MCUboot issue.
+  should_find_issues: true
+  brick_rate_min: 0.001

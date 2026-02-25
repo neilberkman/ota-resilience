@@ -28,6 +28,7 @@ ${SRAM_START}                  0x20000000
 ${SRAM_END}                    0x20020000
 ${WRITE_GRANULARITY}           8
 ${RUN_DURATION}                0.5
+${MAX_STEP_LIMIT}              500000
 ${MAX_WRITES_CAP}              100000
 ${SLOT_EXEC_BASE}              0x10002000
 ${SLOT_EXEC_SIZE}              0x37000
@@ -44,6 +45,7 @@ ${SUCCESS_MARKER_VALUE}        0
 ${FAULT_POINTS_CSV}            ${EMPTY}
 ${IMAGE_STAGING_PATH}          ${EMPTY}
 ${IMAGE_EXEC_PATH}             ${EMPTY}
+${TRACE_FILE}                  ${EMPTY}
 
 *** Keywords ***
 Load Vulnerable Scenario
@@ -112,6 +114,7 @@ Run Runtime Fault Point
     Execute Command    $calibration_mode=${CALIBRATION_MODE}
     Execute Command    $evaluation_mode="${EVALUATION_MODE}"
     Execute Command    $run_duration="${RUN_DURATION}"
+    Execute Command    $max_step_limit=${MAX_STEP_LIMIT}
     Execute Command    $max_writes_cap=${MAX_WRITES_CAP}
     Execute Command    $bootloader_elf="${BOOTLOADER_ELF}"
     Execute Command    $bootloader_entry=${BOOTLOADER_ENTRY}
@@ -130,6 +133,7 @@ Run Runtime Fault Point
     Execute Command    $fault_points_csv="${FAULT_POINTS_CSV}"
     Execute Command    $image_staging_path="${IMAGE_STAGING_PATH}"
     Execute Command    $image_exec_path="${IMAGE_EXEC_PATH}"
+    Execute Command    $trace_file="${TRACE_FILE}"
 
     Execute Script    ${ROOT}/scripts/run_runtime_fault_sweep.resc
 

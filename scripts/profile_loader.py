@@ -86,23 +86,27 @@ class SuccessCriteria:
 
 
 class FaultSweepConfig:
-    __slots__ = ("mode", "max_writes", "max_writes_cap", "run_duration", "fault_types", "evaluation_mode")
+    __slots__ = ("mode", "max_writes", "max_writes_cap", "max_step_limit", "run_duration", "fault_types", "evaluation_mode", "sweep_strategy")
 
     def __init__(
         self,
         mode: str = "runtime",
         max_writes: Any = "auto",
         max_writes_cap: int = 100000,
+        max_step_limit: int = 500000,
         run_duration: str = "0.5",
         fault_types: Optional[List[str]] = None,
         evaluation_mode: Optional[str] = None,
+        sweep_strategy: str = "heuristic",
     ) -> None:
         self.mode = mode
         self.max_writes = max_writes
         self.max_writes_cap = max_writes_cap
+        self.max_step_limit = max_step_limit
         self.run_duration = run_duration
         self.fault_types = fault_types or ["power_loss"]
         self.evaluation_mode = evaluation_mode
+        self.sweep_strategy = sweep_strategy
 
 
 class StateFuzzerConfig:
@@ -217,6 +221,7 @@ class ProfileConfig:
             "SRAM_END:0x{:08X}".format(mem.sram_end),
             "WRITE_GRANULARITY:{}".format(mem.write_granularity),
             "RUN_DURATION:{}".format(fs.run_duration),
+            "MAX_STEP_LIMIT:{}".format(fs.max_step_limit),
             "MAX_WRITES_CAP:{}".format(fs.max_writes_cap),
             "RUNTIME_MODE:true",
         ]
@@ -376,9 +381,11 @@ def _parse_fault_sweep(raw: Optional[Dict[str, Any]]) -> FaultSweepConfig:
         mode=raw.get("mode", "runtime"),
         max_writes=raw.get("max_writes", "auto"),
         max_writes_cap=int(raw.get("max_writes_cap", 100000)),
+        max_step_limit=int(raw.get("max_step_limit", 500000)),
         run_duration=str(raw.get("run_duration", "0.5")),
         fault_types=fault_types,
         evaluation_mode=eval_mode,
+        sweep_strategy=str(raw.get("sweep_strategy", "heuristic")),
     )
 
 
