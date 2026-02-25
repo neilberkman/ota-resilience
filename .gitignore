@@ -34,3 +34,17 @@ results/full_campaign.json
 results/resilient_campaign.json
 results/resilient_meta_campaign.json
 results/vulnerable_campaign.json
+
+# Audit run artifacts and result JSONs (generated, not committed)
+results/audit_runs/
+results/*_heuristic.json
+results/*_targeted.json
+results/*_parallel_test.json
+results/*_early.json
+results/*_trace_replay.json
+
+# Build outputs
+results/oss_validation/build/
+
+# Third-party source checkouts
+third_party/
