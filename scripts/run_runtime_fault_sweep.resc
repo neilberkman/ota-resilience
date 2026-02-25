@@ -241,6 +241,44 @@ def apply_pre_boot_state():
     if setup_script:
         monitor.Parse('include @' + setup_script)
 
+def restore_hw_init():
+    # Restore hardware init values cleared by machine Reset.
+    # These are nRF52 NVMC/FICR registers needed for correct operation.
+    bus.WriteDoubleWord(0x10000010, 0x1000)
+    bus.WriteDoubleWord(0x10000014, 0x100)
+    bus.WriteDoubleWord(0x40000100, 0x1)
+    bus.WriteDoubleWord(0x40000418, 0x10001)
+
+def reset_nvmc_for_sweep():
+    # Reset NVMC counters and prepare for fault-injected run.
+    if USE_FAST_PATH:
+        nvmc.DiffLookahead = 2147483647
+        nvmc.TotalWordWrites = 0
+        nvmc.TotalPageErases = 0
+        nvmc.FaultFired = False
+        nvmc.EraseFaultFired = False
+        nvmc.FaultFlashSnapshot = None
+
+def reset_nvmc_for_recovery():
+    # Reset NVMC for recovery boot: no write counting needed, fast mode.
+    if USE_FAST_PATH:
+        nvmc.DiffLookahead = 32
+        nvmc.TotalWordWrites = 0
+        nvmc.TotalPageErases = 0
+        nvmc.FaultFired = False
+        nvmc.EraseFaultFired = False
+        disarm_fault()
+
+def restore_flash_and_boot(saved_flash):
+    # Common pattern: reset machine, restore flash snapshot, reload ELF,
+    # restore hw init. Used after Phase 1 fault to set up recovery boot.
+    monitor.Parse('machine Reset')
+    monitor.Parse('machine Pause')
+    flash_ref = nvmc.Flash
+    flash_ref.WriteBytes(0, saved_flash)
+    bus.LoadELF(bootloader_elf, True)
+    restore_hw_init()
+
 def reload_images():
     # Restore flash to pre-test state by erasing, then reloading images.
     # Ensure machine is paused before loading binaries.
@@ -519,14 +557,7 @@ def run_execute_fault(fault_at, fault_type='w'):
     reload_images()
     apply_pre_boot_state()
 
-    # Reset counters and snapshot for this run (fast path only).
-    if USE_FAST_PATH:
-        nvmc.DiffLookahead = 2147483647
-        nvmc.TotalWordWrites = 0
-        nvmc.TotalPageErases = 0
-        nvmc.FaultFired = False
-        nvmc.EraseFaultFired = False
-        nvmc.FaultFlashSnapshot = None
+    reset_nvmc_for_sweep()
 
     if fault_type == 'e':
         # Erase fault: arm at the Nth erase operation.
@@ -596,29 +627,8 @@ def run_execute_fault(fault_at, fault_type='w'):
                 'sec_image_ok': '0x{0:08X}'.format(sec_ok),
             }
 
-        monitor.Parse('machine Reset')
-        monitor.Parse('machine Pause')
-
-        # Restore flash to the exact fault-point state.
-        flash_ref.WriteBytes(0, saved_flash)
-
-        # Reload bootloader code into boot_rom (also cleared by reset).
-        bus.LoadELF(bootloader_elf, True)
-
-        # Restore hardware init values cleared by machine Reset.
-        bus.WriteDoubleWord(0x10000010, 0x1000)
-        bus.WriteDoubleWord(0x10000014, 0x100)
-        bus.WriteDoubleWord(0x40000100, 0x1)
-        bus.WriteDoubleWord(0x40000418, 0x10001)
-
-        # Reset NVMC counters and disarm faults for the recovery boot.
-        # Disable always-diff for recovery — no counting needed, just boot.
-        nvmc.DiffLookahead = 32
-        nvmc.TotalWordWrites = 0
-        nvmc.TotalPageErases = 0
-        nvmc.FaultFired = False
-        nvmc.EraseFaultFired = False
-        disarm_fault()
+        restore_flash_and_boot(saved_flash)
+        reset_nvmc_for_recovery()
 
         # Boot again (recovery attempt).
         log('fp={} phase2_step'.format(fault_at))
@@ -676,13 +686,7 @@ def run_cascading_fault(write_fault_at, erase_fault_at):
     reload_images()
     apply_pre_boot_state()
 
-    if USE_FAST_PATH:
-        nvmc.DiffLookahead = 2147483647
-        nvmc.TotalWordWrites = 0
-        nvmc.TotalPageErases = 0
-        nvmc.FaultFired = False
-        nvmc.EraseFaultFired = False
-        nvmc.FaultFlashSnapshot = None
+    reset_nvmc_for_sweep()
 
     base_writes = get_total_writes()
     arm_at = base_writes + write_fault_at + 1
@@ -725,22 +729,10 @@ def run_cascading_fault(write_fault_at, erase_fault_at):
     if saved_flash is None:
         saved_flash = flash_ref.ReadBytes(0, flash_size)
 
-    monitor.Parse('machine Reset')
-    monitor.Parse('machine Pause')
-    flash_ref.WriteBytes(0, saved_flash)
-    bus.LoadELF(bootloader_elf, True)
-    bus.WriteDoubleWord(0x10000010, 0x1000)
-    bus.WriteDoubleWord(0x10000014, 0x100)
-    bus.WriteDoubleWord(0x40000100, 0x1)
-    bus.WriteDoubleWord(0x40000418, 0x10001)
+    restore_flash_and_boot(saved_flash)
 
     # Reset counters and arm erase fault for recovery boot.
-    nvmc.DiffLookahead = 2147483647  # Need accurate counting for erase target.
-    nvmc.TotalWordWrites = 0
-    nvmc.TotalPageErases = 0
-    nvmc.FaultFired = False
-    nvmc.EraseFaultFired = False
-    nvmc.FaultFlashSnapshot = None
+    reset_nvmc_for_sweep()
     disarm_write_fault()
     arm_erase_fault(erase_fault_at + 1)  # 0-indexed → 1-indexed
 
@@ -764,21 +756,8 @@ def run_cascading_fault(write_fault_at, erase_fault_at):
         if saved_flash2 is None:
             saved_flash2 = flash_ref.ReadBytes(0, flash_size)
 
-        monitor.Parse('machine Reset')
-        monitor.Parse('machine Pause')
-        flash_ref.WriteBytes(0, saved_flash2)
-        bus.LoadELF(bootloader_elf, True)
-        bus.WriteDoubleWord(0x10000010, 0x1000)
-        bus.WriteDoubleWord(0x10000014, 0x100)
-        bus.WriteDoubleWord(0x40000100, 0x1)
-        bus.WriteDoubleWord(0x40000418, 0x10001)
-
-        nvmc.DiffLookahead = 32
-        nvmc.TotalWordWrites = 0
-        nvmc.TotalPageErases = 0
-        nvmc.FaultFired = False
-        nvmc.EraseFaultFired = False
-        disarm_fault()
+        restore_flash_and_boot(saved_flash2)
+        reset_nvmc_for_recovery()
 
         log('cascade w={} e={} phase3_step'.format(write_fault_at, erase_fault_at))
         run_until_done(cpu_ref, label='cascade_w{}_e{}_p3'.format(write_fault_at, erase_fault_at),
@@ -938,24 +917,12 @@ def run_trace_replay_fault(fault_at):
     phase1_ms = int((_time.time() - fp_t0) * 1000)
 
     # Phase 2: recovery boot from the reconstructed flash state.
+    # Phase 2: recovery boot. Keep flash as-is (trace-reconstructed state).
     monitor.Parse('machine Reset')
     monitor.Parse('machine Pause')
-
-    # Reload bootloader code (cleared by reset) but keep flash as-is.
     bus.LoadELF(bootloader_elf, True)
-
-    # Restore hardware init values cleared by machine Reset.
-    bus.WriteDoubleWord(0x10000010, 0x1000)
-    bus.WriteDoubleWord(0x10000014, 0x100)
-    bus.WriteDoubleWord(0x40000100, 0x1)
-    bus.WriteDoubleWord(0x40000418, 0x10001)
-
-    # No write counting needed for recovery — fast mode.
-    if USE_FAST_PATH:
-        nvmc.DiffLookahead = 32
-        nvmc.TotalWordWrites = 0
-        nvmc.FaultFired = False
-        disarm_fault()
+    restore_hw_init()
+    reset_nvmc_for_recovery()
 
     cpu_ref.IsHalted = False
     run_until_done(cpu_ref, label='fp{}_replay_p2'.format(fault_at), expect_writes=False,
@@ -963,31 +930,12 @@ def run_trace_replay_fault(fault_at):
 
     phase2_ms = int((_time.time() - fp_t0) * 1000) - phase1_ms
 
-    # Read final state.
+    # Read final state — always use evaluate_boot_outcome for consistency.
     vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
     pc_value = as_int(cpu_ref.GetRegisterUnsafe(15))
-
-    if not fault_injected:
-        boot_outcome = 'success'
-        boot_slot = None
-        for sn, (s_lo, s_hi) in slot_ranges.items():
-            if s_lo <= vtor_value < s_hi:
-                boot_slot = sn
-                break
-        signals = {
-            'vtor': '0x{0:08X}'.format(vtor_value),
-            'vtor_ok': True,
-            'pc': '0x{0:08X}'.format(pc_value),
-            'pc_ok': True,
-            'marker_ok': True,
-            'marker_actual': '0x00000000',
-            'phase1_ms': phase1_ms,
-            'phase2_ms': phase2_ms,
-        }
-    else:
-        boot_outcome, boot_slot, signals = evaluate_boot_outcome(vtor_value, pc_value)
-        signals['phase1_ms'] = phase1_ms
-        signals['phase2_ms'] = phase2_ms
+    boot_outcome, boot_slot, signals = evaluate_boot_outcome(vtor_value, pc_value)
+    signals['phase1_ms'] = phase1_ms
+    signals['phase2_ms'] = phase2_ms
 
     if fault_at % 100 == 0:
         log('fp={} trace_replay writes={} p1={}ms p2={}ms outcome={}'.format(
@@ -1036,13 +984,8 @@ if calibration_mode:
         apply_pre_boot_state()
         # Force word-level diff for calibration so the count matches sweep.
         # Enable write trace to record (writeIndex, flashOffset) for heuristic.
-        # Also enable erase trace if erase fault injection is configured.
+        reset_nvmc_for_sweep()
         if USE_FAST_PATH:
-            nvmc.DiffLookahead = 2147483647
-            nvmc.TotalWordWrites = 0
-            nvmc.TotalPageErases = 0
-            nvmc.FaultFired = False
-            nvmc.EraseFaultFired = False
             nvmc.WriteTraceClear()
             nvmc.WriteTraceEnabled = True
             # Always capture erase trace — needed for trace replay correctness.
