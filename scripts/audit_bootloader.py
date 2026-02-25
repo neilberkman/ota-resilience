@@ -96,6 +96,10 @@ def parse_args() -> argparse.Namespace:
         "--workers", type=int, default=1,
         help="Number of parallel Renode instances (default: 1).",
     )
+    parser.add_argument(
+        "--no-trace-replay", action="store_true",
+        help="Disable trace replay optimization; force full CPU execution for every fault point.",
+    )
     return parser.parse_args()
 
 
@@ -188,6 +192,14 @@ def run_single_point(
     return json.loads(result_file.read_text(encoding="utf-8"))
 
 
+@dataclasses.dataclass
+class CalibrationResult:
+    total_writes: int
+    total_erases: int
+    trace_file: Optional[str]
+    erase_trace_file: Optional[str]
+
+
 def run_calibration(
     repo_root: Path,
     renode_test: str,
@@ -196,11 +208,8 @@ def run_calibration(
     robot_vars: List[str],
     work_dir: Path,
     renode_remote_server_dir: str,
-) -> Tuple[int, Optional[str]]:
-    """Run calibration to discover total NVM writes during a clean update.
-
-    Returns (total_writes, trace_file_path_or_None).
-    """
+) -> CalibrationResult:
+    """Run calibration to discover total NVM writes and erases during a clean update."""
     data = run_single_point(
         repo_root=repo_root,
         renode_test=renode_test,
@@ -213,10 +222,11 @@ def run_calibration(
         calibration=True,
     )
     total_writes = int(data.get("total_writes", 0))
-    if total_writes <= 0:
+    total_erases = int(data.get("total_erases", 0))
+    if total_writes <= 0 and total_erases <= 0:
         raise RuntimeError(
-            "Calibration returned total_writes={} — bootloader may not be "
-            "writing to NVM during emulation.".format(total_writes)
+            "Calibration returned total_writes={}, total_erases={} — bootloader may not be "
+            "writing to NVM during emulation.".format(total_writes, total_erases)
         )
     cap = profile.fault_sweep.max_writes_cap
     if total_writes > cap:
@@ -227,8 +237,12 @@ def run_calibration(
             file=sys.stderr,
         )
         total_writes = cap
-    trace_file = data.get("trace_file")
-    return total_writes, trace_file
+    return CalibrationResult(
+        total_writes=total_writes,
+        total_erases=total_erases,
+        trace_file=data.get("trace_file"),
+        erase_trace_file=data.get("erase_trace_file"),
+    )
 
 
 def run_batch(
@@ -241,8 +255,13 @@ def run_batch(
     work_dir: Path,
     renode_remote_server_dir: str,
     trace_file: Optional[str] = None,
+    erase_trace_file: Optional[str] = None,
+    fault_types_list: Optional[List[str]] = None,
 ) -> List[Dict[str, Any]]:
-    """Run multiple fault points in a single Renode session (batch mode)."""
+    """Run multiple fault points in a single Renode session (batch mode).
+
+    fault_types_list: parallel list of fault types ('w' or 'e') per fault point.
+    """
     batch_dir = work_dir / "{}_batch".format(profile.name)
     batch_dir.mkdir(parents=True, exist_ok=True)
 
@@ -253,6 +272,17 @@ def run_batch(
     bundle_dir.mkdir(parents=True, exist_ok=True)
 
     csv = ",".join(str(fp) for fp in fault_points)
+    ft_csv = ",".join(fault_types_list) if fault_types_list else ""
+
+    # Determine fault_types mode for the .resc.
+    has_erase = fault_types_list and 'e' in fault_types_list
+    has_write = fault_types_list and 'w' in fault_types_list
+    if has_erase and has_write:
+        fault_types_mode = "both"
+    elif has_erase:
+        fault_types_mode = "erase"
+    else:
+        fault_types_mode = "write"
 
     cmd = [
         renode_test,
@@ -264,6 +294,9 @@ def run_batch(
         "--variable", "RESULT_FILE:{}".format(result_file),
         "--variable", "CALIBRATION_MODE:false",
         "--variable", "TRACE_FILE:{}".format(trace_file or ""),
+        "--variable", "ERASE_TRACE_FILE:{}".format(erase_trace_file or ""),
+        "--variable", "FAULT_TYPES:{}".format(fault_types_mode),
+        "--variable", "FAULT_TYPE_CSV:{}".format(ft_csv),
     ]
     if renode_remote_server_dir:
         cmd.extend(["--robot-framework-remote-server-full-directory", renode_remote_server_dir])
@@ -377,6 +410,8 @@ def _run_batch_worker(
     renode_remote_server_dir: str,
     worker_id: int,
     trace_file: Optional[str] = None,
+    erase_trace_file: Optional[str] = None,
+    fault_types_list: Optional[List[str]] = None,
 ) -> List[Dict[str, Any]]:
     """Worker function for parallel batch execution.
 
@@ -424,6 +459,8 @@ def _run_batch_worker(
         work_dir=worker_dir,
         renode_remote_server_dir=renode_remote_server_dir,
         trace_file=trace_file,
+        erase_trace_file=erase_trace_file,
+        fault_types_list=fault_types_list,
     )
 
 
@@ -439,6 +476,8 @@ def run_runtime_sweep(
     include_control: bool,
     num_workers: int = 1,
     trace_file: Optional[str] = None,
+    erase_trace_file: Optional[str] = None,
+    fault_types_list: Optional[List[str]] = None,
 ) -> List[Dict[str, Any]]:
     """Run the full runtime fault sweep.
 
@@ -449,12 +488,19 @@ def run_runtime_sweep(
     If trace_file is provided, uses trace-replay mode: reconstructs
     flash state from the calibration trace instead of re-emulating
     Phase 1.  This eliminates the O(N^2) prefix cost.
+
+    fault_types_list: parallel list of 'w' or 'e' per fault point.
     """
     if fault_points and num_workers > 1:
         # Split fault points into roughly equal chunks.
         n = min(num_workers, len(fault_points))
         chunk_size = (len(fault_points) + n - 1) // n
         chunks = [fault_points[i:i + chunk_size] for i in range(0, len(fault_points), chunk_size)]
+        ft_chunks: List[Optional[List[str]]] = []
+        if fault_types_list:
+            ft_chunks = [fault_types_list[i:i + chunk_size] for i in range(0, len(fault_types_list), chunk_size)]
+        else:
+            ft_chunks = [None] * len(chunks)
 
         print(
             "Parallel sweep: {} workers, chunks of ~{} points".format(
@@ -479,6 +525,8 @@ def run_runtime_sweep(
                     renode_remote_server_dir=renode_remote_server_dir,
                     worker_id=wid,
                     trace_file=trace_file,
+                    erase_trace_file=erase_trace_file,
+                    fault_types_list=ft_chunks[wid] if wid < len(ft_chunks) else None,
                 )
                 futures[f] = wid
 
@@ -508,6 +556,8 @@ def run_runtime_sweep(
             work_dir=work_dir,
             renode_remote_server_dir=renode_remote_server_dir,
             trace_file=trace_file,
+            erase_trace_file=erase_trace_file,
+            fault_types_list=fault_types_list,
         )
     else:
         batch_results = []
@@ -702,6 +752,16 @@ def main() -> int:
         # -------------------------------------------------------------------
         max_writes = profile.fault_sweep.max_writes
         trace_file: Optional[str] = None
+        erase_trace_file: Optional[str] = None
+        total_erases: int = 0
+        # Determine if erase fault injection is requested.
+        fault_types = profile.fault_sweep.fault_types
+        include_erases = "interrupted_erase" in fault_types
+
+        # Pass fault_types to calibration so erase trace is captured.
+        if include_erases:
+            robot_vars.append("FAULT_TYPES:both")
+
         if max_writes == "auto":
             if eval_mode == "state" and "exec" in profile.memory.slots:
                 # State mode: compute write count from slot geometry.
@@ -710,7 +770,7 @@ def main() -> int:
                 print("Computed write count from slot geometry: {} writes.".format(max_writes), file=sys.stderr)
             else:
                 print("Calibrating write count for '{}'...".format(profile.name), file=sys.stderr)
-                max_writes, trace_file = run_calibration(
+                cal = run_calibration(
                     repo_root=repo_root,
                     renode_test=renode_test,
                     robot_suite=robot_suite,
@@ -719,7 +779,14 @@ def main() -> int:
                     work_dir=work_dir,
                     renode_remote_server_dir=args.renode_remote_server_dir,
                 )
-                print("Calibration: {} NVM writes.".format(max_writes), file=sys.stderr)
+                max_writes = cal.total_writes
+                total_erases = cal.total_erases
+                trace_file = cal.trace_file
+                erase_trace_file = cal.erase_trace_file
+                if include_erases:
+                    print("Calibration: {} NVM writes, {} page erases.".format(max_writes, total_erases), file=sys.stderr)
+                else:
+                    print("Calibration: {} NVM writes.".format(max_writes), file=sys.stderr)
         else:
             max_writes = int(max_writes)
 
@@ -796,10 +863,33 @@ def main() -> int:
         if args.quick:
             fault_points = quick_subset(fault_points)
 
-        print(
-            "Running {} fault points for '{}'...".format(len(fault_points), profile.name),
-            file=sys.stderr,
-        )
+        # Build combined write + erase fault point list.
+        # Each fault point has a type ('w' for write, 'e' for erase).
+        fault_types_list: Optional[List[str]] = None
+        if include_erases and total_erases > 0:
+            # Add erase fault points alongside write fault points.
+            write_fps = [(fp, 'w') for fp in fault_points]
+            erase_fps = list(range(0, total_erases))
+            if args.quick:
+                erase_fps = quick_subset(erase_fps)
+            erase_typed = [(ep, 'e') for ep in erase_fps]
+            combined = write_fps + erase_typed
+            fault_points = [fp for fp, _ in combined]
+            fault_types_list = [ft for _, ft in combined]
+            print(
+                "Running {} fault points ({} writes + {} erases) for '{}'...".format(
+                    len(fault_points),
+                    len(write_fps),
+                    len(erase_typed),
+                    profile.name,
+                ),
+                file=sys.stderr,
+            )
+        else:
+            print(
+                "Running {} fault points for '{}'...".format(len(fault_points), profile.name),
+                file=sys.stderr,
+            )
 
         # -------------------------------------------------------------------
         # Fault sweep (dispatch based on scenario)
@@ -828,7 +918,9 @@ def main() -> int:
                 renode_remote_server_dir=args.renode_remote_server_dir,
                 include_control=not args.no_control,
                 num_workers=args.workers,
-                trace_file=trace_file,
+                trace_file=trace_file if not args.no_trace_replay else None,
+                erase_trace_file=erase_trace_file if not args.no_trace_replay else None,
+                fault_types_list=fault_types_list,
             )
 
         sweep_summary = summarize_runtime_sweep(
@@ -883,6 +975,7 @@ def main() -> int:
             "profile_path": str(profile.profile_path) if profile.profile_path else None,
             "schema_version": profile.schema_version,
             "calibrated_writes": max_writes,
+            "calibrated_erases": total_erases,
             "fault_points_tested": len(fault_points),
             "quick": bool(args.quick),
             "heuristic": heuristic_summary,

@@ -34,7 +34,7 @@ except ImportError:
 SUPPORTED_SCHEMA_VERSIONS = {1}
 
 KNOWN_FAULT_TYPES = {"power_loss", "interrupted_erase", "write_rejection", "reset_at_time"}
-IMPLEMENTED_FAULT_TYPES = {"power_loss"}
+IMPLEMENTED_FAULT_TYPES = {"power_loss", "interrupted_erase"}
 
 
 class ProfileError(Exception):

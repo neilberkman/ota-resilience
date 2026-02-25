@@ -29,6 +29,9 @@ fault_sweep:
   max_writes_cap: 200000
   run_duration: "2.0"
   max_step_limit: 20000000
+  fault_types:
+    - power_loss
+    - interrupted_erase
 expect:
   # The backward-erase fix should prevent the scratch-corruption brick.
   # May still have other edge-case failures shared with broken profile.

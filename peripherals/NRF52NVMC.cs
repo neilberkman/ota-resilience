@@ -1,13 +1,19 @@
 // Copyright (c) 2026
 // SPDX-License-Identifier: Apache-2.0
 //
-// nRF52840 NVMC (Non-Volatile Memory Controller) with word-level write tracking.
+// nRF52840 NVMC (Non-Volatile Memory Controller) with word-level write tracking
+// and page-erase fault injection.
 // Handles CONFIG (write/erase enable), ERASEPAGE, READY.
 //
 // Write tracking: on each WEN(1)->REN(0) transition, diffs the MappedMemory
 // against a snapshot taken when WEN was set to count individual 4-byte word
 // writes.  This handles the nRFX driver writing multiple words under a single
 // WEN window (e.g. 16-byte magic = 4 word writes).
+//
+// Erase tracking: each ERASEPAGE register write (while CONFIG=EEN) increments
+// TotalPageErases.  Fault injection at the Nth erase produces a partial erase
+// (first half of the page erased to 0xFF, second half untouched) to simulate
+// power loss mid-erase.
 //
 // Performance: set DiffLookahead to int.MaxValue to always diff (required
 // for accurate write counts — calibration and sweep must use the same mode).
@@ -16,8 +22,13 @@
 // counts as 1 write.  Only use limited DiffLookahead when you know every
 // WEN->REN writes exactly 1 word.
 //
-// Fault injection: when TotalWordWrites reaches FaultAtWordWrite mid-window,
-// FaultFlashSnapshot is built with only the words up to the fault applied.
+// Fault injection (writes): when TotalWordWrites reaches FaultAtWordWrite
+// mid-window, FaultFlashSnapshot is built with only the words up to the fault
+// applied.
+//
+// Fault injection (erases): when TotalPageErases reaches FaultAtPageErase,
+// EraseFaultFired is set and the page is only half-erased.  The
+// FaultFlashSnapshot captures flash state after the partial erase.
 
 using System;
 using System.Collections.Generic;
@@ -61,6 +72,52 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         // applied; later words keep their pre-WEN values.
         public byte[] FaultFlashSnapshot { get; set; }
 
+        // --- Page erase tracking ---
+
+        // Count of individual page erase operations.
+        public ulong TotalPageErases { get; set; }
+
+        // Arm erase fault injection: when TotalPageErases reaches this
+        // value, the erase is left incomplete.  Use ulong.MaxValue to
+        // disable.
+        public ulong FaultAtPageErase { get; set; } = ulong.MaxValue;
+
+        // True if the erase fault was triggered during this run.
+        public bool EraseFaultFired { get; set; }
+
+        // Erase trace: when enabled, records (eraseIndex, flashOffset, writesAtThisPoint)
+        // for each page erase.  Used by calibration alongside write trace.
+        // writesAtThisPoint = TotalWordWrites at the moment of the erase,
+        // enabling correct interleaving with the write trace during replay.
+        public bool EraseTraceEnabled { get; set; }
+
+        // Number of erase trace entries recorded.
+        public int EraseTraceCount => eraseTrace.Count;
+
+        // Serialize the erase trace as "eraseIndex:flashOffset:writesAtThisPoint\n" lines.
+        public string EraseTraceToString()
+        {
+            var sb = new StringBuilder(eraseTrace.Count * 24);
+            foreach(var entry in eraseTrace)
+            {
+                sb.Append(entry.Item1);
+                sb.Append(':');
+                sb.Append(entry.Item2);
+                sb.Append(':');
+                sb.Append(entry.Item3);
+                sb.Append('\n');
+            }
+            return sb.ToString();
+        }
+
+        // Clear the erase trace (call before calibration run).
+        public void EraseTraceClear()
+        {
+            eraseTrace.Clear();
+        }
+
+        // --- Write tracking config ---
+
         // How many WEN->REN transitions ahead of FaultAtWordWrite to start
         // doing full-flash diffs.  Outside this window, each transition
         // counts as 1 write (fast path).  Set to int.MaxValue to always
@@ -75,6 +132,10 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
         // Size of the Flash MappedMemory.
         public long FlashSize { get; set; } = 0;
+
+        // True if any fault (write or erase) has fired.  After a fault,
+        // both writes and erases are suppressed — power is dead.
+        public bool AnyFaultFired => FaultFired || EraseFaultFired;
 
         // Erase fill value for MappedMemory erase operations.
         public byte EraseFill { get; set; } = 0xFF;
@@ -120,6 +181,9 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         // Accumulated write trace entries: (writeIndex, flashOffset, value).
         private readonly List<Tuple<ulong, int, uint>> writeTrace = new List<Tuple<ulong, int, uint>>();
 
+        // Accumulated erase trace entries: (eraseIndex, flashOffset, writesAtThisPoint).
+        private readonly List<Tuple<ulong, long, ulong>> eraseTrace = new List<Tuple<ulong, long, ulong>>();
+
         private void DefineRegisters()
         {
             // READY at 0x400 — always ready (instant operations).
@@ -139,10 +203,10 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                     if(Flash == null || FlashSize <= 0)
                     {
                         // No MappedMemory — fall back to simple counting.
-                        if(oldConfig == 1 && val == 0)
+                        if(oldConfig == 1 && val == 0 && !AnyFaultFired)
                         {
                             TotalWordWrites++;
-                            if(TotalWordWrites == FaultAtWordWrite && !FaultFired)
+                            if(TotalWordWrites == FaultAtWordWrite)
                             {
                                 FaultFired = true;
                             }
@@ -154,7 +218,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                     // word-level precision?
                     // DiffLookahead == int.MaxValue forces always-diff mode
                     // (used during calibration to get accurate word counts).
-                    bool needDiff = !FaultFired
+                    bool needDiff = !AnyFaultFired
                         && (DiffLookahead == int.MaxValue
                             || (FaultAtWordWrite != ulong.MaxValue
                                 && TotalWordWrites + (ulong)DiffLookahead >= FaultAtWordWrite));
@@ -175,7 +239,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                     // Exiting WEN → REN.
                     if(oldConfig == 1 && val == 0)
                     {
-                        if(wenSnapshot != null && !FaultFired)
+                        if(wenSnapshot != null && !AnyFaultFired)
                         {
                             // Word-level diff mode: count each changed 4-byte word.
                             var current = Flash.ReadBytes(0, checked((int)FlashSize));
@@ -229,12 +293,12 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                                 }
                             }
                         }
-                        else
+                        else if(!AnyFaultFired)
                         {
                             // Fast path: assume 1 word write per WEN->REN.
                             TotalWordWrites++;
 
-                            if(TotalWordWrites == FaultAtWordWrite && !FaultFired)
+                            if(TotalWordWrites == FaultAtWordWrite)
                             {
                                 FaultFired = true;
                                 FaultFlashSnapshot = Flash.ReadBytes(0, checked((int)FlashSize));
@@ -246,26 +310,83 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 }, valueProviderCallback: _ => configValue, name: "WEN");
 
             // ERASEPAGE at 0x508 — write page address to erase.
+            // Tracks TotalPageErases and supports fault injection at the
+            // Nth erase.  On fault: partial erase (first half 0xFF, second
+            // half untouched) simulating power loss mid-erase.
             Registers.ErasePage.Define(this)
                 .WithValueField(0, 32, writeCallback: (_, val) =>
                 {
-                    if(configValue == 2)
+                    if(configValue != 2)
                     {
-                        var pageAddr = (long)val;
+                        return;
+                    }
 
-                        if(Nvm != null)
+                    var pageAddr = (long)val;
+
+                    if(AnyFaultFired)
+                    {
+                        // A fault (write or erase) already fired — power is
+                        // dead, suppress all further operations.
+                        return;
+                    }
+
+                    if(Nvm != null)
+                    {
+                        var offset = pageAddr - NvmBaseAddress;
+                        if(offset >= 0 && offset + PageSize <= Nvm.Size)
                         {
-                            var offset = pageAddr - NvmBaseAddress;
-                            if(offset >= 0 && offset + PageSize <= Nvm.Size)
+                            TotalPageErases++;
+                            if(EraseTraceEnabled)
+                            {
+                                eraseTrace.Add(Tuple.Create(TotalPageErases, offset, TotalWordWrites));
+                            }
+
+                            if(TotalPageErases == FaultAtPageErase)
+                            {
+                                // Partial erase: only first half of page.
+                                EraseFaultFired = true;
+                                int halfPage = PageSize / 2;
+                                Nvm.EraseSector(offset, halfPage);
+                                // Note: NvMemory doesn't support FaultFlashSnapshot;
+                                // the NVM path is the slow per-write-tracking path.
+                            }
+                            else
                             {
                                 Nvm.EraseSector(offset, PageSize);
                             }
                         }
-                        else if(Flash != null)
+                    }
+                    else if(Flash != null)
+                    {
+                        var offset = pageAddr - FlashBaseAddress;
+                        if(offset >= 0 && offset + PageSize <= FlashSize)
                         {
-                            var offset = pageAddr - FlashBaseAddress;
-                            if(offset >= 0 && offset + PageSize <= FlashSize)
+                            TotalPageErases++;
+                            if(EraseTraceEnabled)
                             {
+                                eraseTrace.Add(Tuple.Create(TotalPageErases, offset, TotalWordWrites));
+                            }
+
+                            if(TotalPageErases == FaultAtPageErase)
+                            {
+                                // Fault: partial erase — first half of the
+                                // page is erased to 0xFF, second half is
+                                // untouched.  Simulates power loss mid-erase.
+                                EraseFaultFired = true;
+                                int halfPage = PageSize / 2;
+                                var fillData = new byte[halfPage];
+                                for(int i = 0; i < halfPage; i++)
+                                {
+                                    fillData[i] = EraseFill;
+                                }
+                                Flash.WriteBytes(offset, fillData);
+
+                                // Capture flash state at the fault moment.
+                                FaultFlashSnapshot = Flash.ReadBytes(0, checked((int)FlashSize));
+                            }
+                            else
+                            {
+                                // Normal full page erase.
                                 var fillData = new byte[PageSize];
                                 for(int i = 0; i < PageSize; i++)
                                 {

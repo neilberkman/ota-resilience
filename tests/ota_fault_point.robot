@@ -46,6 +46,9 @@ ${FAULT_POINTS_CSV}            ${EMPTY}
 ${IMAGE_STAGING_PATH}          ${EMPTY}
 ${IMAGE_EXEC_PATH}             ${EMPTY}
 ${TRACE_FILE}                  ${EMPTY}
+${ERASE_TRACE_FILE}            ${EMPTY}
+${FAULT_TYPES}                 write
+${FAULT_TYPE_CSV}              ${EMPTY}
 
 *** Keywords ***
 Load Vulnerable Scenario
@@ -134,6 +137,9 @@ Run Runtime Fault Point
     Execute Command    $image_staging_path="${IMAGE_STAGING_PATH}"
     Execute Command    $image_exec_path="${IMAGE_EXEC_PATH}"
     Execute Command    $trace_file="${TRACE_FILE}"
+    Execute Command    $erase_trace_file="${ERASE_TRACE_FILE}"
+    Execute Command    $fault_types="${FAULT_TYPES}"
+    Execute Command    $fault_type_csv="${FAULT_TYPE_CSV}"
 
     Execute Script    ${ROOT}/scripts/run_runtime_fault_sweep.resc
 
