@@ -225,9 +225,10 @@ def run_calibration(
     total_writes = int(data.get("total_writes", 0))
     total_erases = int(data.get("total_erases", 0))
     if total_writes <= 0 and total_erases <= 0:
-        raise RuntimeError(
-            "Calibration returned total_writes={}, total_erases={} — bootloader may not be "
-            "writing to NVM during emulation.".format(total_writes, total_erases)
+        print(
+            "WARNING: Calibration found 0 NVM operations — bootloader is stateless "
+            "(e.g., XIP bootloader). No fault points to test.".format(),
+            file=sys.stderr,
         )
     cap = profile.fault_sweep.max_writes_cap
     if total_writes > cap:
@@ -884,7 +885,7 @@ def main() -> int:
             fp_start = args.fault_start if args.fault_start is not None else 0
             fp_end = args.fault_end if args.fault_end is not None else max_writes
             fault_points = list(range(fp_start, fp_end, step))
-            if max_writes - 1 not in fault_points and args.fault_end is None:
+            if max_writes > 0 and max_writes - 1 not in fault_points and args.fault_end is None:
                 fault_points.append(max_writes - 1)
 
         if args.quick:

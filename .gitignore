@@ -19,6 +19,8 @@ __pycache__/
 !examples/naive_copy/*.bin
 !examples/nxboot_style/*.elf
 !examples/nxboot_style/*.bin
+!examples/riotboot_standalone/*.elf
+!examples/riotboot_standalone/*.bin
 !results/oss_validation/assets/*.elf
 !results/oss_validation/assets/*.bin
 

@@ -152,6 +152,25 @@ class UpdateTrigger:
 MCUBOOT_GOOD_MAGIC = [0xF395C277, 0x7FEFD260, 0x0F505235, 0x8079B62C]
 
 
+def _fletcher32(data: bytes) -> int:
+    """Fletcher32 checksum (RIOT OS compatible)."""
+    assert len(data) % 2 == 0
+    words = struct.unpack("<{}H".format(len(data) // 2), data)
+    sum1, sum2 = 0xFFFF, 0xFFFF
+    i = 0
+    while i < len(words):
+        batch = min(359, len(words) - i)
+        for j in range(batch):
+            sum1 += words[i + j]
+            sum2 += sum1
+        sum1 = (sum1 & 0xFFFF) + (sum1 >> 16)
+        sum2 = (sum2 & 0xFFFF) + (sum2 >> 16)
+        i += batch
+    sum1 = (sum1 & 0xFFFF) + (sum1 >> 16)
+    sum2 = (sum2 & 0xFFFF) + (sum2 >> 16)
+    return (sum2 << 16) | sum1
+
+
 VALID_SCENARIOS = {"runtime", "resilient", "vulnerable"}
 
 
@@ -256,6 +275,24 @@ class ProfileConfig:
                     address=copy_done_addr,
                     u32=_parse_int(trigger.fields["copy_done"], "update_trigger.copy_done"),
                 ))
+            return writes
+
+        if trigger.type == "riotboot_header":
+            # riotboot header: 16-byte struct at slot base.
+            # Fields: magic (0x544F4952), version, start_addr, fletcher32 checksum.
+            # start_addr = slot.base + hdr_len (default 0x100 = 256).
+            hdr_len = int(trigger.fields.get("hdr_len", 0x100))
+            version = _parse_int(trigger.fields.get("version", 2), "update_trigger.version")
+            start_addr = slot.base + hdr_len
+            # Build the 12-byte payload for Fletcher32.
+            payload = struct.pack("<III", 0x544F4952, version, start_addr)
+            chksum = _fletcher32(payload)
+            writes = [
+                PreBootWrite(address=slot.base + 0, u32=0x544F4952),
+                PreBootWrite(address=slot.base + 4, u32=version),
+                PreBootWrite(address=slot.base + 8, u32=start_addr),
+                PreBootWrite(address=slot.base + 12, u32=chksum),
+            ]
             return writes
 
         raise ProfileError(
