@@ -84,6 +84,13 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Reports: `results/oss_validation/reports/2026-02-26-pr2205-2206-2214/*.quick.json`
    - Important: these bug classes are geometry-sensitive and may require non-nRF52840 sector/topology conditions to trigger.
 
+5. **Geometry-trigger follow-up (2026-02-26)**:
+   - Added forced-trailer scratch variants for PR2206 (`CONFIG_BOOT_MAX_IMG_SECTORS=1024`), plus fuller staging images.
+   - PR2206 geometry quick runs now hit much larger write-space (broken: 32,441 writes / 88 erases; fixed: 14,554 / 36), proving the trigger changes execution.
+   - Two payload probes (`img_size=0x69000` and `0x66000`) still fail control boot with `no_boot` for both revisions, so no clean differential yet.
+   - PR2214 fuller offset image still calibrates as `0 writes / 118 erases` on this target and remains non-differential.
+   - Reports: `results/oss_validation/reports/2026-02-26-geometry/*.quick.json`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -119,6 +126,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | `scripts/state_fuzzer.py`          | Opt-in deep analysis for A/B metadata (only used by resilient profiles) |
 | `scripts/invariants.py`            | Metadata invariant checks for state fuzzer                              |
 | `scripts/mcuboot_state_fuzzer.py`  | MCUboot-specific state fuzzer (not widely used)                         |
+| `scripts/bootstrap_mcuboot_geometry_assets.sh` | Rebuild geometry-trigger MCUboot assets (PR2206 forced trailer + large images) |
 | `scripts/run_oss_validation.py`    | MCUboot build + validate pipeline                                       |
 | `scripts/geometry_matrix.py`       | MCUboot swap geometry analysis                                          |
 
@@ -212,6 +220,9 @@ for p in \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-26-pr2205-2206-2214/${p}.quick.json"
 done
+
+# Rebuild geometry-trigger assets (PR2206 forced-trailer + fuller images)
+scripts/bootstrap_mcuboot_geometry_assets.sh
 ```
 
 ## What Needs To Be Done
@@ -268,8 +279,10 @@ New exploratory profiles:
 - `profiles/mcuboot_pr2205_scratch_{broken,fixed}.yaml`
 - `profiles/mcuboot_pr2206_scratch_{broken,fixed}.yaml`
 - `profiles/mcuboot_pr2214_offset_{broken,fixed}.yaml`
+- `profiles/mcuboot_pr2206_scratch_geom_{broken,fixed}.yaml`
+- `profiles/mcuboot_pr2214_offset_geom_{broken,fixed}.yaml`
 
-These bug classes are geometry-sensitive. To make them detectable, next step is a geometry-tailored target (mixed sector map + trailer-at-boundary conditions), not just commit-pair swaps on default nRF52840 layout.
+These bug classes are geometry-sensitive. To make them detectable, next step is a geometry-tailored target (mixed sector map + trailer-at-boundary conditions), plus tuning image size to stay bootable on fixed revisions while still breaking on broken revisions.
 
 ### 5. Non-MCUboot Real Binary Testing
 

@@ -1,0 +1,244 @@
+{
+  "calibrated_erases": 88,
+  "calibrated_writes": 32441,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/audit_bootloader.py --profile profiles/mcuboot_pr2206_scratch_geom_broken.yaml --quick --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server --output results/oss_validation/reports/2026-02-26-geometry/mcuboot_pr2206_scratch_geom_broken.quick.json",
+    "run_utc": "2026-02-26T21:46:40Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 6,
+  "git": {
+    "commit": "1b4a277ad59dae4a4db4b6b73d01200985bf681f",
+    "dirty": "true",
+    "short_commit": "1b4a277"
+  },
+  "heuristic": null,
+  "profile": "mcuboot_pr2206_scratch_geom_broken",
+  "profile_path": "profiles/mcuboot_pr2206_scratch_geom_broken.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 0,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x000F7FD8",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x00004AC2",
+        "pc_ok": true,
+        "phase1_ms": 30,
+        "phase2_ms": 269,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 16220,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x000669E0",
+      "fault_at": 16220,
+      "fault_injected": true,
+      "fault_requested": 16220,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x00001294",
+        "pc_ok": true,
+        "phase1_ms": 132,
+        "phase2_ms": 3348,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 32440,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x000E93FC",
+      "fault_at": 32440,
+      "fault_injected": true,
+      "fault_requested": 32440,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x0000125C",
+        "pc_ok": true,
+        "phase1_ms": 265,
+        "phase2_ms": 1488,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 1,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x00004AC2",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 45,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 44,
+      "fault_injected": true,
+      "fault_requested": 44,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 309269,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x00004F76",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 88,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 87,
+      "fault_injected": true,
+      "fault_requested": 87,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 276499,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x0000125C",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 32441,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00004F76",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 1.0,
+      "bricks": 6,
+      "control": {
+        "boot_outcome": "no_boot",
+        "boot_slot": null
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {
+        "no_boot": 6
+      },
+      "failures": [
+        {
+          "fault_address": "0x000F7FD8",
+          "fault_at": 0,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.0,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x000669E0",
+          "fault_at": 16220,
+          "outcome": "no_boot",
+          "phase": "mid",
+          "position_pct": 50.0,
+          "region": "exec_data"
+        },
+        {
+          "fault_address": "0x000E93FC",
+          "fault_at": 32440,
+          "outcome": "no_boot",
+          "phase": "late",
+          "position_pct": 100.0,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x00000000",
+          "fault_at": 0,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.0,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x00000000",
+          "fault_at": 44,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.14,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x00000000",
+          "fault_at": 87,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.27,
+          "region": "unknown"
+        }
+      ],
+      "recoveries": 0,
+      "total_fault_points": 6
+    }
+  },
+  "verdict": "FAIL \u2014 expected no bricks but found 6 (100.0%)"
+}
