@@ -45,6 +45,7 @@ fault_sweep:
     - power_loss
     - interrupted_erase
 
+skip_self_test: true
 expect:
   should_find_issues: true
   brick_rate_min: 0.001

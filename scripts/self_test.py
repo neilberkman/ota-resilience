@@ -118,6 +118,10 @@ def main() -> int:
     )
     parser.add_argument("--renode-test", default=os.environ.get("RENODE_TEST", "renode-test"))
     parser.add_argument(
+        "--renode-remote-server-dir", default=os.environ.get("RENODE_REMOTE_SERVER_DIR"),
+        help="Path to Renode remote server directory.",
+    )
+    parser.add_argument(
         "--fault-step", type=int, default=None,
         help="Pass --fault-step to audit runs.",
     )
@@ -161,6 +165,8 @@ def main() -> int:
                 continue
 
             extra_args: List[str] = []
+            if args.renode_remote_server_dir:
+                extra_args.extend(["--renode-remote-server-dir", args.renode_remote_server_dir])
             if args.fault_step is not None:
                 extra_args.extend(["--fault-step", str(args.fault_step)])
 

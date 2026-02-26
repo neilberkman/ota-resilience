@@ -123,11 +123,17 @@ class StateFuzzerConfig:
 
 
 class ExpectConfig:
-    __slots__ = ("should_find_issues", "brick_rate_min")
+    __slots__ = ("should_find_issues", "brick_rate_min", "control_outcome")
 
-    def __init__(self, should_find_issues: bool = True, brick_rate_min: float = 0.0) -> None:
+    def __init__(
+        self,
+        should_find_issues: bool = True,
+        brick_rate_min: float = 0.0,
+        control_outcome: str = "success",
+    ) -> None:
         self.should_find_issues = should_find_issues
         self.brick_rate_min = brick_rate_min
+        self.control_outcome = control_outcome
 
 
 class PreBootWrite:
@@ -532,6 +538,7 @@ def _parse_expect(raw: Optional[Dict[str, Any]]) -> ExpectConfig:
     return ExpectConfig(
         should_find_issues=bool(raw.get("should_find_issues", True)),
         brick_rate_min=float(raw.get("brick_rate_min", 0.0)),
+        control_outcome=str(raw.get("control_outcome", "success")),
     )
 
 

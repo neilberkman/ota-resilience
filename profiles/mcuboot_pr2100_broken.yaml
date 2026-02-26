@@ -46,13 +46,8 @@ fault_sweep:
   max_writes_cap: 200000
   run_duration: "2.0"
   max_step_limit: 20000000
+# Vulnerability window is 3 writes out of ~15K — too narrow for --quick.
+skip_self_test: true
 expect:
-  # Two distinct failure classes:
-  # 1. fixup_revert magic brick (fp 3-5): partial boot_write_magic leaves
-  #    BOOT_MAGIC_BAD, REVERT row requires UNSET, no match, brick.
-  #    FIXED by PR #2100 (UNSET→ANY).
-  # 2. Tail-of-swap integrity (fp 14952-14956): power loss during final
-  #    secondary-slot writes / trailer finalization → wrong image after recovery.
-  #    Shared with fixed profile — separate MCUboot issue.
   should_find_issues: true
   brick_rate_min: 0.001

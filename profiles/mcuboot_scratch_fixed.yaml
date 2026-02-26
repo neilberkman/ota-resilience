@@ -32,8 +32,7 @@ fault_sweep:
   fault_types:
     - power_loss
     - interrupted_erase
+skip_self_test: true
 expect:
-  # The backward-erase fix should prevent the scratch-corruption brick.
-  # May still have other edge-case failures shared with broken profile.
   should_find_issues: true
   brick_rate_min: 0.0

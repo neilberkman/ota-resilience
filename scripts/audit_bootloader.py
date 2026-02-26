@@ -1044,12 +1044,13 @@ def main() -> int:
         # Assertions
         # -------------------------------------------------------------------
         control_assert = (not args.no_control) and (not args.no_assert_control_boots)
+        expected_control = profile.expect.control_outcome
         if control_assert and "control" in sweep_summary:
             ctrl = sweep_summary["control"]
-            if ctrl.get("boot_outcome") != "success":
+            if ctrl.get("boot_outcome") != expected_control:
                 print(
-                    "ASSERTION FAILED: control point did not boot (outcome={})".format(
-                        ctrl.get("boot_outcome")
+                    "ASSERTION FAILED: control point outcome '{}' != expected '{}'".format(
+                        ctrl.get("boot_outcome"), expected_control
                     ),
                     file=sys.stderr,
                 )
