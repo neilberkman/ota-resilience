@@ -39,11 +39,7 @@ results/vulnerable_campaign.json
 
 # Audit run artifacts and result JSONs (generated, not committed)
 results/audit_runs/
-results/*_heuristic.json
-results/*_targeted.json
-results/*_parallel_test.json
-results/*_early.json
-results/*_trace_replay.json
+results/*.json
 
 # Build outputs
 results/oss_validation/build/
