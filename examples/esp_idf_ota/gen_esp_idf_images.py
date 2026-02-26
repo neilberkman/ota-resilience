@@ -31,6 +31,7 @@ SLOT0_BASE = 0x0000C000
 SLOT1_BASE = 0x00080000
 SLOT_SIZE = 0x74000  # 464KB
 SRAM_TOP = 0x20040000
+COPY_ON_BOOT_BYTES = 0x2000  # Keep in sync with esp_idf_ota.c
 
 # OTA states
 OTA_STATES = {
@@ -158,7 +159,17 @@ def make_slot_firmware(slot_base, slot_id):
     for i in range(2, code_offset // 4):
         struct.pack_into("<I", vectors, i * 4, code_addr | 1)
 
-    return bytes(vectors) + code
+    image = bytearray(bytes(vectors) + code)
+
+    # Extend image with deterministic slot-specific payload so copy-on-boot
+    # exercises many real writes instead of just the tiny vector/code region.
+    target_size = max(COPY_ON_BOOT_BYTES, len(image))
+    seed = (0x1F123BB5 ^ ((slot_id + 1) * 0x45D9F3B)) & 0xFFFFFFFF
+    while len(image) < target_size:
+        seed = (1664525 * seed + 1013904223) & 0xFFFFFFFF
+        image.append((seed >> 16) & 0xFF)
+
+    return bytes(image)
 
 
 def main():
@@ -188,8 +199,8 @@ def main():
         fw = make_slot_firmware(base, args.index)
         with open(args.output, "wb") as f:
             f.write(fw)
-        print("Slot {}: base=0x{:08X} size={} bytes".format(
-            args.index, base, len(fw)))
+        print("Slot {}: base=0x{:08X} size={} bytes (copy window=0x{:X})".format(
+            args.index, base, len(fw), COPY_ON_BOOT_BYTES))
 
     elif args.mode == "otadata":
         data = make_otadata(

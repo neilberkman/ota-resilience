@@ -38,7 +38,7 @@
  *
  * Compile-time defect injection (via -DESP_DEFECT=N):
  *   0  NONE           Correct implementation (default)
- *   1  NO_CRC         Skip CRC validation on otadata entries
+ *   1  NO_CRC         Skip CRC validation (otadata + copy-on-boot image verify)
  *   2  SINGLE_SECTOR  Only read otadata sector 0, ignore sector 1
  *   3  NO_ABORT       Don't abort PENDING_VERIFY entries on reboot
  *   4  NO_FALLBACK    Don't try other slot if selected slot is invalid
@@ -96,6 +96,7 @@
 #define SLOT1_BASE          0x00080000U
 #define SLOT_SIZE           0x74000U    /* 464KB each */
 #define NUM_OTA_SLOTS       2U
+#define FLASH_PAGE_SIZE     0x1000U
 
 #define SRAM_START          0x20000000U
 #define SRAM_END            0x20040000U
@@ -128,6 +129,18 @@
 /* ------------------------------------------------------------------ */
 
 #define MARKER_ADDR         0x000FC000U  /* In reserved area at end of flash */
+
+/*
+ * Optional copy-on-boot update trigger.
+ *
+ * Profiles can pre-seed UPDATE_REQ_ADDR with UPDATE_REQ_MAGIC to force a
+ * staging->exec copy path that exercises many writes. The bootloader clears
+ * this flag before the copy, so a mid-copy power loss leaves a partial exec
+ * image that is NOT automatically recopied on the next boot.
+ */
+#define UPDATE_REQ_ADDR     0x000FC040U
+#define UPDATE_REQ_MAGIC    0x55445021U  /* "UPD!" */
+#define COPY_ON_BOOT_BYTES  0x2000U      /* 8KB copy window */
 
 /* ------------------------------------------------------------------ */
 /* CRC-32 table (polynomial 0xEDB88320)                                */
@@ -186,6 +199,8 @@ static void nvmc_wait(void)
         ;
 }
 
+static void flash_write_word(volatile uint32_t *addr, uint32_t value);
+
 static void flash_erase_page(uint32_t page_addr)
 {
     NVMC_CONFIG = NVMC_CONFIG_EEN;
@@ -194,6 +209,74 @@ static void flash_erase_page(uint32_t page_addr)
     nvmc_wait();
     NVMC_CONFIG = NVMC_CONFIG_REN;
     nvmc_wait();
+}
+
+static uint32_t crc32_region(uint32_t base, uint32_t size_bytes)
+{
+    const volatile uint8_t *data = (const volatile uint8_t *)base;
+    uint32_t crc = 0x00000000U;
+    for (uint32_t i = 0; i < size_bytes; i++) {
+        crc = crc32_table[(crc ^ data[i]) & 0xFF] ^ (crc >> 8);
+    }
+    return crc ^ 0xFFFFFFFFU;
+}
+
+static void flash_copy_region(uint32_t dst_base, uint32_t src_base, uint32_t size_bytes)
+{
+    uint32_t bytes = size_bytes & ~3U;
+
+    if (bytes == 0 || bytes > SLOT_SIZE)
+        return;
+
+    for (uint32_t page = dst_base; page < dst_base + bytes; page += FLASH_PAGE_SIZE)
+        flash_erase_page(page);
+
+    for (uint32_t off = 0; off < bytes; off += 4U) {
+        uint32_t w = *(const volatile uint32_t *)(src_base + off);
+        flash_write_word((volatile uint32_t *)(dst_base + off), w);
+    }
+}
+
+static int copy_on_boot_requested(void)
+{
+    uint32_t req = *(const volatile uint32_t *)UPDATE_REQ_ADDR;
+    return req == UPDATE_REQ_MAGIC;
+}
+
+static void clear_copy_on_boot_request(void)
+{
+    flash_write_word((volatile uint32_t *)UPDATE_REQ_ADDR, 0x00000000U);
+}
+
+static uint32_t maybe_copy_staging_to_exec(uint32_t selected_boot_addr)
+{
+    uint32_t src_crc;
+    uint32_t dst_crc;
+
+    if (selected_boot_addr != SLOT1_BASE)
+        return selected_boot_addr;
+
+    if (!copy_on_boot_requested())
+        return selected_boot_addr;
+
+    /* Clear before copy to model one-shot trigger + interrupted update state. */
+    clear_copy_on_boot_request();
+    flash_copy_region(SLOT0_BASE, SLOT1_BASE, COPY_ON_BOOT_BYTES);
+
+    src_crc = crc32_region(SLOT1_BASE, COPY_ON_BOOT_BYTES);
+    dst_crc = crc32_region(SLOT0_BASE, COPY_ON_BOOT_BYTES);
+
+#if ESP_DEFECT == ESP_DEFECT_NO_CRC
+    /* DEFECT: skip copied-image CRC validation and trust the partial image. */
+    (void)src_crc;
+    (void)dst_crc;
+    return SLOT0_BASE;
+#else
+    /* Correct: only boot copied exec image if it matches staging exactly. */
+    if (dst_crc == src_crc)
+        return SLOT0_BASE;
+    return SLOT1_BASE;
+#endif
 }
 
 static void flash_write_word(volatile uint32_t *addr, uint32_t value)
@@ -407,6 +490,17 @@ void esp_ota_main(void)
     /* Map ota_seq to slot index */
     boot_index = (two[active].ota_seq - 1U) % NUM_OTA_SLOTS;
     boot_addr = slot_base(boot_index);
+
+    /*
+     * Optional copy-on-boot path for update stress testing.
+     * This keeps existing otadata logic intact while adding a realistic
+     * erase+copy+verify flow when UPDATE_REQ_ADDR is pre-seeded.
+     */
+    boot_addr = maybe_copy_staging_to_exec(boot_addr);
+    if (boot_addr == SLOT0_BASE)
+        boot_index = 0;
+    else if (boot_addr == SLOT1_BASE)
+        boot_index = 1;
 
 #if ROLLBACK_ENABLED
     /*

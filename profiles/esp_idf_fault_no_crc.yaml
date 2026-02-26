@@ -2,8 +2,9 @@ schema_version: 1
 name: esp_idf_fault_no_crc
 description: >
   ESP-IDF OTA model with CRC validation disabled. Upgrade scenario:
-  power loss during otadata sector erase+rewrite leaves corrupted entry.
-  Without CRC, corrupted ota_seq is accepted → wrong slot selection.
+  bootloader performs a copy-on-boot update (staging -> exec) and should
+  verify copied image integrity before trusting exec. Defect skips CRC checks,
+  so interrupted copies can be accepted as if valid.
 
 platform: platforms/cortex_m4_flash_fast.repl
 bootloader:
@@ -25,7 +26,11 @@ pre_boot_state:
   - { address: 0x000F9000, u32: 0x00000002 }
   - { address: 0x000F9018, u32: 0x00000000 }
   - { address: 0x000F901C, u32: 0x55F63774 }
-success_criteria: {}
+  # Trigger one-shot copy-on-boot path (magic at UPDATE_REQ_ADDR).
+  - { address: 0x000FC040, u32: 0x55445021 }
+success_criteria:
+  # Success requires exec contents to match the control run's expected image.
+  image_hash: true
 fault_sweep:
   mode: runtime
   evaluation_mode: execute
@@ -35,8 +40,5 @@ fault_sweep:
   max_step_limit: 20000000
   fault_types: [power_loss, interrupted_erase, bit_corruption]
 expect:
-  # Model too simple (3 writes) for bit corruption to produce different
-  # outcomes vs power-loss. Both cause fallback to valid slots. No crashes.
-  # Beefing up the model (hash validation, more writes) would create the
-  # vulnerability window where bit corruption catches no-CRC.
-  should_find_issues: false
+  # Copy-on-boot path should expose corruption acceptance when CRC is skipped.
+  should_find_issues: true
