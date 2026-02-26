@@ -1,0 +1,191 @@
+{
+  "calibrated_erases": 44,
+  "calibrated_writes": 14944,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/audit_bootloader.py --profile profiles/mcuboot_pr2206_scratch_broken.yaml --quick --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server --output results/oss_validation/reports/2026-02-26-pr2205-2206-2214/mcuboot_pr2206_scratch_broken.quick.json",
+    "run_utc": "2026-02-26T19:08:58Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 6,
+  "git": {
+    "commit": "117a084593701e7f42eeef84476d7e4ea8e3ef12",
+    "dirty": "true",
+    "short_commit": "117a084"
+  },
+  "heuristic": null,
+  "profile": "mcuboot_pr2206_scratch_broken",
+  "profile_path": "profiles/mcuboot_pr2206_scratch_broken.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 0,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x000F7FD8",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "phase1_ms": 256,
+        "phase2_ms": 1714,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 7472,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x0007C6CC",
+      "fault_at": 7472,
+      "fault_injected": true,
+      "fault_requested": 7472,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "phase1_ms": 418,
+        "phase2_ms": 1406,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 14943,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00079FE0",
+      "fault_at": 14943,
+      "fault_injected": true,
+      "fault_requested": 14943,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "phase1_ms": 316,
+        "phase2_ms": 346,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 1,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 15376,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 23,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 22,
+      "fault_injected": true,
+      "fault_requested": 22,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 15376,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 39,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 43,
+      "fault_injected": false,
+      "fault_requested": 43,
+      "fault_type": "e",
+      "is_control": false,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x000025D6",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 14944,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "control": {
+        "boot_outcome": "success",
+        "boot_slot": "exec"
+      },
+      "discarded_no_fault_fired": 1,
+      "failure_outcomes": {},
+      "recoveries": 5,
+      "total_fault_points": 5
+    }
+  },
+  "verdict": "PASS"
+}

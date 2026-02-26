@@ -11,7 +11,7 @@ A Renode-based fault injection testbed for OTA firmware updates. It simulates po
 ## Architecture Overview
 
 ```
-profiles/*.yaml          -- Declarative bootloader profiles (45 total)
+profiles/*.yaml          -- Declarative bootloader profiles (51 total: 45 self-test + 6 exploratory)
     |
     v
 scripts/profile_loader.py  -- Parses YAML, generates robot variables
@@ -62,17 +62,12 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `erase-trace-replay-fix` (active development branch)
 
-Last commit: `e9badef` — ESP-IDF OTA bootloader model
+- Last main-repo commit: `117a084` — OSS validation assets for MCUboot PR2205/2206/2214 + near-max slot image
+- Working tree: clean at commit time of this handoff update
+- Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
+- Bit-corruption fault mode is committed (not pending)
 
-**5 uncommitted files** (bit-level corruption feature, fully working):
-
-- `peripherals/NRF52NVMC.cs` — `WriteFaultMode` (0=power_loss, 1=bit_corruption), `CorruptionSeed`, NOR flash partial-program physics
-- `scripts/run_runtime_fault_sweep.resc` — `'b'` fault type dispatch, `vtor_in_slot: any`, `fault_type` in all result paths
-- `scripts/profile_loader.py` — `bit_corruption` in known/implemented fault types
-- `scripts/audit_bootloader.py` — `'b'` fault point generation, combined fault point list
-- `profiles/esp_idf_fault_no_crc.yaml` — uses `bit_corruption` fault type
-
-**Self-test: 45/45 passing** (just ran, exit code 0)
+**Self-test baseline: 45/45 passing** (latest full validation status before adding exploratory skip-self-test profiles)
 
 ### What's Been Proven
 
@@ -82,18 +77,25 @@ Three real MCUboot CVE-class bugs detected via differential testing:
 2. **PR #2109** (swap-scratch header reload): Broken 33.3% bricks → Fixed 0%. Requires different-sized images. ELFs at `results/oss_validation/assets/oss_mcuboot_pr2109_*.elf`
 3. **PR #2199** (stuck revert): Broken 100% wrong_image → Fixed 0%.
 
+Additional exploratory real-binary runs were completed for geometry/math bug PRs:
+
+4. **PR #2205, #2206, #2214**: built and quick-audited as broken/fixed pairs on nRF52840 geometry.
+   - No differential found in quick sweeps (all pairs PASS with 0 failures).
+   - Reports: `results/oss_validation/reports/2026-02-26-pr2205-2206-2214/*.quick.json`
+   - Important: these bug classes are geometry-sensitive and may require non-nRF52840 sector/topology conditions to trigger.
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
 | --------------------- | ------------------------ | ---------------------------------------------------------------- | ---------------------------------------------- |
 | Custom A/B resilient  | Toy model                | 3 (resilient_none, resilient_meta_faults, resilient_multi_fault) | Built-in reference implementation              |
-| Custom fault variants | Toy model, injected bugs | 7 (fault_no_crc, fault_no_fallback, etc.)                        | Each has a specific defect                     |
+| Custom fault variants | Toy model, injected bugs | 8 (fault_no_crc, fault_no_fallback, etc.)                        | Each has a specific defect                     |
 | Custom naive copy     | Toy model, worst case    | 3 (bare, small_image, with_marker)                               | 100% brick rate                                |
 | NuttX nxboot          | Model                    | 4 (none, rollback, header_validation, no_recovery)               | Clean-room model of nxboot algorithm           |
 | RIOT riotboot         | Model                    | 1 (riotboot_standalone)                                          | VID/FW version selection                       |
-| MCUboot swap-move     | REAL BINARY              | 8 profiles                                                       | Built from Zephyr+MCUboot, real swap algorithm |
-| MCUboot swap-scratch  | REAL BINARY              | 4 profiles                                                       | 91.6% inherent brick rate (by design)          |
-| MCUboot swap-offset   | REAL BINARY              | 2 profiles                                                       | Newest swap algorithm                          |
+| MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
+| MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
+| MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
 | ESP-IDF OTA           | Model                    | 8 (3 baseline + 5 defect variants)                               | Clean-room otadata algorithm, too simple       |
 
 ## Files You Need to Know
@@ -126,7 +128,7 @@ Three real MCUboot CVE-class bugs detected via differential testing:
 | ------------------------------- | -------------------------------------------------------------------------- |
 | `examples/resilient_ota/`       | A/B bootloader with metadata replication, CRC, atomic commit               |
 | `examples/vulnerable_ota/`      | Naive copy-to-exec, no safety                                              |
-| `examples/fault_variants/`      | `bootloader_variants.c` with `#ifdef DEFECT_*` for 7 defect types          |
+| `examples/fault_variants/`      | `bootloader_variants.c` with `#ifdef DEFECT_*` for 8 defect types          |
 | `examples/naive_copy/`          | Minimal naive copy variants                                                |
 | `examples/nxboot_style/`        | Clean-room nxboot model                                                    |
 | `examples/riotboot_standalone/` | Clean-room riotboot model                                                  |
@@ -144,11 +146,11 @@ Implemented in `NRF52NVMC.cs` and dispatched via the profile's `fault_types` lis
 | ------------------- | ----- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `power_loss`        | `'w'` | Yes                    | Block the Nth write entirely. Flash snapshot has N-1 writes completed.                                                                |
 | `interrupted_erase` | `'e'` | Yes                    | Partial erase at Nth erase: first half 0xFF, second half untouched.                                                                   |
-| `bit_corruption`    | `'b'` | Yes (NEW, uncommitted) | NOR flash physics: partially program the Nth write. ~50% of 1→0 bit transitions complete, rest stay at 1. Deterministic via LCG PRNG. |
+| `bit_corruption`    | `'b'` | Yes                    | NOR flash physics: partially program the Nth write. ~50% of 1→0 bit transitions complete, rest stay at 1. Deterministic via LCG PRNG. |
 | `write_rejection`   | —     | No                     | Future: erase-before-write violation                                                                                                  |
 | `reset_at_time`     | —     | No                     | Future: arbitrary-time reset, not just at write boundary                                                                              |
 
-### Bit Corruption Details (uncommitted)
+### Bit Corruption Details (committed)
 
 `NRF52NVMC.cs` properties:
 
@@ -196,13 +198,27 @@ python3 scripts/audit_bootloader.py \
 
 # Build ESP-IDF variants
 cd examples/esp_idf_ota && make clean && make all && make strip
+
+# Quick differential batch for PR2205/2206/2214 exploratory profiles
+mkdir -p results/oss_validation/reports/2026-02-26-pr2205-2206-2214
+for p in \
+  mcuboot_pr2205_scratch_broken mcuboot_pr2205_scratch_fixed \
+  mcuboot_pr2206_scratch_broken mcuboot_pr2206_scratch_fixed \
+  mcuboot_pr2214_offset_broken mcuboot_pr2214_offset_fixed; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-remote-server-dir /tmp/renode-server \
+    --output "results/oss_validation/reports/2026-02-26-pr2205-2206-2214/${p}.quick.json"
+done
 ```
 
 ## What Needs To Be Done
 
-### 1. COMMIT THE BIT CORRUPTION CHANGES
+### 1. Bit Corruption Commit Status
 
-5 files modified, all tested, 45/45 self-test passing. Just needs `git add` + `git commit`. The changes are on branch `erase-trace-replay-fix`.
+Done. Bit-corruption runtime fault mode is already committed on this branch.
 
 ### 2. Beef Up the ESP-IDF Model (HIGH PRIORITY)
 
@@ -243,11 +259,17 @@ Implementation pattern: Add new values to `WriteFaultMode` in `NRF52NVMC.cs`, ad
 
 From the bug classes doc at `~/mirala/mirala_docs/ota-res/mcuboot-real-world-bug-classes-and-detection-plan.md`:
 
-- **PR #2205**: Not yet attempted
-- **PR #2206**: Not yet attempted
-- **PR #2214**: Not yet attempted
+- **PR #2205**: Built + quick-audited (broken/fixed), no quick differential on nRF52840 geometry
+- **PR #2206**: Built + quick-audited (broken/fixed), no quick differential on nRF52840 geometry
+- **PR #2214**: Built + quick-audited (broken/fixed), no quick differential on nRF52840 geometry (including `zephyr_slot1_max.bin`)
 
-These require building specific MCUboot commits. The bootstrap script is at `scripts/bootstrap_mcuboot_matrix_assets.sh`.
+New exploratory profiles:
+
+- `profiles/mcuboot_pr2205_scratch_{broken,fixed}.yaml`
+- `profiles/mcuboot_pr2206_scratch_{broken,fixed}.yaml`
+- `profiles/mcuboot_pr2214_offset_{broken,fixed}.yaml`
+
+These bug classes are geometry-sensitive. To make them detectable, next step is a geometry-tailored target (mixed sector map + trailer-at-boundary conditions), not just commit-pair swaps on default nRF52840 layout.
 
 ### 5. Non-MCUboot Real Binary Testing
 
@@ -270,9 +292,13 @@ Currently results are JSON blobs. Could benefit from:
 - Comparison view: broken vs fixed side by side
 - Aggregated report across all profiles
 
-### 8. Push Uncommitted Changes + Update PR
+### 8. Push + Update PR
 
-The bit corruption work is done and tested but not committed or pushed. The PR may need updating.
+Main branch contains additional local commits (including PR2205/2206/2214 assets). Push branch and update PR with:
+
+- Newly added MCUboot assets in `results/oss_validation/assets/`
+- Exploratory profile set for PR2205/2206/2214
+- Exploratory quick reports in `results/oss_validation/reports/2026-02-26-pr2205-2206-2214/`
 
 ## Gotchas and Lessons Learned
 
@@ -288,9 +314,11 @@ The bit corruption work is done and tested but not committed or pushed. The PR m
 
 6. **Renode-test setup**: Needs `/tmp/renode-server/Renode.exe` (symlink to actual binary) and `/tmp/renode-server/build_type` (contains "none"). Without these, renode-test fails silently.
 
-7. **vtor_in_slot: any**: New feature (uncommitted). Means "boot to ANY defined slot = success". Useful for bootloaders with graceful fallback where either slot is acceptable.
+7. **vtor_in_slot: any**: Committed feature. Means "boot to ANY defined slot = success". Useful for bootloaders with graceful fallback where either slot is acceptable.
 
 8. **Phase 2 DiffLookahead**: Set `nvmc.DiffLookahead = 32` for recovery boot phase (no write counting needed, 10x faster). Set `int.MaxValue` for calibration/sweep.
+
+9. **Geometry bugs need geometry triggers**: PR2205/2206/2214 are not guaranteed to reproduce on default nRF52840 partition/sector geometry. Mixed-sector layouts and trailer-at-boundary cases are often required.
 
 ## Profile YAML Schema Quick Reference
 

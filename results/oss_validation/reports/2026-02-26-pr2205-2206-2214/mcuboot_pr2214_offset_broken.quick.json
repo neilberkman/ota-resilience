@@ -1,0 +1,126 @@
+{
+  "calibrated_erases": 118,
+  "calibrated_writes": 0,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/audit_bootloader.py --profile profiles/mcuboot_pr2214_offset_broken.yaml --quick --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server --output results/oss_validation/reports/2026-02-26-pr2205-2206-2214/mcuboot_pr2214_offset_broken.quick.json",
+    "run_utc": "2026-02-26T19:19:26Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 3,
+  "git": {
+    "commit": "117a084593701e7f42eeef84476d7e4ea8e3ef12",
+    "dirty": "true",
+    "short_commit": "117a084"
+  },
+  "heuristic": null,
+  "profile": "mcuboot_pr2214_offset_broken",
+  "profile_path": "profiles/mcuboot_pr2214_offset_broken.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 1,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 60,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 59,
+      "fault_injected": true,
+      "fault_requested": 59,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 118,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 117,
+      "fault_injected": true,
+      "fault_requested": 117,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 0,
+      "boot_outcome": "success",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "image_hash_match": "expected_image",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00010010",
+        "pc_ok": true,
+        "vtor": "0x0000C200",
+        "vtor_ok": true
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "control": {
+        "boot_outcome": "success",
+        "boot_slot": "exec"
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {},
+      "recoveries": 3,
+      "total_fault_points": 3
+    }
+  },
+  "verdict": "PASS"
+}
