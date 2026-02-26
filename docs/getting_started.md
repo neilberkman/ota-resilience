@@ -12,8 +12,12 @@ Prebuilt example binaries are committed in `examples/`, so you can run campaigns
 without rebuilding. Rebuild only if you modify firmware sources.
 
 ```bash
-cd examples/vulnerable_ota && make
-cd ../resilient_ota && make
+make -C examples/vulnerable_ota
+make -C examples/resilient_ota
+make -C examples/fault_variants
+make -C examples/naive_copy
+make -C examples/nxboot_style
+python3 examples/nxboot_style/gen_nxboot_images.py --output-dir examples/nxboot_style
 ```
 
 ## Verify installation
@@ -41,15 +45,13 @@ renode --console --disable-gui --execute "i @scripts/load_resilient.resc; quit"
 ```bash
 python3 scripts/ota_fault_campaign.py \
   --scenario comparative \
-  --evaluation-mode execute \
-  --fault-range 0:28160 \
+  --fault-range 0:13824 \
   --fault-step 5000 \
   --output results/campaign_report.json \
   --table-output results/comparative_table.txt
 ```
 
 If `renode-test` is not on your `PATH`, set `RENODE_TEST` to the full binary path.
-Use `--evaluation-mode state` for faster, state-only sweeps.
 
 ## Update README comparative table from live report
 
@@ -57,6 +59,36 @@ Use `--evaluation-mode state` for faster, state-only sweeps.
 python3 scripts/update_readme_from_report.py \
   --report results/campaign_report.json \
   --readme README.md
+```
+
+## Run the unguided bootloader audit
+
+The audit tool systematically explores the state x fault space of any
+bootloader to find brick conditions:
+
+```bash
+# Audit the built-in resilient bootloader (should find 0 bricks):
+python3 scripts/audit_bootloader.py \
+    --bootloader-elf examples/resilient_ota/bootloader.elf \
+    --output results/audit_report.json
+
+# Audit a naive copy bootloader (should find many bricks):
+python3 scripts/audit_bootloader.py \
+    --bootloader-elf examples/naive_copy/bootloader_bare_copy.elf \
+    --output results/naive_audit.json
+
+# Quick mode (fewer scenarios):
+python3 scripts/audit_bootloader.py --quick --output /tmp/smoke.json
+```
+
+## Run the self-test (validate the audit tool itself)
+
+The self-test runs audits against all 18 bootloader variants and checks that
+the tool correctly identifies defects in broken variants and reports no issues
+for correct ones:
+
+```bash
+python3 scripts/self_test.py --quick
 ```
 
 ## Run Robot tests

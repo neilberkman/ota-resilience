@@ -9,20 +9,19 @@ block-beta
     columns 1
     block:nvm["NVM (0x10000000 -- 0x1007FFFF, 512 KB)"]
         columns 5
-        BOOT["Bootloader\n0x10000000\n8 KB"] A["Slot A\n0x10002000\n220 KB"] B["Staging/Slot B\n0x10039000\n220 KB"] META["Metadata\n0x10070000\n2 × 256 B"] PERSIST["Persistence\n0x10070200+"]
+        A["Slot A\n0x10002000\n216 KB"] B["Staging/Slot B\n0x10038000\n224 KB"] META["Metadata\n0x10070000\n2 × 256 B"] PERSIST["Persistence\n0x10070200+"] PAD["Reserved"]
     end
 ```
 
-| Region           | Address range              | Size         | Purpose                                                  |
-| ---------------- | -------------------------- | ------------ | -------------------------------------------------------- |
+| Region           | Address range              | Size        | Purpose                                                  |
+| ---------------- | -------------------------- | ----------- | -------------------------------------------------------- |
 | Boot alias       | `0x00000000`               | mirrors NVM | CPU fetches vectors/code from here at reset              |
-| Bootloader       | `0x10000000 -- 0x10001FFF` | 8 KB         | A/B slot selection and jump logic                        |
-| Slot A (active)  | `0x10002000 -- 0x10038FFF` | 220 KB       | Active firmware image                                    |
-| Staging / Slot B | `0x10039000 -- 0x1006FFFF` | 220 KB       | Download/staging area (vulnerable) or slot B (resilient) |
-| Boot metadata    | `0x10070000 -- 0x100701FF` | 512 B        | Two 256-byte CRC-protected replicas                      |
-| Persistence      | `0x10070200+`              | remainder    | Boot counters, copy markers, slot markers                |
+| Slot A (active)  | `0x10002000 -- 0x10037FFF` | 216 KB      | Active firmware image                                    |
+| Staging / Slot B | `0x10038000 -- 0x1006FFFF` | 224 KB      | Download/staging area (vulnerable) or slot B (resilient) |
+| Boot metadata    | `0x10070000 -- 0x100701FF` | 512 B       | Two 256-byte CRC-protected replicas                      |
+| Persistence      | `0x10070200+`              | remainder   | Boot counters, copy markers                              |
 | NV read alias    | `0x10080000`               | mirrors NVM | Read-only mirror; writes silently dropped                |
-| Controller regs  | `0x40001000`               | 0x38         | STATUS, CONTROL, fault injection, counters               |
+| Controller regs  | `0x40001000`               | 0x28        | STATUS, CONFIG, CONTROL, ECC counters                    |
 
 The boot alias at `0x00000000` means the Cortex-M0+ vector table fetch
 reads directly from NVM. Corrupting the first 8 bytes of the active slot
@@ -31,7 +30,7 @@ is equivalent to bricking the device.
 ## Vulnerable copy-based OTA flow
 
 The vulnerable firmware (`examples/vulnerable_ota/firmware.c`) copies a
-staged image word-by-word from `0x10039000` into the active slot at
+staged image word-by-word from `0x10038000` into the active slot at
 `0x10000000`. A power loss at any point during the copy leaves a partially
 written vector table and the device will not boot.
 
@@ -115,15 +114,10 @@ flowchart LR
     B --> C[Load scenario .resc]
     C --> D[Execute writes 0..N-1 normally]
     D --> E["InjectPartialWrite at write N"]
-    E --> F{"evaluation mode?"}
-    F -->|execute| G[Reset + run boot path]
-    F -->|state| H[Evaluate from NVM state]
-    G --> I[Write per-point JSON result]
-    H --> I
-    I --> A
+    E --> F[Evaluate boot outcome from NVM state]
+    F --> G[Write per-point JSON result]
+    G --> A
 ```
 
-`execute` is the default mode and evaluates outcomes after running the
-boot path. `state` mode is available for faster broad sweeps and
-evaluates from NVM state only (vector table validity, metadata CRC,
-slot markers), not log text.
+Outcomes are determined by reading NVM state (vector table validity,
+metadata CRC, slot markers) -- not by log text parsing.

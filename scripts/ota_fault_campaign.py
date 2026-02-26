@@ -8,6 +8,7 @@ import dataclasses
 import datetime as dt
 import json
 import os
+import random
 import shlex
 import shutil
 import subprocess
@@ -16,10 +17,11 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from fault_inject import FaultResult, parse_fault_range
+from fault_inject import FaultResult, MultiFaultResult, parse_fault_range, parse_multi_fault_spec
 
 DEFAULT_RENODE_TEST = os.environ.get("RENODE_TEST", "renode-test")
-DEFAULT_BUILTIN_ROBOT_SUITE = "tests/builtin_fault_point.robot"
+DEFAULT_ROBOT_SUITE = "tests/ota_fault_point.robot"
+DEFAULT_MULTI_FAULT_ROBOT_SUITE = "tests/multi_fault.robot"
 DEFAULT_VULNERABLE_TOTAL_WRITES = 28672
 DEFAULT_RESILIENT_TOTAL_WRITES = 28160
 EXIT_ASSERTION_FAILURE = 1
@@ -37,15 +39,30 @@ class CampaignConfig:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OTA resilience campaign runner (live renode-test)")
-    parser.add_argument("--platform-repl", default="platforms/cortex_m0_nvm.repl")
-    parser.add_argument("--vulnerable-firmware-elf", default="examples/vulnerable_ota/firmware.elf")
-    parser.add_argument("--vulnerable-staging-image", default="examples/test_image.bin")
+    parser.add_argument("--platform", default="platforms/cortex_m0_nvm.repl")
+    parser.add_argument("--firmware", default="examples/vulnerable_ota/firmware.elf")
+    parser.add_argument("--ota-image", default="examples/vulnerable_ota/firmware.bin")
     parser.add_argument("--resilient-bootloader-elf", default="examples/resilient_ota/bootloader.elf")
     parser.add_argument("--resilient-slot-a-image", default="examples/resilient_ota/slot_a.bin")
     parser.add_argument("--resilient-slot-b-image", default="examples/resilient_ota/slot_b.bin")
     parser.add_argument("--resilient-boot-meta-image", default="examples/resilient_ota/boot_meta.bin")
+    parser.add_argument(
+        "--scenario-loader-script",
+        default="",
+        help="Optional custom loader .resc passed to ota_fault_point.robot as SCENARIO_LOADER_SCRIPT.",
+    )
+    parser.add_argument(
+        "--fault-point-script",
+        default="",
+        help="Optional custom fault-point .resc passed to ota_fault_point.robot as FAULT_POINT_SCRIPT.",
+    )
     parser.add_argument("--fault-range", default="0:28672", help="start:end inclusive")
     parser.add_argument("--fault-step", type=int, default=5000)
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help="Run a fast smoke subset (first, middle, last fault points) instead of the full stepped set.",
+    )
     parser.add_argument(
         "--total-writes",
         type=int,
@@ -60,13 +77,7 @@ def parse_args() -> argparse.Namespace:
         "--evaluation-mode",
         choices=("state", "execute"),
         default="execute",
-        help="Fault-point evaluation strategy: fast NVM state evaluation or execution-backed boot check.",
-    )
-    parser.add_argument(
-        "--boot-mode",
-        choices=("direct", "swap"),
-        default="direct",
-        help="A/B evaluation mode: direct slot boot or swap-style staging semantics.",
+        help="Fault-point evaluation strategy: state-based heuristic or execution-backed boot check.",
     )
     parser.add_argument("--include-metadata-faults", action="store_true", help="Inject faults during resilient metadata writes")
     parser.add_argument(
@@ -74,34 +85,18 @@ def parse_args() -> argparse.Namespace:
         action="append",
         default=[],
         metavar="KEY:VALUE",
-        help="Extra Robot variable (repeatable). Example: --robot-var RENODE_ROOT:/path/to/dir",
-    )
-    parser.add_argument(
-        "--slot-a-image-file",
-        default="",
-        help="Pre-built image file to seed slot A before A/B campaign runs.",
-    )
-    parser.add_argument(
-        "--slot-b-image-file",
-        default="",
-        help="Pre-built image file to write directly to slot B during A/B campaigns.",
-    )
-    parser.add_argument(
-        "--ota-header-size",
-        type=int,
-        default=0,
-        help="Image header size in bytes; vectors are read at slot_base + header_size.",
+        help="Extra Robot variable (repeatable). Example: --robot-var OTA_HEADER_SIZE:128",
     )
     parser.add_argument("--renode-test", default=DEFAULT_RENODE_TEST)
-    parser.add_argument("--robot-suite", default=DEFAULT_BUILTIN_ROBOT_SUITE)
+    parser.add_argument(
+        "--renode-remote-server-dir",
+        default="",
+        help="Optional directory containing the `renode` remote-server binary wrapper for renode-test.",
+    )
+    parser.add_argument("--robot-suite", default=DEFAULT_ROBOT_SUITE)
     parser.add_argument("--output", required=True)
     parser.add_argument("--table-output")
     parser.add_argument("--keep-run-artifacts", action="store_true")
-    parser.add_argument(
-        "--trace-execution",
-        action="store_true",
-        help="Enable per-point execution traces for manual debugging (A/B fault scripts).",
-    )
     parser.add_argument("--no-control", action="store_true", help="Skip automatic unfaulted control run.")
     parser.add_argument(
         "--assert-no-bricks",
@@ -111,8 +106,42 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--assert-control-boots",
         action="store_true",
-        help="Exit 1 if any control run does not boot successfully.",
+        help="Force control-boot assertion on (default behavior).",
     )
+    parser.add_argument(
+        "--no-assert-control-boots",
+        action="store_true",
+        help="Disable control-boot assertion (not recommended).",
+    )
+
+    # Multi-fault (sequential interruption) options.
+    parser.add_argument(
+        "--multi-fault",
+        action="store_true",
+        help="Enable multi-fault mode: inject multiple sequential power losses per run.",
+    )
+    parser.add_argument(
+        "--fault-sequence",
+        default="",
+        help=(
+            "Explicit multi-fault sequence(s). Comma-separated indices per run, "
+            "semicolon-separated runs. Example: '100,5000' or '100,5000;200,10000'."
+        ),
+    )
+    parser.add_argument(
+        "--multi-fault-random",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Generate N random multi-fault sequences (2-3 faults each) within the total_writes range.",
+    )
+    parser.add_argument(
+        "--multi-fault-seed",
+        type=int,
+        default=None,
+        help="RNG seed for --multi-fault-random (for reproducibility).",
+    )
+
     return parser.parse_args()
 
 
@@ -129,10 +158,17 @@ def stepped_fault_points(expr: str, step: int) -> List[int]:
     return selected
 
 
+def quick_fault_points(points: List[int]) -> List[int]:
+    if len(points) <= 3:
+        return points
+    idx_mid = len(points) // 2
+    picked = [points[0], points[idx_mid], points[-1]]
+    return sorted(set(picked))
+
+
 def resolve_total_writes(override: int | None) -> tuple[int, int]:
     if override is not None:
         return override, override
-
     return DEFAULT_VULNERABLE_TOTAL_WRITES, DEFAULT_RESILIENT_TOTAL_WRITES
 
 
@@ -148,6 +184,13 @@ def ensure_tool(path: str) -> str:
     return resolved
 
 
+def resolve_input_path(repo_root: Path, value: str) -> str:
+    candidate = Path(value)
+    if candidate.is_absolute():
+        return str(candidate)
+    return str((repo_root / candidate).resolve())
+
+
 def parse_robot_vars(raw_vars: List[str]) -> List[str]:
     parsed: List[str] = []
     for rv in raw_vars:
@@ -158,34 +201,25 @@ def parse_robot_vars(raw_vars: List[str]) -> List[str]:
     return parsed
 
 
-def resolve_input_path(repo_root: Path, value: str) -> str:
-    candidate = Path(value)
-    if candidate.is_absolute():
-        return str(candidate)
-    return str((repo_root / candidate).resolve())
-
-
 def built_in_scenario_robot_vars(args: argparse.Namespace, repo_root: Path) -> List[str]:
     values = [
-        "EVALUATION_MODE:{}".format(args.evaluation_mode),
-        "BOOT_MODE:{}".format(args.boot_mode),
-        "PLATFORM_REPL:{}".format(resolve_input_path(repo_root, args.platform_repl)),
-        "VULNERABLE_FIRMWARE_ELF:{}".format(resolve_input_path(repo_root, args.vulnerable_firmware_elf)),
-        "VULNERABLE_STAGING_IMAGE:{}".format(resolve_input_path(repo_root, args.vulnerable_staging_image)),
+        "PLATFORM_REPL:{}".format(resolve_input_path(repo_root, args.platform)),
+        "VULNERABLE_FIRMWARE_ELF:{}".format(resolve_input_path(repo_root, args.firmware)),
+        "VULNERABLE_STAGING_IMAGE:{}".format(resolve_input_path(repo_root, args.ota_image)),
         "RESILIENT_BOOTLOADER_ELF:{}".format(resolve_input_path(repo_root, args.resilient_bootloader_elf)),
         "RESILIENT_SLOT_A_BIN:{}".format(resolve_input_path(repo_root, args.resilient_slot_a_image)),
         "RESILIENT_SLOT_B_BIN:{}".format(resolve_input_path(repo_root, args.resilient_slot_b_image)),
         "RESILIENT_BOOT_META_BIN:{}".format(resolve_input_path(repo_root, args.resilient_boot_meta_image)),
-        # Generic suite compatibility aliases.
-        "FIRMWARE_ELF:{}".format(resolve_input_path(repo_root, args.vulnerable_firmware_elf)),
+        "EVALUATION_MODE:{}".format(args.evaluation_mode),
+        # Generic-name aliases for alternate Robot suites.
+        "FIRMWARE_ELF:{}".format(resolve_input_path(repo_root, args.firmware)),
         "BOOTLOADER_ELF:{}".format(resolve_input_path(repo_root, args.resilient_bootloader_elf)),
         "BOOT_META_BIN:{}".format(resolve_input_path(repo_root, args.resilient_boot_meta_image)),
-        "OTA_HEADER_SIZE:{}".format(args.ota_header_size),
     ]
-    if args.slot_b_image_file:
-        values.append("SLOT_B_IMAGE_FILE:{}".format(resolve_input_path(repo_root, args.slot_b_image_file)))
-    if args.slot_a_image_file:
-        values.append("SLOT_A_IMAGE_FILE:{}".format(resolve_input_path(repo_root, args.slot_a_image_file)))
+    if args.scenario_loader_script:
+        values.append("SCENARIO_LOADER_SCRIPT:{}".format(resolve_input_path(repo_root, args.scenario_loader_script)))
+    if args.fault_point_script:
+        values.append("FAULT_POINT_SCRIPT:{}".format(resolve_input_path(repo_root, args.fault_point_script)))
     return values
 
 
@@ -199,8 +233,7 @@ def run_fault_point(
     include_metadata_faults: bool,
     robot_vars: List[str],
     work_dir: Path,
-    trace_execution: bool,
-    trace_root: Path | None,
+    renode_remote_server_dir: str,
     is_control: bool = False,
 ) -> FaultResult:
     point_kind = "control" if is_control else "fault"
@@ -209,24 +242,19 @@ def run_fault_point(
 
     result_file = point_dir / "result.json"
     rf_results = point_dir / "robot"
-    trace_file = ""
-    if trace_execution:
-        if trace_root is None:
-            trace_point_dir = point_dir
-        else:
-            trace_point_dir = trace_root / "{}_{}".format(scenario, fault_at)
-            trace_point_dir.mkdir(parents=True, exist_ok=True)
-        trace_file = str((trace_point_dir / "execution_trace.log").resolve())
+    bundle_dir = work_dir / ".dotnet_bundle"
+    renode_config = work_dir / "renode.config"
+    bundle_dir.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         renode_test,
+        "--renode-config",
+        str(renode_config),
         robot_suite,
         "--results-dir",
         str(rf_results),
         "--variable",
-        "BUILTIN_SCENARIO:{}".format(scenario),
-        "--variable",
-        "REPORT_SCENARIO:{}".format(scenario),
+        "SCENARIO:{}".format(scenario),
         "--variable",
         "FAULT_AT:{}".format(fault_at),
         "--variable",
@@ -235,14 +263,15 @@ def run_fault_point(
         "RESULT_FILE:{}".format(result_file),
         "--variable",
         "INCLUDE_METADATA_FAULTS:{}".format("true" if include_metadata_faults else "false"),
-        "--variable",
-        "TRACE_EXECUTION:{}".format("true" if trace_execution else "false"),
     ]
-    if trace_file:
-        cmd.extend(["--variable", "TRACE_FILE:{}".format(trace_file)])
+    if renode_remote_server_dir:
+        cmd.extend(["--robot-framework-remote-server-full-directory", renode_remote_server_dir])
 
     for rv in robot_vars:
         cmd.extend(["--variable", rv])
+
+    env = os.environ.copy()
+    env.setdefault("DOTNET_BUNDLE_EXTRACT_BASE_DIR", str(bundle_dir))
 
     proc = subprocess.run(
         cmd,
@@ -250,6 +279,7 @@ def run_fault_point(
         capture_output=True,
         text=True,
         check=False,
+        env=env,
     )
 
     if proc.returncode != 0:
@@ -274,7 +304,6 @@ def run_fault_point(
         boot_slot=data.get("boot_slot"),
         nvm_state=data.get("nvm_state"),
         raw_log=log_output,
-        fault_diagnostics=data.get("fault_diagnostics", {}),
         is_control=is_control,
     )
 
@@ -289,8 +318,7 @@ def run_campaign(
     include_metadata_faults: bool,
     robot_vars: List[str],
     work_dir: Path,
-    trace_execution: bool,
-    trace_root: Path | None,
+    renode_remote_server_dir: str,
     include_control: bool,
 ) -> List[FaultResult]:
     results: List[FaultResult] = []
@@ -306,8 +334,7 @@ def run_campaign(
                 include_metadata_faults=include_metadata_faults,
                 robot_vars=robot_vars,
                 work_dir=work_dir,
-                trace_execution=trace_execution,
-                trace_root=trace_root,
+                renode_remote_server_dir=renode_remote_server_dir,
             )
         )
 
@@ -325,12 +352,203 @@ def run_campaign(
                 include_metadata_faults=include_metadata_faults,
                 robot_vars=robot_vars,
                 work_dir=work_dir,
-                trace_execution=trace_execution,
-                trace_root=trace_root,
+                renode_remote_server_dir=renode_remote_server_dir,
                 is_control=True,
             )
         )
+
     return results
+
+
+def generate_multi_fault_sequences(
+    total_writes: int,
+    count: int,
+    max_faults: int = 3,
+    seed: int | None = None,
+) -> List[List[int]]:
+    """Generate random multi-fault sequences for campaign testing.
+
+    Each sequence is a sorted list of 2 to ``max_faults`` fault indices
+    drawn uniformly from [0, total_writes).
+    """
+    rng = random.Random(seed)
+    sequences: List[List[int]] = []
+    for _ in range(count):
+        num_faults = rng.randint(2, max_faults)
+        indices = sorted(rng.sample(range(total_writes), num_faults))
+        sequences.append(indices)
+    return sequences
+
+
+def run_multi_fault_point(
+    repo_root: Path,
+    renode_test: str,
+    robot_suite: str,
+    fault_sequence: List[int],
+    total_writes: int,
+    include_metadata_faults: bool,
+    robot_vars: List[str],
+    work_dir: Path,
+    renode_remote_server_dir: str,
+    is_control: bool = False,
+) -> MultiFaultResult:
+    """Run a single multi-fault sequence via the multi_fault.robot suite."""
+    seq_label = "_".join(str(f) for f in fault_sequence)
+    point_kind = "control" if is_control else "mf"
+    point_dir = work_dir / "{}_{}".format(point_kind, seq_label)
+    point_dir.mkdir(parents=True, exist_ok=True)
+
+    result_file = point_dir / "result.json"
+    rf_results = point_dir / "robot"
+    bundle_dir = work_dir / ".dotnet_bundle"
+    renode_config = work_dir / "renode.config"
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    fault_sequence_str = ",".join(str(f) for f in fault_sequence)
+
+    cmd = [
+        renode_test,
+        "--renode-config",
+        str(renode_config),
+        robot_suite,
+        "--results-dir",
+        str(rf_results),
+        "--variable",
+        "FAULT_SEQUENCE:{}".format(fault_sequence_str),
+        "--variable",
+        "TOTAL_WRITES:{}".format(total_writes),
+        "--variable",
+        "RESULT_FILE:{}".format(result_file),
+        "--variable",
+        "INCLUDE_METADATA_FAULTS:{}".format("true" if include_metadata_faults else "false"),
+    ]
+    if renode_remote_server_dir:
+        cmd.extend(["--robot-framework-remote-server-full-directory", renode_remote_server_dir])
+
+    for rv in robot_vars:
+        cmd.extend(["--variable", rv])
+
+    env = os.environ.copy()
+    env.setdefault("DOTNET_BUNDLE_EXTRACT_BASE_DIR", str(bundle_dir))
+
+    proc = subprocess.run(
+        cmd,
+        cwd=str(repo_root),
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+
+    if proc.returncode != 0:
+        raise RuntimeError(
+            "renode-test failed for multi-fault sequence={}\nSTDOUT:\n{}\nSTDERR:\n{}".format(
+                fault_sequence_str,
+                proc.stdout,
+                proc.stderr,
+            )
+        )
+
+    if not result_file.exists():
+        raise RuntimeError("multi-fault run did not produce {}".format(result_file))
+
+    data = json.loads(result_file.read_text(encoding="utf-8"))
+    log_output = proc.stdout.replace(str(work_dir), "<artifacts>")
+    log_output = log_output.replace(str(repo_root), "<repo>")
+    return MultiFaultResult(
+        fault_sequence=data.get("fault_sequence", fault_sequence),
+        boot_outcome=str(data["boot_outcome"]),
+        boot_slot=data.get("boot_slot"),
+        nvm_state=data.get("nvm_state"),
+        per_fault_states=data.get("per_fault_states", []),
+        raw_log=log_output,
+        is_control=is_control,
+    )
+
+
+def run_multi_fault_campaign(
+    repo_root: Path,
+    renode_test: str,
+    robot_suite: str,
+    sequences: List[List[int]],
+    total_writes: int,
+    include_metadata_faults: bool,
+    robot_vars: List[str],
+    work_dir: Path,
+    renode_remote_server_dir: str,
+    include_control: bool,
+) -> List[MultiFaultResult]:
+    """Run a multi-fault campaign over a list of fault sequences."""
+    results: List[MultiFaultResult] = []
+    for seq in sequences:
+        results.append(
+            run_multi_fault_point(
+                repo_root=repo_root,
+                renode_test=renode_test,
+                robot_suite=robot_suite,
+                fault_sequence=seq,
+                total_writes=total_writes,
+                include_metadata_faults=include_metadata_faults,
+                robot_vars=robot_vars,
+                work_dir=work_dir,
+                renode_remote_server_dir=renode_remote_server_dir,
+            )
+        )
+
+    if include_control:
+        # Control run: fault points far beyond total_writes so no fault is injected.
+        control_at = max(999999, total_writes) + 1
+        results.append(
+            run_multi_fault_point(
+                repo_root=repo_root,
+                renode_test=renode_test,
+                robot_suite=robot_suite,
+                fault_sequence=[control_at, control_at + 1],
+                total_writes=total_writes,
+                include_metadata_faults=include_metadata_faults,
+                robot_vars=robot_vars,
+                work_dir=work_dir,
+                renode_remote_server_dir=renode_remote_server_dir,
+                is_control=True,
+            )
+        )
+
+    return results
+
+
+def summarize_multi_fault(results: List[MultiFaultResult]) -> Dict[str, Any]:
+    """Summarize multi-fault campaign results."""
+    non_control = [r for r in results if not r.is_control]
+    control = [r for r in results if r.is_control]
+    total = len(non_control)
+    bricks = sum(1 for r in non_control if r.boot_outcome != "success")
+    recoveries = sum(1 for r in non_control if r.boot_outcome == "success")
+
+    summary: Dict[str, Any] = {
+        "total_sequences": total,
+        "bricks": bricks,
+        "recoveries": recoveries,
+        "brick_rate": (float(bricks) / float(total)) if total else 0.0,
+        "sequences": [
+            {
+                "fault_sequence": r.fault_sequence,
+                "boot_outcome": r.boot_outcome,
+                "boot_slot": r.boot_slot,
+                "faults_injected": len(r.per_fault_states),
+            }
+            for r in non_control
+        ],
+    }
+
+    if control:
+        ctrl = control[-1]
+        summary["control"] = {
+            "fault_sequence": ctrl.fault_sequence,
+            "boot_outcome": ctrl.boot_outcome,
+            "boot_slot": ctrl.boot_slot,
+        }
+
+    return summary
 
 
 def summarize(results: Dict[str, List[FaultResult]]) -> Dict[str, Any]:
@@ -342,7 +560,7 @@ def summarize(results: Dict[str, List[FaultResult]]) -> Dict[str, Any]:
         control_entries = [entry for entry in entries if entry.is_control]
 
         total = len(non_control_entries)
-        bricks = sum(1 for r in non_control_entries if r.boot_outcome in {"hard_fault", "hang"})
+        bricks = sum(1 for r in non_control_entries if r.boot_outcome != "success")
         recoveries = sum(1 for r in non_control_entries if r.boot_outcome == "success")
 
         summary[name] = {
@@ -447,25 +665,21 @@ def to_json_payload(
         "fault_points": cfg.fault_points,
         "include_metadata_faults": cfg.include_metadata_faults,
         "evaluation_mode": args.evaluation_mode,
-        "boot_mode": args.boot_mode,
-        "trace_execution": args.trace_execution,
+        "quick": bool(args.quick),
         "control_enabled": not args.no_control,
         "summary": summary,
         "inputs": {
-            "platform_repl": args.platform_repl,
-            "vulnerable_firmware_elf": args.vulnerable_firmware_elf,
-            "vulnerable_staging_image": args.vulnerable_staging_image,
+            "platform": args.platform,
+            "firmware": args.firmware,
+            "ota_image": args.ota_image,
             "resilient_bootloader_elf": args.resilient_bootloader_elf,
             "resilient_slot_a_image": args.resilient_slot_a_image,
             "resilient_slot_b_image": args.resilient_slot_b_image,
             "resilient_boot_meta_image": args.resilient_boot_meta_image,
-            "slot_a_image_file": args.slot_a_image_file,
-            "slot_b_image_file": args.slot_b_image_file,
-            "ota_header_size": args.ota_header_size,
-            "boot_mode": args.boot_mode,
-            "trace_execution": args.trace_execution,
+            "scenario_loader_script": args.scenario_loader_script,
+            "fault_point_script": args.fault_point_script,
+            "quick": bool(args.quick),
             "robot_suite": args.robot_suite,
-            "control_enabled": not args.no_control,
             "renode_test": os.path.basename(resolved_renode_test)
             if os.path.isabs(resolved_renode_test)
             else resolved_renode_test,
@@ -503,18 +717,15 @@ def main() -> int:
                     if entry.boot_outcome != "success":
                         failed_points.append(
                             "  Scenario {} fault point {}: boot_outcome={} (expected success)".format(
-                                scenario_name,
-                                entry.fault_at,
-                                entry.boot_outcome,
+                                scenario_name, entry.fault_at, entry.boot_outcome
                             )
                         )
             if failed_points:
-                failed_points.append(
-                    "  {} bricks out of {} fault points".format(len(failed_points), non_control_points)
-                )
+                failed_points.append("  {} bricks out of {} fault points".format(len(failed_points), non_control_points))
                 failures.append(("--assert-no-bricks", failed_points))
 
-        if args.assert_control_boots:
+        control_assert_enabled = (not args.no_control) and (args.assert_control_boots or (not args.no_assert_control_boots))
+        if control_assert_enabled:
             failed_controls: List[str] = []
             control_count = 0
             for scenario_name, entries in results.items():
@@ -525,17 +736,13 @@ def main() -> int:
                     if entry.boot_outcome != "success":
                         failed_controls.append(
                             "  Scenario {} control point {}: boot_outcome={} (expected success)".format(
-                                scenario_name,
-                                entry.fault_at,
-                                entry.boot_outcome,
+                                scenario_name, entry.fault_at, entry.boot_outcome
                             )
                         )
             if control_count == 0:
                 raise RuntimeError("--assert-control-boots requested but no control runs were executed")
             if failed_controls:
-                failed_controls.append(
-                    "  {} failed controls out of {}".format(len(failed_controls), control_count)
-                )
+                failed_controls.append("  {} failed controls out of {}".format(len(failed_controls), control_count))
                 failures.append(("--assert-control-boots", failed_controls))
 
         return failures
@@ -543,30 +750,18 @@ def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parent.parent
     temp_ctx: tempfile.TemporaryDirectory[str] | None = None
-    trace_root: Path | None = None
 
     try:
         if args.no_control and args.assert_control_boots:
             raise ValueError("--assert-control-boots cannot be combined with --no-control")
+        if args.assert_control_boots and args.no_assert_control_boots:
+            raise ValueError("--assert-control-boots and --no-assert-control-boots are mutually exclusive")
 
         renode_test = ensure_tool(args.renode_test)
         robot_suite = args.robot_suite
 
-        points = stepped_fault_points(args.fault_range, args.fault_step)
         vulnerable_total_writes, resilient_total_writes = resolve_total_writes(args.total_writes)
         robot_vars = built_in_scenario_robot_vars(args, repo_root) + parse_robot_vars(args.robot_var)
-        cfg = CampaignConfig(
-            scenario=args.scenario,
-            fault_points=points,
-            vulnerable_total_writes=vulnerable_total_writes,
-            resilient_total_writes=resilient_total_writes,
-            include_metadata_faults=args.include_metadata_faults,
-        )
-
-        if args.trace_execution:
-            output_path = Path(args.output)
-            trace_root = output_path.parent / "{}_traces".format(output_path.stem)
-            trace_root.mkdir(parents=True, exist_ok=True)
 
         if args.keep_run_artifacts:
             execution_dir = repo_root / "results" / "renode_runs"
@@ -578,6 +773,129 @@ def main() -> int:
             temp_ctx = tempfile.TemporaryDirectory(prefix="ota_campaign_")
             work_dir = Path(temp_ctx.name)
             report_artifacts_dir = "temporary"
+
+        # -----------------------------------------------------------------
+        # Multi-fault campaign path
+        # -----------------------------------------------------------------
+        if args.multi_fault or args.fault_sequence or args.multi_fault_random:
+            total_writes = resilient_total_writes
+            if args.total_writes is not None:
+                total_writes = args.total_writes
+
+            # Build the list of fault sequences to test.
+            sequences: List[List[int]] = []
+            if args.fault_sequence:
+                sequences.extend(parse_multi_fault_spec(args.fault_sequence))
+            if args.multi_fault_random > 0:
+                sequences.extend(
+                    generate_multi_fault_sequences(
+                        total_writes,
+                        args.multi_fault_random,
+                        max_faults=3,
+                        seed=args.multi_fault_seed,
+                    )
+                )
+            if not sequences:
+                raise ValueError(
+                    "--multi-fault requires at least one of --fault-sequence or --multi-fault-random"
+                )
+
+            mf_robot_suite = robot_suite if robot_suite != DEFAULT_ROBOT_SUITE else DEFAULT_MULTI_FAULT_ROBOT_SUITE
+            mf_results = run_multi_fault_campaign(
+                repo_root=repo_root,
+                renode_test=renode_test,
+                robot_suite=mf_robot_suite,
+                sequences=sequences,
+                total_writes=total_writes,
+                include_metadata_faults=args.include_metadata_faults,
+                robot_vars=robot_vars,
+                work_dir=work_dir,
+                renode_remote_server_dir=args.renode_remote_server_dir,
+                include_control=not args.no_control,
+            )
+
+            summary = summarize_multi_fault(mf_results)
+
+            # Build output payload.
+            if Path(sys.argv[0]).suffix == ".py":
+                command_parts = ["python3"] + sys.argv
+            else:
+                command_parts = sys.argv
+
+            payload: Dict[str, object] = {
+                "engine": "renode-test",
+                "mode": "multi-fault",
+                "total_writes": total_writes,
+                "fault_sequences": [r.fault_sequence for r in mf_results if not r.is_control],
+                "include_metadata_faults": args.include_metadata_faults,
+                "evaluation_mode": args.evaluation_mode,
+                "control_enabled": not args.no_control,
+                "summary": summary,
+                "inputs": {
+                    "platform": args.platform,
+                    "resilient_bootloader_elf": args.resilient_bootloader_elf,
+                    "resilient_slot_a_image": args.resilient_slot_a_image,
+                    "resilient_slot_b_image": args.resilient_slot_b_image,
+                    "resilient_boot_meta_image": args.resilient_boot_meta_image,
+                    "scenario_loader_script": args.scenario_loader_script,
+                    "robot_suite": mf_robot_suite,
+                    "renode_test": os.path.basename(renode_test) if os.path.isabs(renode_test) else renode_test,
+                    "multi_fault_random": args.multi_fault_random,
+                    "multi_fault_seed": args.multi_fault_seed,
+                },
+                "execution": {
+                    "run_utc": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "campaign_command": " ".join(shlex.quote(a) for a in command_parts),
+                    "artifacts_dir": report_artifacts_dir,
+                },
+                "git": git_metadata(repo_root),
+                "results": [dataclasses.asdict(r) for r in mf_results],
+            }
+
+            out_path = Path(args.output)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+            print(json.dumps(summary, indent=2, sort_keys=True))
+
+            # Assertion checks for multi-fault.
+            if args.assert_no_bricks:
+                failed_seqs = [r for r in mf_results if not r.is_control and r.boot_outcome != "success"]
+                if failed_seqs:
+                    print("ASSERTION FAILED: --assert-no-bricks", file=sys.stderr)
+                    for r in failed_seqs:
+                        print(
+                            "  Sequence {}: boot_outcome={} (expected success)".format(
+                                r.fault_sequence, r.boot_outcome
+                            ),
+                            file=sys.stderr,
+                        )
+                    print(
+                        "  {} bricks out of {} sequences".format(
+                            len(failed_seqs), len([r for r in mf_results if not r.is_control])
+                        ),
+                        file=sys.stderr,
+                    )
+                    return EXIT_ASSERTION_FAILURE
+
+            return 0
+
+        # -----------------------------------------------------------------
+        # Standard single-fault campaign path
+        # -----------------------------------------------------------------
+        points = stepped_fault_points(args.fault_range, args.fault_step)
+        if args.quick:
+            points = quick_fault_points(points)
+        if args.scenario not in ("vulnerable", "resilient", "comparative") and args.total_writes is None:
+            raise ValueError("--total-writes is required for custom scenarios")
+
+        cfg = CampaignConfig(
+            scenario=args.scenario,
+            fault_points=points,
+            vulnerable_total_writes=vulnerable_total_writes,
+            resilient_total_writes=resilient_total_writes,
+            include_metadata_faults=args.include_metadata_faults,
+        )
 
         results: Dict[str, List[FaultResult]] = {}
         if cfg.scenario in ("vulnerable", "comparative"):
@@ -591,8 +909,7 @@ def main() -> int:
                 include_metadata_faults=False,
                 robot_vars=robot_vars,
                 work_dir=work_dir,
-                trace_execution=args.trace_execution,
-                trace_root=trace_root,
+                renode_remote_server_dir=args.renode_remote_server_dir,
                 include_control=not args.no_control,
             )
 
@@ -607,8 +924,7 @@ def main() -> int:
                 include_metadata_faults=cfg.include_metadata_faults,
                 robot_vars=robot_vars,
                 work_dir=work_dir,
-                trace_execution=args.trace_execution,
-                trace_root=trace_root,
+                renode_remote_server_dir=args.renode_remote_server_dir,
                 include_control=not args.no_control,
             )
 
@@ -619,12 +935,11 @@ def main() -> int:
                 robot_suite=robot_suite,
                 scenario=cfg.scenario,
                 fault_points=cfg.fault_points,
-                total_writes=vulnerable_total_writes,
+                total_writes=cfg.vulnerable_total_writes,
                 include_metadata_faults=cfg.include_metadata_faults,
                 robot_vars=robot_vars,
                 work_dir=work_dir,
-                trace_execution=args.trace_execution,
-                trace_root=trace_root,
+                renode_remote_server_dir=args.renode_remote_server_dir,
                 include_control=not args.no_control,
             )
 

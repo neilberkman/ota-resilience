@@ -1,0 +1,30 @@
+schema_version: 1
+scenario: resilient
+name: nxboot_header_validation
+description: "NxBoot with header validation: bootloader checks image headers and CRC before booting. Invalid or partially-written images are rejected and the previous good slot is used. Uses resilient bootloader as proxy."
+platform: platforms/cortex_m0_nvm.repl
+bootloader:
+  elf: examples/resilient_ota/bootloader.elf
+  entry: 0x10000000
+memory:
+  sram: { start: 0x20000000, end: 0x20020000 }
+  write_granularity: 8
+  slots:
+    exec: { base: 0x10002000, size: 0x37000 }
+    staging: { base: 0x10039000, size: 0x37000 }
+images:
+  exec: examples/resilient_ota/slot_a.bin
+  staging: examples/resilient_ota/slot_b.bin
+setup_script: scripts/setup_resilient_state.resc
+pre_boot_state: []
+success_criteria:
+  vtor_in_slot: exec
+  marker_address: 0x10070220
+  marker_value: 0
+fault_sweep:
+  mode: runtime
+  max_writes: 28160
+  max_writes_cap: 100000
+  run_duration: "0.01"
+expect:
+  should_find_issues: false

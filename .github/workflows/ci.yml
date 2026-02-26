@@ -36,6 +36,10 @@ jobs:
           set -euxo pipefail
           make -C examples/vulnerable_ota
           make -C examples/resilient_ota
+          make -C examples/fault_variants
+          make -C examples/naive_copy
+          make -C examples/nxboot_style
+          python3 examples/nxboot_style/gen_nxboot_images.py --output-dir examples/nxboot_style
 
       - name: Run Robot suites in pinned Renode
         uses: antmicro/renode-test-action@0705567acf04d7b998d7deac1e05d9067d70d901
@@ -45,6 +49,7 @@ jobs:
           renode-revision: ${{ env.RENODE_REVISION }}
           tests-to-run: |
             tests/nvm_peripheral.robot
+            tests/ota_fault_point.robot
             tests/ota_resilience.robot
           artifacts-path: results/ci_artifacts
 
@@ -54,3 +59,38 @@ jobs:
         with:
           name: renode-artifacts
           path: results/ci_artifacts
+
+  self-test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    env:
+      RENODE_URL: https://builds.renode.io/renode-latest.linux-portable.tar.gz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Renode portable
+        run: |
+          set -euxo pipefail
+          tarball="${RUNNER_TEMP}/renode-portable.tar.gz"
+          curl -L "${RENODE_URL}" -o "${tarball}"
+          mkdir -p "${RUNNER_TEMP}/renode"
+          tar -xzf "${tarball}" -C "${RUNNER_TEMP}/renode" --strip-components=1
+          python3 -m pip install --user -r "${RUNNER_TEMP}/renode/tests/requirements.txt"
+          echo "${RUNNER_TEMP}/renode" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/renode/renode-test" --help >/dev/null
+
+      - name: Install Python dependencies
+        run: python3 -m pip install --user pyyaml
+
+      - name: Run self-test (--quick)
+        run: |
+          python3 scripts/self_test.py --quick \
+            --renode-test "${RUNNER_TEMP}/renode/renode-test"
+
+      - name: Upload self-test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: self-test-results
+          path: results/

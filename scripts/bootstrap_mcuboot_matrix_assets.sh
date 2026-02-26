@@ -1,107 +1,72 @@
 #!/usr/bin/env bash
+# Bootstrap Zephyr workspace + MCUboot for building from source in CI.
+# Idempotent -- safe to run multiple times.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-ZEPHYR_REF="${ZEPHYR_REF:-v3.7.0}"
-ZEPHYR_WS="${ZEPHYR_WS:-${REPO_ROOT}/third_party/zephyr_ws}"
-ZEPHYR_VENV="${ZEPHYR_VENV:-${REPO_ROOT}/third_party/zephyr-venv}"
-TOOLCHAIN_PATH="${GNUARMEMB_TOOLCHAIN_PATH:-$HOME/tools/gcc-arm-none-eabi-8-2018-q4-major}"
-ASSETS_DIR="${OSS_ASSETS_DIR:-${REPO_ROOT}/results/oss_validation/assets}"
-BUILD_DIR="${OSS_BUILD_DIR:-${REPO_ROOT}/results/oss_validation/build}"
-HELLO_BUILD_DIR="${HELLO_BUILD_DIR:-${BUILD_DIR}/hello_world_mcuboot}"
-SLOT_SIZE="${SLOT_SIZE:-0x76000}"
-HEADER_SIZE="${HEADER_SIZE:-0x200}"
-ALIGN="${ALIGN:-8}"
-MARKER_FILE="${BUILD_DIR}/.mcuboot_bootstrap_done"
+ZEPHYR_REF="${ZEPHYR_REF:-v3.6.0}"
+ZEPHYR_WS="${REPO_ROOT}/third_party/zephyr_ws"
+ZEPHYR_VENV="${REPO_ROOT}/third_party/zephyr-venv"
+MCUBOOT_DIR="${ZEPHYR_WS}/bootloader/mcuboot"
 
-SLOT0="${ASSETS_DIR}/zephyr_slot0_padded.bin"
-SLOT1="${ASSETS_DIR}/zephyr_slot1_padded.bin"
+msg() { echo ">> $*" >&2; }
 
-if [[ ! -d "${REPO_ROOT}/third_party" ]]; then
-    mkdir -p "${REPO_ROOT}/third_party"
-fi
-mkdir -p "${ASSETS_DIR}" "${BUILD_DIR}"
-
+# --- 1. Python venv with west and build-time deps ---
 if [[ ! -x "${ZEPHYR_VENV}/bin/west" ]]; then
+    msg "Creating Python venv at ${ZEPHYR_VENV}"
     python3 -m venv "${ZEPHYR_VENV}"
-    "${ZEPHYR_VENV}/bin/pip" install --upgrade pip
-    "${ZEPHYR_VENV}/bin/pip" install west
+    "${ZEPHYR_VENV}/bin/pip" install --quiet --upgrade pip
+    "${ZEPHYR_VENV}/bin/pip" install --quiet \
+        west intelhex cbor2 cryptography pyyaml
+else
+    msg "Venv already exists, skipping creation"
 fi
 
+# --- 2. Initialize Zephyr workspace ---
 if [[ ! -d "${ZEPHYR_WS}/.west" ]]; then
-    "${ZEPHYR_VENV}/bin/west" init -m "https://github.com/zephyrproject-rtos/zephyr" --mr "${ZEPHYR_REF}" "${ZEPHYR_WS}"
+    msg "Initializing Zephyr workspace (${ZEPHYR_REF})"
+    "${ZEPHYR_VENV}/bin/west" init \
+        -m https://github.com/zephyrproject-rtos/zephyr \
+        --mr "${ZEPHYR_REF}" "${ZEPHYR_WS}"
+else
+    msg "Zephyr workspace already initialized"
 fi
 
-# Keep the workspace venv aligned with Zephyr build-time Python deps (e.g. pyelftools).
-if [[ -f "${ZEPHYR_WS}/zephyr/scripts/requirements.txt" ]]; then
-    "${ZEPHYR_VENV}/bin/pip" install -r "${ZEPHYR_WS}/zephyr/scripts/requirements.txt"
-fi
+# --- 3. Fetch Zephyr + MCUboot via west update ---
+msg "Running west update (narrow + shallow)"
+( cd "${ZEPHYR_WS}" && \
+  "${ZEPHYR_VENV}/bin/west" update --narrow -o=--depth=1 )
 
-if [[ -f "${ZEPHYR_WS}/bootloader/mcuboot/scripts/requirements.txt" ]]; then
-    "${ZEPHYR_VENV}/bin/pip" install -r "${ZEPHYR_WS}/bootloader/mcuboot/scripts/requirements.txt"
-fi
-
-if [[ ! -f "${MARKER_FILE}" || "${FORCE_BOOTSTRAP:-0}" == "1" ]]; then
-    (
-        cd "${ZEPHYR_WS}"
-        if [[ "${SKIP_WEST_UPDATE:-0}" != "1" ]]; then
-            "${ZEPHYR_VENV}/bin/west" update --narrow -o=--depth=1
-        fi
-        if command -v ninja >/dev/null 2>&1; then
-            "${ZEPHYR_VENV}/bin/west" config build.generator "Ninja"
-        else
-            "${ZEPHYR_VENV}/bin/west" config build.generator "Unix Makefiles"
-        fi
-    )
-fi
-
-if [[ ! -x "${TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc" ]]; then
-    echo "missing toolchain at ${TOOLCHAIN_PATH}" >&2
+# --- 4. Add upstream MCUboot remote for commit checkouts ---
+if [[ ! -d "${MCUBOOT_DIR}" ]]; then
+    msg "ERROR: MCUboot not found at ${MCUBOOT_DIR}"
     exit 1
 fi
-
-if [[ ! -f "${SLOT0}" || ! -f "${SLOT1}" || "${FORCE_REBUILD_SLOTS:-0}" == "1" ]]; then
-    (
-        cd "${ZEPHYR_WS}"
-        export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
-        export GNUARMEMB_TOOLCHAIN_PATH="${TOOLCHAIN_PATH}"
-        "${ZEPHYR_VENV}/bin/west" build \
-            -d "${HELLO_BUILD_DIR}" \
-            -p always \
-            -b nrf52840dk/nrf52840 \
-            "zephyr/samples/hello_world" \
-            -- \
-            -DCONFIG_BOOTLOADER_MCUBOOT=y \
-            -DCMAKE_GDB:FILEPATH="${TOOLCHAIN_PATH}/bin/arm-none-eabi-gdb" \
-            -DPython3_EXECUTABLE:FILEPATH="${ZEPHYR_VENV}/bin/python3"
-    )
-
-    IMGTOOL="${ZEPHYR_WS}/bootloader/mcuboot/scripts/imgtool.py"
-    KEY_FILE="${ZEPHYR_WS}/bootloader/mcuboot/root-rsa-2048.pem"
-    SOURCE_BIN="${HELLO_BUILD_DIR}/zephyr/zephyr.bin"
-
-    python3 "${IMGTOOL}" sign \
-        --key "${KEY_FILE}" \
-        --header-size "${HEADER_SIZE}" \
-        --align "${ALIGN}" \
-        --slot-size "${SLOT_SIZE}" \
-        --version "1.0.0" \
-        "${SOURCE_BIN}" \
-        "${SLOT0}"
-
-    python3 "${IMGTOOL}" sign \
-        --key "${KEY_FILE}" \
-        --header-size "${HEADER_SIZE}" \
-        --align "${ALIGN}" \
-        --slot-size "${SLOT_SIZE}" \
-        --version "1.0.1" \
-        "${SOURCE_BIN}" \
-        "${SLOT1}"
+if ! git -C "${MCUBOOT_DIR}" remote | grep -q '^upstream$'; then
+    msg "Adding upstream remote to MCUboot"
+    git -C "${MCUBOOT_DIR}" remote add upstream \
+        https://github.com/mcu-tools/mcuboot.git
 fi
+git -C "${MCUBOOT_DIR}" fetch --quiet upstream
 
-touch "${MARKER_FILE}"
+# --- 5. Install Zephyr + MCUboot Python requirements ---
+for req in \
+    "${ZEPHYR_WS}/zephyr/scripts/requirements.txt" \
+    "${MCUBOOT_DIR}/scripts/requirements.txt"; do
+    if [[ -f "${req}" ]]; then
+        msg "Installing requirements from ${req##*/}"
+        "${ZEPHYR_VENV}/bin/pip" install --quiet -r "${req}"
+    fi
+done
 
-echo "slot image A: ${SLOT0}"
-echo "slot image B: ${SLOT1}"
+# --- 6. Configure build generator ---
+( cd "${ZEPHYR_WS}"
+  if command -v ninja >/dev/null 2>&1; then
+      "${ZEPHYR_VENV}/bin/west" config build.generator "Ninja"
+  else
+      "${ZEPHYR_VENV}/bin/west" config build.generator "Unix Makefiles"
+  fi )
+
+msg "Bootstrap complete. Workspace: ${ZEPHYR_WS}"

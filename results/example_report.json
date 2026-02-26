@@ -1,0 +1,301 @@
+{
+  "engine": "renode-test",
+  "scenario": "comparative",
+  "total_writes": 13824,
+  "fault_points": [0, 2000, 4000, 6000, 8000, 10000, 12000, 13824],
+  "include_metadata_faults": false,
+  "summary": {
+    "vulnerable": {
+      "total": 8,
+      "bricks": 7,
+      "recoveries": 1,
+      "brick_rate": 0.875
+    },
+    "resilient": {
+      "total": 8,
+      "bricks": 0,
+      "recoveries": 8,
+      "brick_rate": 0.0
+    }
+  },
+  "inputs": {
+    "platform": "platforms/cortex_m0_nvm.repl",
+    "firmware": "examples/vulnerable_ota/firmware.elf",
+    "ota_image": "examples/test_image.bin",
+    "robot_suite": "tests/ota_fault_point.robot",
+    "renode_test": "renode-test"
+  },
+  "execution": {
+    "run_utc": "2026-02-22T12:00:00Z",
+    "campaign_command": "python3 scripts/ota_fault_campaign.py --scenario comparative --fault-range 0:13824 --fault-step 2000 --output results/example_report.json",
+    "artifacts_dir": "temporary"
+  },
+  "git": {
+    "commit": "abc1234567890abcdef1234567890abcdef123456",
+    "short_commit": "abc1234",
+    "dirty": "false"
+  },
+  "results": {
+    "vulnerable": [
+      {
+        "fault_at": 0,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x20010000",
+          "vector_reset": "0x00000000",
+          "vector_valid": false,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 2000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 4000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 6000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 8000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 10000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 12000,
+        "boot_outcome": "hard_fault",
+        "boot_slot": null,
+        "nvm_state": {
+          "copy_marker": "0x00000000",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": true
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 13824,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "copy_marker": "0xC0FEBEEF",
+          "boot_counter": 0,
+          "vector_sp": "0x2000FFF0",
+          "vector_reset": "0x10000041",
+          "vector_valid": true,
+          "fault_injected": false
+        },
+        "raw_log": ""
+      }
+    ],
+    "resilient": [
+      {
+        "fault_at": 0,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 0,
+          "faulted": true,
+          "fault_address": "0x10039000",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 2000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 2000,
+          "faulted": true,
+          "fault_address": "0x10042D40",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 4000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 4000,
+          "faulted": true,
+          "fault_address": "0x10046D00",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 6000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 6000,
+          "faulted": true,
+          "fault_address": "0x1004AC80",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 8000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 8000,
+          "faulted": true,
+          "fault_address": "0x1004EC00",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 10000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 10000,
+          "faulted": true,
+          "fault_address": "0x10052B80",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 12000,
+        "boot_outcome": "success",
+        "boot_slot": "A",
+        "nvm_state": {
+          "chosen_slot": 0,
+          "requested_slot": 0,
+          "write_index": 12000,
+          "faulted": true,
+          "fault_address": "0x10056B00",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 1,
+          "replica1_seq": 1
+        },
+        "raw_log": ""
+      },
+      {
+        "fault_at": 13824,
+        "boot_outcome": "success",
+        "boot_slot": "B",
+        "nvm_state": {
+          "chosen_slot": 1,
+          "requested_slot": 1,
+          "write_index": 13824,
+          "faulted": false,
+          "fault_address": "0x00000000",
+          "include_metadata_faults": false,
+          "replica0_valid": true,
+          "replica1_valid": true,
+          "replica0_seq": 2,
+          "replica1_seq": 2
+        },
+        "raw_log": ""
+      }
+    ]
+  },
+  "comparative_table": "Fault Point      Copy-Based OTA    A/B Bootloader\nWrite #0       BRICK           OK (slot A)\nWrite #2000    BRICK           OK (slot A)\nWrite #4000    BRICK           OK (slot A)\nWrite #6000    BRICK           OK (slot A)\nWrite #8000    BRICK           OK (slot A)\nWrite #10000   BRICK           OK (slot A)\nWrite #12000   BRICK           OK (slot A)\nWrite #13824   OK (slot A)     OK (slot B)"
+}
