@@ -182,8 +182,9 @@ def get_total_erases():
         return int(nvmc.TotalPageErases)
     return 0  # Slow path doesn't track erases.
 
-def arm_fault(absolute_write_index):
+def arm_fault(absolute_write_index, write_fault_mode=0):
     if USE_FAST_PATH:
+        nvmc.WriteFaultMode = write_fault_mode
         nvmc.FaultAtWordWrite = absolute_write_index
         nvmc.FaultFired = False
     else:
@@ -345,7 +346,10 @@ def compute_exec_slot_hash():
 def evaluate_boot_outcome(vtor_value, pc_value):
     # Shared boot outcome evaluation for all execution modes.
     vtor_ok = not bool(success_vtor_slot)
-    if success_vtor_slot and success_vtor_slot in slot_ranges:
+    if success_vtor_slot == 'any':
+        # Any defined slot is acceptable.
+        vtor_ok = any(s_lo <= vtor_value < s_hi for s_lo, s_hi in slot_ranges.values())
+    elif success_vtor_slot and success_vtor_slot in slot_ranges:
         s_lo, s_hi = slot_ranges[success_vtor_slot]
         vtor_ok = (s_lo <= vtor_value < s_hi)
 
@@ -462,6 +466,7 @@ def run_state_fault(fault_at):
     return {
         'fault_at': fault_at,
         'fault_requested': fault_at,
+        'fault_type': 'w',
         'fault_injected': fault_injected,
         'fault_address': '0x{0:08X}'.format(fault_address),
         'boot_outcome': boot_outcome,
@@ -567,13 +572,14 @@ def run_execute_fault(fault_at, fault_type='w'):
         arm_erase_fault(arm_at)
         disarm_write_fault()
     else:
-        # Write fault (default).
+        # Write fault: 'w' = power_loss (mode 0), 'b' = bit_corruption (mode 1).
+        write_mode = 1 if fault_type == 'b' else 0
         base_writes = get_total_writes()
         arm_at = base_writes + fault_at + 1
         if arm_at > base_writes + max_writes_cap:
             arm_at = base_writes + max_writes_cap + 1
-        log('fp={} phase1_step write_arm_at={}'.format(fault_at, arm_at))
-        arm_fault(arm_at)
+        log('fp={} phase1_step write_arm_at={} mode={}'.format(fault_at, arm_at, write_mode))
+        arm_fault(arm_at, write_fault_mode=write_mode)
         disarm_erase_fault()
 
     run_until_done(cpu_ref, label='fp{}_p1'.format(fault_at))
@@ -944,6 +950,7 @@ def run_trace_replay_fault(fault_at):
     return {
         'fault_at': fault_at,
         'fault_requested': fault_at,
+        'fault_type': 'w',
         'fault_injected': fault_injected,
         'fault_address': '0x{0:08X}'.format(fault_address),
         'boot_outcome': boot_outcome,
@@ -1096,9 +1103,10 @@ else:
             w_at = int(parts[1])
             e_at = int(parts[2])
             results.append(run_cascading_fault(w_at, e_at))
-        # Erase faults always use full execute mode (not trace replay).
-        elif ft == 'e':
-            results.append(run_execute_fault(fp, fault_type='e'))
+        # Erase and bit-corruption faults always use full execute mode
+        # (not trace replay — corruption depends on NVMC PRNG state).
+        elif ft in ('e', 'b'):
+            results.append(run_execute_fault(fp, fault_type=ft))
         elif run_fn == run_execute_fault:
             results.append(run_fn(fp, fault_type=ft))
         else:

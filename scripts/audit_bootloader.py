@@ -772,6 +772,7 @@ def main() -> int:
         # Determine if erase fault injection is requested.
         fault_types = profile.fault_sweep.fault_types
         include_erases = "interrupted_erase" in fault_types
+        include_bit_corruption = "bit_corruption" in fault_types
 
         # Pass fault_types to calibration so erase trace is captured.
         if include_erases:
@@ -891,24 +892,44 @@ def main() -> int:
         if args.quick:
             fault_points = quick_subset(fault_points)
 
-        # Build combined write + erase fault point list.
-        # Each fault point has a type ('w' for write, 'e' for erase).
+        # Build combined fault point list.
+        # Each fault point has a type: 'w' (write/power_loss), 'e' (erase),
+        # 'b' (bit_corruption).
         fault_types_list: Optional[List[str]] = None
-        if include_erases and total_erases > 0:
-            # Add erase fault points alongside write fault points.
+        has_mixed_types = (include_erases and total_erases > 0) or include_bit_corruption
+        if has_mixed_types:
             write_fps = [(fp, 'w') for fp in fault_points]
-            erase_fps = list(range(0, total_erases))
-            if args.quick:
-                erase_fps = quick_subset(erase_fps)
-            erase_typed = [(ep, 'e') for ep in erase_fps]
-            combined = write_fps + erase_typed
+            combined = list(write_fps)
+
+            # Add erase fault points.
+            erase_count = 0
+            if include_erases and total_erases > 0:
+                erase_fps = list(range(0, total_erases))
+                if args.quick:
+                    erase_fps = quick_subset(erase_fps)
+                combined += [(ep, 'e') for ep in erase_fps]
+                erase_count = len(erase_fps)
+
+            # Add bit-corruption fault points (same write indices, different mode).
+            bit_count = 0
+            if include_bit_corruption:
+                bit_fps = list(fault_points)  # same write indices
+                if args.quick:
+                    bit_fps = quick_subset(bit_fps)
+                combined += [(bp, 'b') for bp in bit_fps]
+                bit_count = len(bit_fps)
+
             fault_points = [fp for fp, _ in combined]
             fault_types_list = [ft for _, ft in combined]
+            parts = ["{} writes".format(len(write_fps))]
+            if erase_count:
+                parts.append("{} erases".format(erase_count))
+            if bit_count:
+                parts.append("{} bit-corrupt".format(bit_count))
             print(
-                "Running {} fault points ({} writes + {} erases) for '{}'...".format(
+                "Running {} fault points ({}) for '{}'...".format(
                     len(fault_points),
-                    len(write_fps),
-                    len(erase_typed),
+                    " + ".join(parts),
                     profile.name,
                 ),
                 file=sys.stderr,

@@ -33,9 +33,10 @@ fault_sweep:
   max_writes_cap: 200000
   run_duration: "2.0"
   max_step_limit: 20000000
-  fault_types: [power_loss, interrupted_erase]
+  fault_types: [power_loss, interrupted_erase, bit_corruption]
 expect:
-  # No CRC doesn't create a detectable power-loss vulnerability in this
-  # fault model — word writes are atomic, so partial writes don't produce
-  # garbage ota_seq values. The defect would matter with bit-level corruption.
+  # Model too simple (3 writes) for bit corruption to produce different
+  # outcomes vs power-loss. Both cause fallback to valid slots. No crashes.
+  # Beefing up the model (hash validation, more writes) would create the
+  # vulnerability window where bit corruption catches no-CRC.
   should_find_issues: false

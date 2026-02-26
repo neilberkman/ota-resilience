@@ -133,6 +133,18 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         // Size of the Flash MappedMemory.
         public long FlashSize { get; set; } = 0;
 
+        // --- Bit-corruption fault injection ---
+
+        // Fault mode for write faults:
+        //   0 = power_loss (default): faulted write is blocked entirely.
+        //   1 = bit_corruption: faulted write partially programs — some bits
+        //       flip 1→0 as intended, others stay at 1.  Models NOR flash
+        //       physics where programming = selective 1→0, interrupted = partial.
+        public int WriteFaultMode { get; set; } = 0;
+
+        // Seed for deterministic bit corruption (0 = use write index as seed).
+        public uint CorruptionSeed { get; set; } = 0;
+
         // True if any fault (write or erase) has fired.  After a fault,
         // both writes and erases are suppressed — power is dead.
         public bool AnyFaultFired => FaultFired || EraseFaultFired;
@@ -271,10 +283,10 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                                     FaultFired = true;
 
                                     // Build partial snapshot: pre-WEN state
-                                    // with only words up to this offset applied.
+                                    // with words before the fault fully applied.
                                     var snap = new byte[len];
                                     Array.Copy(wenSnapshot, snap, len);
-                                    for(int j = 0; j <= off; j += 4)
+                                    for(int j = 0; j < off; j += 4)
                                     {
                                         if(j > len - 4) break;
                                         if(current[j]     != wenSnapshot[j]
@@ -288,6 +300,49 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                                             snap[j + 3] = current[j + 3];
                                         }
                                     }
+
+                                    // Handle the faulted word itself.
+                                    if(WriteFaultMode == 1 && off <= len - 4)
+                                    {
+                                        // Bit-corruption mode: NOR flash programs
+                                        // bits 1→0.  Interrupted = SOME bits flipped.
+                                        // Corrupted = old AND (old OR partial_new).
+                                        // Simplification: randomly keep ~half the
+                                        // intended bit changes.
+                                        uint oldWord = (uint)(wenSnapshot[off]
+                                            | (wenSnapshot[off + 1] << 8)
+                                            | (wenSnapshot[off + 2] << 16)
+                                            | (wenSnapshot[off + 3] << 24));
+                                        uint newWord = (uint)(current[off]
+                                            | (current[off + 1] << 8)
+                                            | (current[off + 2] << 16)
+                                            | (current[off + 3] << 24));
+
+                                        // Bits that need to change: 1→0 transitions.
+                                        uint bitsToFlip = oldWord & ~newWord;
+                                        // Deterministic mask from seed + write index.
+                                        uint seed = CorruptionSeed != 0
+                                            ? CorruptionSeed
+                                            : (uint)TotalWordWrites;
+                                        // Simple LCG for deterministic bit selection.
+                                        seed = seed * 1103515245 + 12345;
+                                        uint mask = seed;
+                                        // Only flip ~half the bits (those where mask bit = 1).
+                                        uint actuallyFlipped = bitsToFlip & mask;
+                                        uint corruptedWord = oldWord & ~actuallyFlipped;
+
+                                        snap[off]     = (byte)(corruptedWord);
+                                        snap[off + 1] = (byte)(corruptedWord >> 8);
+                                        snap[off + 2] = (byte)(corruptedWord >> 16);
+                                        snap[off + 3] = (byte)(corruptedWord >> 24);
+                                    }
+                                    else if(off <= len - 4)
+                                    {
+                                        // Power-loss mode (default): faulted word
+                                        // is NOT applied — keeps pre-WEN value.
+                                        // (snap already has wenSnapshot at this offset)
+                                    }
+
                                     FaultFlashSnapshot = snap;
                                     break; // Stop counting further words.
                                 }
