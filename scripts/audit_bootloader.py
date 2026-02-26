@@ -263,7 +263,7 @@ def run_batch(
 ) -> List[Dict[str, Any]]:
     """Run multiple fault points in a single Renode session (batch mode).
 
-    fault_types_list: parallel list of fault types ('w' or 'e') per fault point.
+    fault_types_list: parallel list of fault types per fault point.
     """
     batch_dir = work_dir / "{}_batch".format(profile.name)
     batch_dir.mkdir(parents=True, exist_ok=True)
@@ -278,8 +278,10 @@ def run_batch(
     ft_csv = ",".join(fault_types_list) if fault_types_list else ""
 
     # Determine fault_types mode for the .resc.
-    has_erase = fault_types_list and 'e' in fault_types_list
-    has_write = fault_types_list and 'w' in fault_types_list
+    erase_types = {'e', 'a'}
+    write_types = {'w', 'b', 's', 'd', 'l'}
+    has_erase = bool(fault_types_list and any(ft in erase_types for ft in fault_types_list))
+    has_write = bool(fault_types_list and any(ft in write_types for ft in fault_types_list))
     if has_erase and has_write:
         fault_types_mode = "both"
     elif has_erase:
@@ -492,7 +494,7 @@ def run_runtime_sweep(
     flash state from the calibration trace instead of re-emulating
     Phase 1.  This eliminates the O(N^2) prefix cost.
 
-    fault_types_list: parallel list of 'w' or 'e' per fault point.
+    fault_types_list: parallel list of per-point fault type codes.
     """
     if fault_points and num_workers > 1:
         # Split fault points into roughly equal chunks.
@@ -769,10 +771,17 @@ def main() -> int:
         trace_file: Optional[str] = None
         erase_trace_file: Optional[str] = None
         total_erases: int = 0
-        # Determine if erase fault injection is requested.
+        # Determine which fault classes are requested.
         fault_types = profile.fault_sweep.fault_types
-        include_erases = "interrupted_erase" in fault_types
+        include_erases = (
+            "interrupted_erase" in fault_types
+            or "multi_sector_atomicity" in fault_types
+        )
         include_bit_corruption = "bit_corruption" in fault_types
+        include_silent_write_failure = "silent_write_failure" in fault_types
+        include_write_disturb = "write_disturb" in fault_types
+        include_wear_leveling = "wear_leveling_corruption" in fault_types
+        include_multi_sector_atomicity = "multi_sector_atomicity" in fault_types
 
         # Pass fault_types to calibration so erase trace is captured.
         if include_erases:
@@ -893,22 +902,35 @@ def main() -> int:
             fault_points = quick_subset(fault_points)
 
         # Build combined fault point list.
-        # Each fault point has a type: 'w' (write/power_loss), 'e' (erase),
-        # 'b' (bit_corruption).
+        # Each fault point has a type:
+        #   'w' write power-loss, 'b' bit corruption, 's' silent write failure,
+        #   'd' write disturb, 'l' wear-leveling corruption,
+        #   'e' interrupted erase, 'a' multi-sector atomicity fault.
         fault_types_list: Optional[List[str]] = None
-        has_mixed_types = (include_erases and total_erases > 0) or include_bit_corruption
+        has_mixed_types = (
+            (include_erases and total_erases > 0)
+            or include_bit_corruption
+            or include_silent_write_failure
+            or include_write_disturb
+            or include_wear_leveling
+        )
         if has_mixed_types:
             write_fps = [(fp, 'w') for fp in fault_points]
             combined = list(write_fps)
 
-            # Add erase fault points.
+            # Add erase-based fault points.
             erase_count = 0
+            atomicity_count = 0
             if include_erases and total_erases > 0:
                 erase_fps = list(range(0, total_erases))
                 if args.quick:
                     erase_fps = quick_subset(erase_fps)
-                combined += [(ep, 'e') for ep in erase_fps]
-                erase_count = len(erase_fps)
+                if "interrupted_erase" in fault_types:
+                    combined += [(ep, 'e') for ep in erase_fps]
+                    erase_count = len(erase_fps)
+                if include_multi_sector_atomicity:
+                    combined += [(ep, 'a') for ep in erase_fps]
+                    atomicity_count = len(erase_fps)
 
             # Add bit-corruption fault points (same write indices, different mode).
             bit_count = 0
@@ -919,13 +941,45 @@ def main() -> int:
                 combined += [(bp, 'b') for bp in bit_fps]
                 bit_count = len(bit_fps)
 
+            silent_count = 0
+            if include_silent_write_failure:
+                silent_fps = list(fault_points)
+                if args.quick:
+                    silent_fps = quick_subset(silent_fps)
+                combined += [(sp, 's') for sp in silent_fps]
+                silent_count = len(silent_fps)
+
+            disturb_count = 0
+            if include_write_disturb:
+                disturb_fps = list(fault_points)
+                if args.quick:
+                    disturb_fps = quick_subset(disturb_fps)
+                combined += [(dp, 'd') for dp in disturb_fps]
+                disturb_count = len(disturb_fps)
+
+            wear_count = 0
+            if include_wear_leveling:
+                wear_fps = list(fault_points)
+                if args.quick:
+                    wear_fps = quick_subset(wear_fps)
+                combined += [(wp, 'l') for wp in wear_fps]
+                wear_count = len(wear_fps)
+
             fault_points = [fp for fp, _ in combined]
             fault_types_list = [ft for _, ft in combined]
             parts = ["{} writes".format(len(write_fps))]
             if erase_count:
                 parts.append("{} erases".format(erase_count))
+            if atomicity_count:
+                parts.append("{} multi-sector".format(atomicity_count))
             if bit_count:
                 parts.append("{} bit-corrupt".format(bit_count))
+            if silent_count:
+                parts.append("{} silent-write".format(silent_count))
+            if disturb_count:
+                parts.append("{} disturb".format(disturb_count))
+            if wear_count:
+                parts.append("{} wear-level".format(wear_count))
             print(
                 "Running {} fault points ({}) for '{}'...".format(
                     len(fault_points),

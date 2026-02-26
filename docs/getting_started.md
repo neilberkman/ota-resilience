@@ -88,7 +88,24 @@ the tool correctly identifies defects in broken variants and reports no issues
 for correct ones:
 
 ```bash
-python3 scripts/self_test.py --quick
+python3 scripts/self_test.py --quick --output results/self_test_summary.json
+```
+
+## Render HTML report
+
+Generate a visual summary (fault-point heatmap + per-profile metrics):
+
+```bash
+# Render from one or more audit outputs:
+python3 scripts/render_results_html.py \
+  --input /tmp/result_a.json \
+  --input /tmp/result_b.json \
+  --output results/audit_report.html
+
+# Render self-test summary:
+python3 scripts/render_results_html.py \
+  --input results/self_test_summary.json \
+  --output results/self_test_report.html
 ```
 
 ## Run Robot tests

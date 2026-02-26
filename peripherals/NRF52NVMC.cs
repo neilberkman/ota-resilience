@@ -137,13 +137,23 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
         // Fault mode for write faults:
         //   0 = power_loss (default): faulted write is blocked entirely.
-        //   1 = bit_corruption: faulted write partially programs — some bits
-        //       flip 1→0 as intended, others stay at 1.  Models NOR flash
-        //       physics where programming = selective 1→0, interrupted = partial.
+        //   1 = bit_corruption: faulted write partially programs.
+        //   2 = silent_write_failure: write "succeeds" but stores either
+        //       0xFFFFFFFF or 0x00000000 (deterministic per write index).
+        //   4 = write_disturb: target word is written, adjacent words suffer
+        //       spurious 1->0 flips (disturb on neighboring cells).
+        //   5 = wear_leveling_corruption: target word is written, then extra
+        //       deterministic bit errors are injected across the page.
         public int WriteFaultMode { get; set; } = 0;
 
         // Seed for deterministic bit corruption (0 = use write index as seed).
         public uint CorruptionSeed { get; set; } = 0;
+
+        // Fault mode for erase faults:
+        //   0 = interrupted_erase: half page erased.
+        //   1 = multi_sector_atomicity: partial erase on target page plus
+        //       adjacent-page corruption (inconsistent multi-sector outcome).
+        public int EraseFaultMode { get; set; } = 0;
 
         // True if any fault (write or erase) has fired.  After a fault,
         // both writes and erases are suppressed — power is dead.
@@ -195,6 +205,140 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
         // Accumulated erase trace entries: (eraseIndex, flashOffset, writesAtThisPoint).
         private readonly List<Tuple<ulong, long, ulong>> eraseTrace = new List<Tuple<ulong, long, ulong>>();
+
+        private static uint ReadU32(byte[] data, int offset)
+        {
+            return (uint)(data[offset]
+                | (data[offset + 1] << 8)
+                | (data[offset + 2] << 16)
+                | (data[offset + 3] << 24));
+        }
+
+        private static void WriteU32(byte[] data, int offset, uint value)
+        {
+            data[offset] = (byte)(value);
+            data[offset + 1] = (byte)(value >> 8);
+            data[offset + 2] = (byte)(value >> 16);
+            data[offset + 3] = (byte)(value >> 24);
+        }
+
+        private uint NextLcg(ref uint seed)
+        {
+            seed = seed * 1103515245 + 12345;
+            return seed;
+        }
+
+        private uint BuildFaultSeed(int offset)
+        {
+            uint seed = CorruptionSeed != 0 ? CorruptionSeed : (uint)TotalWordWrites;
+            seed ^= (uint)offset;
+            seed ^= (uint)(TotalPageErases * 2654435761UL);
+            return seed;
+        }
+
+        private static uint KeepOneToZeroTransitions(uint oldWord, uint newWord, uint keepMask)
+        {
+            // NOR programming transitions only 1->0.
+            uint bitsToFlip = oldWord & ~newWord;
+            uint actuallyFlipped = bitsToFlip & keepMask;
+            return oldWord & ~actuallyFlipped;
+        }
+
+        private void ApplyWriteFaultAtOffset(byte[] snap, byte[] pre, byte[] post, int off, int len)
+        {
+            if(off > len - 4)
+            {
+                return;
+            }
+
+            uint oldWord = ReadU32(pre, off);
+            uint newWord = ReadU32(post, off);
+
+            switch(WriteFaultMode)
+            {
+                case 1:
+                {
+                    // Bit corruption: keep only some intended 1->0 transitions.
+                    uint seed = BuildFaultSeed(off);
+                    uint keepMask = NextLcg(ref seed);
+                    uint corrupted = KeepOneToZeroTransitions(oldWord, newWord, keepMask);
+                    WriteU32(snap, off, corrupted);
+                    break;
+                }
+                case 2:
+                {
+                    // Silent write failure: deterministic all-FF or all-00.
+                    uint silentValue = ((TotalWordWrites & 1UL) == 0UL) ? 0xFFFFFFFFU : 0x00000000U;
+                    WriteU32(snap, off, silentValue);
+                    break;
+                }
+                case 4:
+                {
+                    // Write-disturb: target word commits, neighboring words get
+                    // unintended 1->0 bit flips.
+                    WriteU32(snap, off, newWord);
+                    uint seed = BuildFaultSeed(off);
+                    foreach(int nOff in new[] { off - 4, off + 4 })
+                    {
+                        if(nOff < 0 || nOff > len - 4)
+                        {
+                            continue;
+                        }
+                        uint neighborWord = ReadU32(snap, nOff);
+                        uint disturbMask = NextLcg(ref seed) & 0x11111111U;
+                        uint disturbed = neighborWord & ~disturbMask;
+                        WriteU32(snap, nOff, disturbed);
+                    }
+                    break;
+                }
+                case 5:
+                {
+                    // Wear-leveling corruption: target write commits, then
+                    // deterministic age-dependent bit errors appear in page.
+                    WriteU32(snap, off, newWord);
+                    int pageSize = Math.Max(4, PageSize);
+                    int pageStart = (off / pageSize) * pageSize;
+                    int wordsPerPage = Math.Max(1, pageSize / 4);
+                    int errorCount = 2 + (int)Math.Min(10UL, TotalPageErases / 8UL);
+                    uint seed = BuildFaultSeed(off);
+                    for(int i = 0; i < errorCount; i++)
+                    {
+                        int idx = (int)(NextLcg(ref seed) % (uint)wordsPerPage);
+                        int tOff = pageStart + idx * 4;
+                        if(tOff < 0 || tOff > len - 4)
+                        {
+                            continue;
+                        }
+                        uint word = ReadU32(snap, tOff);
+                        uint mask = NextLcg(ref seed) & 0x01010101U;
+                        if(mask == 0)
+                        {
+                            mask = 1U << (int)(NextLcg(ref seed) % 32U);
+                        }
+                        uint aged = word & ~mask;
+                        WriteU32(snap, tOff, aged);
+                    }
+                    break;
+                }
+                default:
+                    // Power-loss mode: faulted word stays pre-WEN.
+                    break;
+            }
+        }
+
+        private void EraseWithFill(MappedMemory flash, long offset, int size)
+        {
+            if(size <= 0)
+            {
+                return;
+            }
+            var fillData = new byte[size];
+            for(int i = 0; i < size; i++)
+            {
+                fillData[i] = EraseFill;
+            }
+            flash.WriteBytes(offset, fillData);
+        }
 
         private void DefineRegisters()
         {
@@ -301,47 +445,9 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                                         }
                                     }
 
-                                    // Handle the faulted word itself.
-                                    if(WriteFaultMode == 1 && off <= len - 4)
-                                    {
-                                        // Bit-corruption mode: NOR flash programs
-                                        // bits 1→0.  Interrupted = SOME bits flipped.
-                                        // Corrupted = old AND (old OR partial_new).
-                                        // Simplification: randomly keep ~half the
-                                        // intended bit changes.
-                                        uint oldWord = (uint)(wenSnapshot[off]
-                                            | (wenSnapshot[off + 1] << 8)
-                                            | (wenSnapshot[off + 2] << 16)
-                                            | (wenSnapshot[off + 3] << 24));
-                                        uint newWord = (uint)(current[off]
-                                            | (current[off + 1] << 8)
-                                            | (current[off + 2] << 16)
-                                            | (current[off + 3] << 24));
-
-                                        // Bits that need to change: 1→0 transitions.
-                                        uint bitsToFlip = oldWord & ~newWord;
-                                        // Deterministic mask from seed + write index.
-                                        uint seed = CorruptionSeed != 0
-                                            ? CorruptionSeed
-                                            : (uint)TotalWordWrites;
-                                        // Simple LCG for deterministic bit selection.
-                                        seed = seed * 1103515245 + 12345;
-                                        uint mask = seed;
-                                        // Only flip ~half the bits (those where mask bit = 1).
-                                        uint actuallyFlipped = bitsToFlip & mask;
-                                        uint corruptedWord = oldWord & ~actuallyFlipped;
-
-                                        snap[off]     = (byte)(corruptedWord);
-                                        snap[off + 1] = (byte)(corruptedWord >> 8);
-                                        snap[off + 2] = (byte)(corruptedWord >> 16);
-                                        snap[off + 3] = (byte)(corruptedWord >> 24);
-                                    }
-                                    else if(off <= len - 4)
-                                    {
-                                        // Power-loss mode (default): faulted word
-                                        // is NOT applied — keeps pre-WEN value.
-                                        // (snap already has wenSnapshot at this offset)
-                                    }
+                                    // Handle faulted word according to the selected
+                                    // write fault mode.
+                                    ApplyWriteFaultAtOffset(snap, wenSnapshot, current, off, len);
 
                                     FaultFlashSnapshot = snap;
                                     break; // Stop counting further words.
@@ -398,10 +504,25 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
                             if(TotalPageErases == FaultAtPageErase)
                             {
-                                // Partial erase: only first half of page.
                                 EraseFaultFired = true;
                                 int halfPage = PageSize / 2;
-                                Nvm.EraseSector(offset, halfPage);
+                                if(EraseFaultMode == 1)
+                                {
+                                    // Multi-sector atomicity fault: partial erase on
+                                    // target page plus neighboring page damage.
+                                    int quarterPage = Math.Max(1, PageSize / 4);
+                                    Nvm.EraseSector(offset, halfPage);
+                                    long neighbor = offset + PageSize;
+                                    if(neighbor + quarterPage <= Nvm.Size)
+                                    {
+                                        Nvm.EraseSector(neighbor, quarterPage);
+                                    }
+                                }
+                                else
+                                {
+                                    // Interrupted erase: only first half of page.
+                                    Nvm.EraseSector(offset, halfPage);
+                                }
                                 // Note: NvMemory doesn't support FaultFlashSnapshot;
                                 // the NVM path is the slow per-write-tracking path.
                             }
@@ -424,17 +545,28 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
                             if(TotalPageErases == FaultAtPageErase)
                             {
-                                // Fault: partial erase — first half of the
-                                // page is erased to 0xFF, second half is
-                                // untouched.  Simulates power loss mid-erase.
                                 EraseFaultFired = true;
                                 int halfPage = PageSize / 2;
-                                var fillData = new byte[halfPage];
-                                for(int i = 0; i < halfPage; i++)
+                                if(EraseFaultMode == 1)
                                 {
-                                    fillData[i] = EraseFill;
+                                    // Multi-sector atomicity fault: target page is
+                                    // partially erased and neighboring page is also
+                                    // partially erased, creating cross-sector
+                                    // inconsistency.
+                                    int quarterPage = Math.Max(1, PageSize / 4);
+                                    EraseWithFill(Flash, offset, halfPage);
+                                    long neighbor = offset + PageSize;
+                                    if(neighbor + quarterPage <= FlashSize)
+                                    {
+                                        EraseWithFill(Flash, neighbor, quarterPage);
+                                    }
                                 }
-                                Flash.WriteBytes(offset, fillData);
+                                else
+                                {
+                                    // Interrupted erase: first half erased, second
+                                    // half untouched.
+                                    EraseWithFill(Flash, offset, halfPage);
+                                }
 
                                 // Capture flash state at the fault moment.
                                 FaultFlashSnapshot = Flash.ReadBytes(0, checked((int)FlashSize));
@@ -442,12 +574,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                             else
                             {
                                 // Normal full page erase.
-                                var fillData = new byte[PageSize];
-                                for(int i = 0; i < PageSize; i++)
-                                {
-                                    fillData[i] = EraseFill;
-                                }
-                                Flash.WriteBytes(offset, fillData);
+                                EraseWithFill(Flash, offset, PageSize);
                             }
                         }
                     }

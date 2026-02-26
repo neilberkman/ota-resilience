@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+import datetime as dt
 from typing import Any, Dict, List, Optional, Tuple
 
 from profile_loader import load_profile_raw
@@ -125,6 +126,10 @@ def main() -> int:
         "--fault-step", type=int, default=None,
         help="Pass --fault-step to audit runs.",
     )
+    parser.add_argument(
+        "--output", default=None,
+        help="Optional JSON summary output path.",
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -143,6 +148,7 @@ def main() -> int:
     print("=" * 60)
 
     results: List[Tuple[str, bool, str]] = []
+    detailed_results: List[Dict[str, Any]] = []
 
     with tempfile.TemporaryDirectory(prefix="self_test_") as tmp:
         for profile_path in profiles:
@@ -157,11 +163,29 @@ def main() -> int:
             except Exception as exc:
                 print("  SKIP: failed to load profile: {}".format(exc))
                 results.append((name, False, "profile load error: {}".format(exc)))
+                detailed_results.append({
+                    "profile": name,
+                    "passed": False,
+                    "reason": "profile load error: {}".format(exc),
+                    "exit_code": None,
+                    "verdict": None,
+                    "bricks": None,
+                    "brick_rate": None,
+                })
                 continue
 
             if profile_raw.get("skip_self_test", False):
                 print("  SKIP: profile has skip_self_test=true")
                 results.append((name, True, "skipped (skip_self_test)"))
+                detailed_results.append({
+                    "profile": name,
+                    "passed": True,
+                    "reason": "skipped (skip_self_test)",
+                    "exit_code": None,
+                    "verdict": "SKIP",
+                    "bricks": None,
+                    "brick_rate": None,
+                })
                 continue
 
             extra_args: List[str] = []
@@ -182,17 +206,45 @@ def main() -> int:
             except Exception as exc:
                 print("  FAIL: audit crashed: {}".format(exc))
                 results.append((name, False, "audit crash: {}".format(exc)))
+                detailed_results.append({
+                    "profile": name,
+                    "passed": False,
+                    "reason": "audit crash: {}".format(exc),
+                    "exit_code": None,
+                    "verdict": None,
+                    "bricks": None,
+                    "brick_rate": None,
+                })
                 continue
 
             if not report:
                 print("  FAIL: no report produced (exit={})".format(exit_code))
                 results.append((name, False, "no report (exit={})".format(exit_code)))
+                detailed_results.append({
+                    "profile": name,
+                    "passed": False,
+                    "reason": "no report (exit={})".format(exit_code),
+                    "exit_code": exit_code,
+                    "verdict": None,
+                    "bricks": None,
+                    "brick_rate": None,
+                })
                 continue
 
             passed, reason = check_verdict(profile_path, profile_raw, report, exit_code)
             status = "PASS" if passed else "FAIL"
             print("  {}: {}".format(status, reason))
             results.append((name, passed, reason))
+            sweep = report.get("summary", {}).get("runtime_sweep", {})
+            detailed_results.append({
+                "profile": name,
+                "passed": passed,
+                "reason": reason,
+                "exit_code": exit_code,
+                "verdict": report.get("verdict"),
+                "bricks": sweep.get("bricks"),
+                "brick_rate": sweep.get("brick_rate"),
+            })
 
     # Summary.
     print("\n" + "=" * 60)
@@ -205,6 +257,19 @@ def main() -> int:
         print("  [{}] {}: {}".format(mark, name, reason))
 
     print("\n{}/{} passed, {} failed".format(passed_count, total, failed_count))
+
+    if args.output:
+        payload = {
+            "run_utc": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "total_profiles": total,
+            "passed": passed_count,
+            "failed": failed_count,
+            "results": detailed_results,
+        }
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+        print("wrote {}".format(output_path))
 
     return 0 if failed_count == 0 else 1
 

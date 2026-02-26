@@ -139,7 +139,10 @@ setup_script = str(monitor.GetVariable('setup_script')).strip()
 
 # Fault type support: 'write', 'erase', or 'both'.
 # fault_types controls which operations are tracked during calibration.
-# fault_type_csv provides per-fault-point type: 'w' for write, 'e' for erase.
+# fault_type_csv provides per-fault-point type:
+#   write-based: 'w' power_loss, 'b' bit_corruption, 's' silent_write_failure,
+#                'd' write_disturb, 'l' wear_leveling_corruption
+#   erase-based: 'e' interrupted_erase, 'a' multi_sector_atomicity
 fault_types_raw = str(monitor.GetVariable('fault_types')).strip().lower()
 if fault_types_raw in ('both', 'write_and_erase', 'write,erase'):
     fault_types_mode = 'both'
@@ -190,8 +193,9 @@ def arm_fault(absolute_write_index, write_fault_mode=0):
     else:
         ctrl.Nvm.FaultAtWordWrite = absolute_write_index
 
-def arm_erase_fault(absolute_erase_index):
+def arm_erase_fault(absolute_erase_index, erase_fault_mode=0):
     if USE_FAST_PATH:
+        nvmc.EraseFaultMode = erase_fault_mode
         nvmc.FaultAtPageErase = absolute_erase_index
         nvmc.EraseFaultFired = False
 
@@ -256,6 +260,8 @@ def reset_nvmc_for_sweep():
         nvmc.DiffLookahead = 2147483647
         nvmc.TotalWordWrites = 0
         nvmc.TotalPageErases = 0
+        nvmc.WriteFaultMode = 0
+        nvmc.EraseFaultMode = 0
         nvmc.FaultFired = False
         nvmc.EraseFaultFired = False
         nvmc.FaultFlashSnapshot = None
@@ -266,6 +272,8 @@ def reset_nvmc_for_recovery():
         nvmc.DiffLookahead = 32
         nvmc.TotalWordWrites = 0
         nvmc.TotalPageErases = 0
+        nvmc.WriteFaultMode = 0
+        nvmc.EraseFaultMode = 0
         nvmc.FaultFired = False
         nvmc.EraseFaultFired = False
         disarm_fault()
@@ -536,7 +544,10 @@ def run_until_done(cpu_ref, time_slice='0.02', max_iters=200, wall_timeout=120, 
 def run_execute_fault(fault_at, fault_type='w'):
     # Execute mode: full CPU boot with fault injection.
     #
-    # fault_type: 'w' for write fault, 'e' for erase fault.
+    # fault_type:
+    #   write: 'w' power_loss, 'b' bit_corruption, 's' silent_write_failure,
+    #          'd' write_disturb, 'l' wear_leveling_corruption
+    #   erase: 'e' interrupted_erase, 'a' multi_sector_atomicity
     #
     # Fast path (NVMC CONFIG tracking): fault injection works by counting
     # NVMC CONFIG WEN->REN transitions. When the target write count is
@@ -564,16 +575,27 @@ def run_execute_fault(fault_at, fault_type='w'):
 
     reset_nvmc_for_sweep()
 
-    if fault_type == 'e':
-        # Erase fault: arm at the Nth erase operation.
+    if fault_type in ('e', 'a'):
+        # Erase faults: arm at the Nth erase operation.
+        # 'e' = interrupted_erase (mode 0), 'a' = multi-sector atomicity (mode 1).
+        erase_mode = 1 if fault_type == 'a' else 0
         base_erases = get_total_erases()
         arm_at = base_erases + fault_at + 1
-        log('fp={} phase1_step erase_arm_at={}'.format(fault_at, arm_at))
-        arm_erase_fault(arm_at)
+        log('fp={} phase1_step erase_arm_at={} mode={}'.format(fault_at, arm_at, erase_mode))
+        arm_erase_fault(arm_at, erase_fault_mode=erase_mode)
         disarm_write_fault()
     else:
-        # Write fault: 'w' = power_loss (mode 0), 'b' = bit_corruption (mode 1).
-        write_mode = 1 if fault_type == 'b' else 0
+        # Write faults:
+        #   'w' power_loss (0), 'b' bit_corruption (1),
+        #   's' silent_write_failure (2), 'd' write_disturb (4),
+        #   'l' wear_leveling_corruption (5).
+        write_mode = {
+            'w': 0,
+            'b': 1,
+            's': 2,
+            'd': 4,
+            'l': 5,
+        }.get(fault_type, 0)
         base_writes = get_total_writes()
         arm_at = base_writes + fault_at + 1
         if arm_at > base_writes + max_writes_cap:
@@ -1103,9 +1125,9 @@ else:
             w_at = int(parts[1])
             e_at = int(parts[2])
             results.append(run_cascading_fault(w_at, e_at))
-        # Erase and bit-corruption faults always use full execute mode
-        # (not trace replay — corruption depends on NVMC PRNG state).
-        elif ft in ('e', 'b'):
+        # Non-power-loss synthetic faults always use full execute mode
+        # (not trace replay — they depend on NVMC peripheral state/PRNG).
+        elif ft in ('e', 'a', 'b', 's', 'd', 'l'):
             results.append(run_execute_fault(fp, fault_type=ft))
         elif run_fn == run_execute_fault:
             results.append(run_fn(fp, fault_type=ft))
