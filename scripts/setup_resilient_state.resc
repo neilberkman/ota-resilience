@@ -1,0 +1,9 @@
+# Load boot_meta.bin for resilient bootloader profiles.
+# Called AFTER machine is created and ELF is loaded.
+# Expects $repo_root to be set.
+
+python """
+repo_root = str(monitor.GetVariable('repo_root'))
+bus = monitor.Machine.SystemBus
+bus.LoadBinary(repo_root + '/examples/resilient_ota/boot_meta.bin', 0x10070000)
+"""

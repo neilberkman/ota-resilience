@@ -2,7 +2,7 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    NVM (rx)   : ORIGIN = 0x10000000, LENGTH = 0x38000
+    MRAM (rx)  : ORIGIN = 0x10000000, LENGTH = 0x38000
     SRAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x20000
 }
 
@@ -11,7 +11,7 @@ SECTIONS
     .isr_vector :
     {
         KEEP(*(.isr_vector))
-    } > NVM
+    } > MRAM
 
     .text :
     {
@@ -20,14 +20,14 @@ SECTIONS
         *(.glue_7)
         *(.glue_7t)
         *(.eh_frame*)
-    } > NVM
+    } > MRAM
 
     .ramfunc :
     {
         _sramfunc = .;
         *(.ramfunc*)
         _eramfunc = .;
-    } > SRAM AT > NVM
+    } > SRAM AT > MRAM
     _siramfunc = LOADADDR(.ramfunc);
 
     .data :
@@ -35,7 +35,7 @@ SECTIONS
         _sdata = .;
         *(.data*)
         _edata = .;
-    } > SRAM AT > NVM
+    } > SRAM AT > MRAM
     _sidata = LOADADDR(.data);
 
     .bss (NOLOAD) :

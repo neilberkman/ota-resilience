@@ -1,0 +1,337 @@
+# Multi-fault (sequential interruption) run for resilient OTA scenario.
+# Simulates multiple power losses during an OTA update: fault, partial recovery,
+# fault again during retry, etc.
+#
+# Required monitor variables:
+#   $fault_sequence (comma-separated ints, e.g. "100,5000,15000")
+#   $total_writes (int)
+#   $result_file (string path)
+#   $include_metadata_faults (true/false)
+
+$fault_sequence?="100,5000"
+$total_writes?=28160
+$include_metadata_faults?=false
+$evaluation_mode?="execute"
+
+python """
+import json
+import struct
+
+bus = monitor.Machine.SystemBus
+ctrl = monitor.Machine['sysbus.nvm_ctrl']
+
+fault_sequence_raw = str(monitor.GetVariable('fault_sequence'))
+total_writes = int(monitor.GetVariable('total_writes'))
+result_file = str(monitor.GetVariable('result_file'))
+include_metadata_faults = str(monitor.GetVariable('include_metadata_faults')).lower() in ('1', 'true', 'yes')
+evaluation_mode = str(monitor.GetVariable('evaluation_mode')).strip().lower()
+if evaluation_mode not in ('execute', 'state'):
+    evaluation_mode = 'execute'
+
+fault_points = sorted(int(x.strip()) for x in fault_sequence_raw.split(',') if x.strip())
+
+def as_int(value):
+    try:
+        return int(value)
+    except Exception:
+        return int(str(value), 0)
+
+def boot_meta_crc_words(words):
+    crc = 0xFFFFFFFF
+    for w in words[:-1]:
+        for shift in (0, 8, 16, 24):
+            crc ^= (w >> shift) & 0xFF
+            for _ in range(8):
+                crc = (crc >> 1) ^ (0xEDB88320 if (crc & 1) else 0)
+            crc &= 0xFFFFFFFF
+    return (~crc) & 0xFFFFFFFF
+
+def seq_ge(a, b):
+    return ((a - b) & 0xFFFFFFFF) < 0x80000000
+
+# Load slot B payload.
+slot_b_path = 'examples/resilient_ota/slot_b.bin'
+try:
+    explicit_slot_b = str(monitor.GetVariable('slot_b_image')).strip()
+    if explicit_slot_b:
+        slot_b_path = explicit_slot_b
+except Exception:
+    pass
+try:
+    repo_root = str(monitor.GetVariable('repo_root'))
+    if slot_b_path == 'examples/resilient_ota/slot_b.bin':
+        slot_b_path = repo_root + '/examples/resilient_ota/slot_b.bin'
+except Exception:
+    pass
+with open(slot_b_path, 'rb') as f:
+    slot_payload = f.read()
+needed = total_writes * 8
+if len(slot_payload) < needed:
+    slot_payload = slot_payload + bytes(needed - len(slot_payload))
+else:
+    slot_payload = slot_payload[:needed]
+
+def le64(chunk):
+    return struct.unpack('<Q', chunk)[0]
+
+def slot_base(slot_id):
+    return 0x10039000 if slot_id == 1 else 0x10002000
+
+def slot_vector_valid(slot_id):
+    base = slot_base(slot_id)
+    sp = as_int(bus.ReadDoubleWord(base + 0))
+    reset_vector = as_int(bus.ReadDoubleWord(base + 4))
+    reset_pc = reset_vector & ~1
+    return (
+        (0x20000000 <= sp <= 0x20020000)
+        and ((reset_vector & 1) == 1)
+        and (base <= reset_pc < (base + 0x37000))
+    )
+
+def read_replica(addr):
+    words = []
+    for i in range(64):
+        words.append(as_int(bus.ReadDoubleWord(addr + i * 4)))
+    valid = (words[0] == 0x4F54414D) and (words[-1] == boot_meta_crc_words(words))
+    return {
+        'valid': valid,
+        'seq': words[1],
+        'active_slot': words[2],
+        'target_slot': words[3],
+    }
+
+def snapshot_nvm_state(write_index, faulted, fault_address):
+    r0 = read_replica(0x10070000)
+    r1 = read_replica(0x10070100)
+    return {
+        'write_index': write_index,
+        'faulted': faulted,
+        'fault_address': '0x{0:08X}'.format(fault_address),
+        'replica0_valid': r0['valid'],
+        'replica1_valid': r1['valid'],
+        'replica0_seq': r0['seq'],
+        'replica1_seq': r1['seq'],
+    }
+
+def build_metadata_blob():
+    words = [0] * 64
+    words[0] = 0x4F54414D
+    words[1] = 2  # seq
+    words[2] = 1  # active_slot = slot B
+    words[3] = 1  # target_slot = slot B
+    words[4] = 1  # pending test
+    words[5] = 0  # boot_count
+    words[6] = 3  # max_boot_count
+    words[-1] = boot_meta_crc_words(words)
+    return struct.pack('<64I', *words)
+
+# ============================================================
+# Multi-fault simulation loop
+# ============================================================
+# Model: The host writes the update image to slot B, then metadata.
+# After a fault at write index N, the host retries from index N
+# (re-sends from the last faulted word). For metadata faults,
+# metadata is re-written from scratch (both replicas).
+#
+# Each iteration through the remaining fault points:
+#   1. Inject fault at the target write index (partial write)
+#   2. Snapshot NVM state
+#   3. Resume from the faulted index for the next attempt
+
+per_fault_states = []
+fault_points_hit = []
+current_fault_idx = 0  # index into fault_points list
+resume_from = 0  # which slot-B word index to resume writing from
+metadata_written = False
+all_writes_done = False
+
+while current_fault_idx < len(fault_points):
+    target_fault_at = fault_points[current_fault_idx]
+    state = {'index': 0, 'faulted': False, 'fault_address': 0}
+
+    # Determine the effective fault point relative to this attempt's write counter.
+    # The fault_at values are absolute indices in the overall write stream.
+    # Since we resume from resume_from, the relative fault point is target_fault_at - resume_from
+    # for slot writes. But we track absolute indices, so we use a global counter.
+    global_index = resume_from  # absolute write index in the overall stream
+
+    def maybe_write_word_mf(addr, value, abs_idx):
+        if state['faulted']:
+            return False
+        if abs_idx == target_fault_at:
+            ctrl.InjectPartialWrite(addr)
+            state['faulted'] = True
+            state['fault_address'] = addr
+            return False
+        bus.WriteQuadWord(addr, value)
+        return True
+
+    # Write slot B data from resume_from onward.
+    slot_write_faulted = False
+    for i in range(resume_from, total_writes):
+        addr = 0x10039000 + i * 8
+        word = le64(slot_payload[i * 8:(i + 1) * 8])
+        if not maybe_write_word_mf(addr, word, i):
+            slot_write_faulted = True
+            break
+        global_index = i + 1
+
+    if state['faulted']:
+        # Fault hit during slot write.
+        fault_points_hit.append(target_fault_at)
+        per_fault_states.append(snapshot_nvm_state(target_fault_at, True, state['fault_address']))
+        resume_from = target_fault_at  # retry from the faulted word
+        current_fault_idx += 1
+        continue
+
+    # Slot B fully written. Now write metadata.
+    # For multi-fault, metadata write indices continue after total_writes.
+    meta_blob = build_metadata_blob()
+    meta_faulted = False
+
+    if include_metadata_faults:
+        meta_index = total_writes  # metadata write indices start after slot data
+        def maybe_write_meta_word(addr, value, abs_idx):
+            if state['faulted']:
+                return False
+            if abs_idx == target_fault_at:
+                ctrl.InjectPartialWrite(addr)
+                state['faulted'] = True
+                state['fault_address'] = addr
+                return False
+            bus.WriteQuadWord(addr, value)
+            return True
+
+        # Write replica 1 first, then replica 0.
+        for replica_base in (0x10070100, 0x10070000):
+            for i in range(0, 256, 8):
+                addr = replica_base + i
+                word = le64(meta_blob[i:i + 8])
+                if not maybe_write_meta_word(addr, word, meta_index):
+                    meta_faulted = True
+                    break
+                meta_index += 1
+            if meta_faulted:
+                break
+
+        if state['faulted']:
+            fault_points_hit.append(target_fault_at)
+            per_fault_states.append(snapshot_nvm_state(target_fault_at, True, state['fault_address']))
+            # On metadata fault, next retry re-writes metadata from scratch.
+            # Slot data is already complete, so resume_from stays at total_writes
+            # to skip slot writes on retry. We track this by setting resume_from
+            # to total_writes so the slot loop is skipped next time.
+            resume_from = total_writes
+            current_fault_idx += 1
+            continue
+    else:
+        # Metadata writes not faultable -- write them directly.
+        for replica_base in (0x10070100, 0x10070000):
+            for i in range(0, 256, 8):
+                addr = replica_base + i
+                word = le64(meta_blob[i:i + 8])
+                bus.WriteQuadWord(addr, word)
+
+    # If we get here, the entire update (slot + metadata) completed without
+    # hitting this fault point. All remaining fault points are beyond the
+    # write stream -- they are effectively unreachable.
+    metadata_written = True
+    all_writes_done = True
+    break
+
+# If there are remaining fault points we never hit (because the update
+# completed), the update finished successfully. Handle the case where
+# we exhausted all faults but still need to complete the write.
+if not all_writes_done:
+    # After all faults have been injected, do one final attempt to complete.
+    state = {'index': 0, 'faulted': False, 'fault_address': 0}
+
+    # Write remaining slot B data.
+    for i in range(resume_from, total_writes):
+        addr = 0x10039000 + i * 8
+        word = le64(slot_payload[i * 8:(i + 1) * 8])
+        bus.WriteQuadWord(addr, word)
+
+    # Write metadata (re-write from scratch on final attempt).
+    meta_blob = build_metadata_blob()
+    if include_metadata_faults and resume_from >= total_writes:
+        # Last fault was in metadata -- re-write both replicas from scratch.
+        for replica_base in (0x10070100, 0x10070000):
+            for i in range(0, 256, 8):
+                addr = replica_base + i
+                word = le64(meta_blob[i:i + 8])
+                bus.WriteQuadWord(addr, word)
+    elif not metadata_written:
+        for replica_base in (0x10070100, 0x10070000):
+            for i in range(0, 256, 8):
+                addr = replica_base + i
+                word = le64(meta_blob[i:i + 8])
+                bus.WriteQuadWord(addr, word)
+
+    metadata_written = True
+    all_writes_done = True
+
+# ============================================================
+# Evaluate boot outcome
+# ============================================================
+r0 = read_replica(0x10070000)
+r1 = read_replica(0x10070100)
+
+selected = None
+if r0['valid'] and r1['valid']:
+    selected = r0 if seq_ge(r0['seq'], r1['seq']) else r1
+elif r0['valid']:
+    selected = r0
+elif r1['valid']:
+    selected = r1
+
+requested_slot = selected['active_slot'] if selected is not None else 0
+chosen_slot = -1
+if evaluation_mode == 'execute':
+    monitor.Parse('machine Reset')
+    monitor.Parse('emulation RunFor "0.5"')
+    slot_marker = as_int(bus.ReadDoubleWord(0x10070220))
+    if slot_marker in (0, 1):
+        chosen_slot = slot_marker
+    else:
+        chosen_slot = requested_slot
+        if not slot_vector_valid(chosen_slot):
+            other = 1 if chosen_slot == 0 else 0
+            chosen_slot = other if slot_vector_valid(other) else -1
+else:
+    chosen_slot = requested_slot
+    if not slot_vector_valid(chosen_slot):
+        other = 1 if chosen_slot == 0 else 0
+        chosen_slot = other if slot_vector_valid(other) else -1
+
+if chosen_slot in (0, 1):
+    boot_outcome = 'success'
+    boot_slot = 'B' if chosen_slot == 1 else 'A'
+else:
+    boot_outcome = 'hard_fault'
+    boot_slot = None
+
+result = {
+    'fault_sequence': fault_points_hit if fault_points_hit else fault_points,
+    'boot_outcome': boot_outcome,
+    'boot_slot': boot_slot,
+    'per_fault_states': per_fault_states,
+    'nvm_state': {
+        'evaluation_mode': evaluation_mode,
+        'chosen_slot': chosen_slot,
+        'requested_slot': requested_slot,
+        'faults_injected': len(fault_points_hit),
+        'faults_requested': len(fault_points),
+        'all_writes_done': all_writes_done,
+        'metadata_written': metadata_written,
+        'include_metadata_faults': include_metadata_faults,
+        'replica0_valid': r0['valid'],
+        'replica1_valid': r1['valid'],
+        'replica0_seq': r0['seq'],
+        'replica1_seq': r1['seq'],
+    },
+}
+
+with open(result_file, 'w') as f:
+    f.write(json.dumps(result, sort_keys=True))
+"""

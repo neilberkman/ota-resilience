@@ -8,15 +8,14 @@ by `tests/ota_resilience.robot` and `scripts/update_readme_from_report.py`.
 | Field                     | Type   | Description                                         |
 | ------------------------- | ------ | --------------------------------------------------- |
 | `engine`                  | string | Always `"renode-test"` for live runs                |
-| `scenario`                | string | Built-in (`vulnerable`/`resilient`/`comparative`) or custom scenario name |
-| `total_writes`            | int/object | Scenario write count (`comparative` stores per-scenario values) |
+| `scenario`                | string | Built-in or custom scenario name                    |
+| `total_writes`            | mixed  | Int for single-scenario, object for comparative     |
 | `fault_points`            | int[]  | Write indices where faults were injected            |
 | `include_metadata_faults` | bool   | Whether faults were injected during metadata writes |
-| `evaluation_mode`         | string | `execute` (default) or `state`                      |
-| `trace_execution`         | bool   | Whether per-point execution tracing was enabled     |
-| `control_enabled`         | bool   | Whether automatic unfaulted control points were included |
+| `evaluation_mode`         | string | `execute` or `state`                                |
+| `control_enabled`         | bool   | Whether control points were included                |
 | `summary`                 | object | Per-scenario aggregate counts (see below)           |
-| `inputs`                  | object | Platform/artifact/tooling paths                     |
+| `inputs`                  | object | Platform, firmware, and tooling paths               |
 | `execution`               | object | Timestamp, command, artifacts directory             |
 | `git`                     | object | Commit hash, short hash, dirty flag                 |
 | `results`                 | object | Per-scenario arrays of `FaultResult` entries        |
@@ -31,16 +30,8 @@ by `tests/ota_resilience.robot` and `scripts/update_readme_from_report.py`.
 | `recoveries` | int   | Count of `success` outcomes              |
 | `brick_rate` | float | `bricks / total`                         |
 
-## `summary.control`
-
-When control runs are enabled, `summary.control` captures the unfaulted
-baseline outcome.
-
-- Single-scenario campaign:
-  - object with `fault_at`, `boot_outcome`, `boot_slot`
-- Comparative campaign:
-  - object keyed by scenario name, each value containing
-    `fault_at`, `boot_outcome`, `boot_slot`
+When controls are enabled, `summary.control` contains the unfaulted baseline
+outcome for each scenario.
 
 ## `results.<scenario>[]` (FaultResult)
 
@@ -49,43 +40,32 @@ baseline outcome.
 | `fault_at`     | int            | Write index where fault was injected             |
 | `boot_outcome` | string         | One of: `success`, `hard_fault`, `hang`, `error` |
 | `boot_slot`    | string or null | `"A"`, `"B"`, or `null` if no valid slot         |
-| `fault_diagnostics` | object    | Fault-byte and region diagnostics (`{}` when no fault fired) |
-| `nvm_state`   | object         | Scenario-specific NVM state snapshot            |
+| `nvm_state`    | object         | Scenario-specific NVM state snapshot             |
 | `raw_log`      | string         | Truncated renode-test output (paths redacted)    |
-| `is_control`   | bool           | `true` for unfaulted control point entries        |
-
-### `fault_diagnostics` (A/B fault scripts)
-
-| Field             | Type            | Description |
-| ----------------- | --------------- | ----------- |
-| `fault_address`   | hex string      | Address where the injected partial write landed |
-| `region`          | string          | `image_header`, `vector_table`, `payload`, `outside_slot`, `metadata_replica_0`, or `metadata_replica_1` |
-| `offset_in_slot`  | int             | Offset from slot B base (slot-region faults only) |
-| `corrupted_bytes` | uppercase hex   | Bytes read back from the faulted write granularity word |
-| `expected_bytes`  | uppercase hex   | Bytes expected at that location (when determinable) |
-| `execution_trace` | string          | Path to Renode execution trace file (when trace mode is enabled) |
+| `is_control`   | bool           | `true` for unfaulted control points              |
 
 ### `nvm_state` for vulnerable scenario
 
-| Field            | Type       | Description                                                    |
-| ---------------- | ---------- | -------------------------------------------------------------- |
-| `evaluation_mode`| string     | `execute` or `state`                                           |
-| `copy_marker`    | hex string | Value at persistence region; `0xC0FEBEEF` = copy complete      |
-| `boot_counter`   | int        | Incremented each copy attempt                                  |
-| `pre_boot_counter` | int      | Counter value before execute-mode reset/run                    |
-| `copy_done`      | bool       | Whether copy-complete marker was observed                      |
-| `vector_sp`      | hex string | Stack pointer from vector table word 0                         |
-| `vector_reset`   | hex string | Reset vector from vector table word 1                          |
-| `vector_valid`   | bool       | SP in SRAM range and reset vector in slot range with thumb bit |
-| `fault_injected` | bool       | Whether `InjectPartialWrite` fired                             |
+| Field                  | Type       | Description                                                    |
+| ---------------------- | ---------- | -------------------------------------------------------------- |
+| `copy_marker`          | hex string | Value at persistence region; `0xC0FEBEEF` = copy complete      |
+| `boot_counter`         | int        | Incremented each copy attempt                                  |
+| `pre_boot_counter`     | int        | Counter value before execute-mode run                          |
+| `boot_progress`        | bool       | `true` when boot counter changed during execute-mode run       |
+| `second_boot_progress` | bool       | `true` when image also booted after a follow-up reset          |
+| `evaluation_mode`      | string     | `execute` or `state`                                           |
+| `vector_sp`            | hex string | Stack pointer from vector table word 0                         |
+| `vector_reset`         | hex string | Reset vector from vector table word 1                          |
+| `vector_valid`         | bool       | SP in SRAM range and reset vector in slot range with thumb bit |
+| `fault_injected`       | bool       | Whether `InjectPartialWrite` fired                             |
 
 ### `nvm_state` for resilient scenario
 
 | Field                     | Type       | Description                                           |
 | ------------------------- | ---------- | ----------------------------------------------------- |
-| `evaluation_mode`         | string     | `execute` or `state`                                  |
 | `chosen_slot`             | int        | Slot the bootloader would jump to (0=A, 1=B, -1=none) |
 | `requested_slot`          | int        | Slot requested by metadata                            |
+| `evaluation_mode`         | string     | `execute` or `state`                                  |
 | `write_index`             | int        | How many writes completed before fault                |
 | `faulted`                 | bool       | Whether `InjectPartialWrite` fired                    |
 | `fault_address`           | hex string | Bus address of the faulted write                      |
@@ -94,7 +74,6 @@ baseline outcome.
 | `replica1_valid`          | bool       | CRC check result for metadata replica 1               |
 | `replica0_seq`            | int        | Sequence number from replica 0                        |
 | `replica1_seq`            | int        | Sequence number from replica 1                        |
-| `metadata_repaired`       | bool       | True when state-mode fallback rewrote confirmed metadata |
 
 ## Outcome taxonomy
 
@@ -106,3 +85,9 @@ baseline outcome.
   test harness.
 - **`error`**: Test infrastructure failure (renode-test crash, missing files). Not a
   firmware outcome.
+
+## Example
+
+See `example_report.json` for a complete comparative campaign with 8 fault points.
+The vulnerable scenario bricks on 7/8 fault points (87.5% brick rate).
+The resilient scenario recovers from all 8 (0% brick rate).
