@@ -139,6 +139,20 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `results/oss_validation/reports/2026-02-27-esp-idf-copy-guard/*.json`
      - `results/oss_validation/reports/2026-02-27-esp-idf-crc-guard/*.json`
 
+10. **Exploratory discovery matrix runner (2026-02-27, later batch)**:
+   - Added `scripts/run_exploratory_matrix.py` for discovery-first campaigns:
+     - Expands profile matrices from baseline scenarios (and optionally defect profiles)
+     - Applies generic fault/criteria presets (`profile`, `write_erase`, `write_erase_bit` and `profile`, `vtor_any`, `image_hash_exec`)
+     - Executes `audit_bootloader.py` per case
+     - Clusters anomalies (`control_mismatch` + fault anomalies) with reproducibility/novelty scoring
+     - Emits `matrix_results.json` + `anomaly_summary.md`
+   - First runs:
+     - Baseline-only matrix (`16` cases): `0` clusters
+     - Defect-inclusive matrix (`24` capped cases): `11` clusters, `4` control mismatches, `16` anomalous points
+   - Artifacts:
+     - `results/exploratory/2026-02-27-esp-idf-discovery-v1/`
+     - `results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -176,6 +190,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | `scripts/mcuboot_state_fuzzer.py`  | MCUboot-specific state fuzzer (not widely used)                         |
 | `scripts/bootstrap_mcuboot_geometry_assets.sh` | Rebuild geometry-trigger MCUboot assets (PR2206 forced trailer + large images) |
 | `scripts/sweep_pr2206_geometry_threshold.py` | Control-only payload-size sweep for PR2206 threshold and broken/fixed comparison |
+| `scripts/run_exploratory_matrix.py` | Discovery-first matrix runner + anomaly clustering report generator |
 | `scripts/run_oss_validation.py`    | MCUboot build + validate pipeline                                       |
 | `scripts/geometry_matrix.py`       | MCUboot swap geometry analysis                                          |
 
@@ -377,6 +392,22 @@ for p in \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-crc-guard/${p}.full.json"
 done
+
+# Exploratory matrix (baseline-only discovery lane)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-remote-server-dir /tmp/renode-server \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-v1
+
+# Exploratory matrix (defect-inclusive, capped sample)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --include-defect-profiles \
+  --max-cases 24 \
+  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-remote-server-dir /tmp/renode-server \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1
 ```
 
 ## What Needs To Be Done
@@ -406,6 +437,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
 - Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
+- Expand `run_exploratory_matrix.py` clustering so signatures are grouped across profile families (reduce over-specific keys) and include baseline-vs-defect deltas in ranking.
 
 ### 3. More Fault Types
 

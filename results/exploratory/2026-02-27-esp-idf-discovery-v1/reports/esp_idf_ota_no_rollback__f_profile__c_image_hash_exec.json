@@ -1,0 +1,64 @@
+{
+  "calibrated_erases": 0,
+  "calibrated_writes": 0,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 /Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py --profile /Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-v1/profiles/esp_idf_ota_no_rollback__f_profile__c_image_hash_exec.yaml --output /Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-v1/reports/esp_idf_ota_no_rollback__f_profile__c_image_hash_exec.json --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server --quick",
+    "run_utc": "2026-02-27T07:46:21Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 0,
+  "git": {
+    "commit": "53c48f6069cc326bfde18239a3948e274e75b9f6",
+    "dirty": "true",
+    "short_commit": "53c48f6"
+  },
+  "heuristic": null,
+  "profile": "esp_idf_ota_no_rollback__f_profile__c_image_hash_exec",
+  "profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-v1/profiles/esp_idf_ota_no_rollback__f_profile__c_image_hash_exec.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 0,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "image_hash_match": "skipped",
+        "image_hash_slot": "exec",
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080054",
+        "pc_ok": true,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "control": {
+        "boot_outcome": "success",
+        "boot_slot": "staging"
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {},
+      "recoveries": 0,
+      "total_fault_points": 0
+    }
+  },
+  "verdict": "PASS"
+}

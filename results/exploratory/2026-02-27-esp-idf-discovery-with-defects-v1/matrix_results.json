@@ -1,0 +1,1020 @@
+{
+  "cases": [
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state.yaml",
+      "case_id": "esp_idf_fault_crc_covers_state__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state.yaml",
+      "case_id": "esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state.yaml",
+      "case_id": "esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state.yaml",
+      "case_id": "esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort.yaml",
+      "case_id": "esp_idf_fault_no_abort__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort.yaml",
+      "case_id": "esp_idf_fault_no_abort__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort.yaml",
+      "case_id": "esp_idf_fault_no_abort__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort.yaml",
+      "case_id": "esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc.yaml",
+      "case_id": "esp_idf_fault_no_crc__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc.yaml",
+      "case_id": "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc.yaml",
+      "case_id": "esp_idf_fault_no_crc__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc.yaml",
+      "case_id": "esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_copy_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_copy_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_copy_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_copy_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_copy_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_copy_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_copy_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_copy_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_crc_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_crc_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_crc_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_crc_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_crc_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_crc_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_crc_crc_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_crc_crc_guard.yaml",
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_fallback",
+      "base_profile_path": "profiles/esp_idf_fault_no_fallback.yaml",
+      "case_id": "esp_idf_fault_no_fallback__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_fallback",
+      "base_profile_path": "profiles/esp_idf_fault_no_fallback.yaml",
+      "case_id": "esp_idf_fault_no_fallback__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_fallback",
+      "base_profile_path": "profiles/esp_idf_fault_no_fallback.yaml",
+      "case_id": "esp_idf_fault_no_fallback__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_fallback",
+      "base_profile_path": "profiles/esp_idf_fault_no_fallback.yaml",
+      "case_id": "esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.json",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.yaml"
+    }
+  ],
+  "clusters": [
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort__f_profile__c_profile",
+        "esp_idf_fault_no_abort__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "control_mismatch",
+      "profile_count": 1,
+      "score": 8.788898,
+      "severity": 4,
+      "signature": {
+        "actual_control_outcome": "no_boot",
+        "actual_control_slot": "exec",
+        "expected_control_outcome": "success"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "control_mismatch",
+      "profile_count": 1,
+      "score": 8.788898,
+      "severity": 4,
+      "signature": {
+        "actual_control_outcome": "no_boot",
+        "actual_control_slot": "staging",
+        "expected_control_outcome": "success"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort__f_profile__c_profile",
+        "esp_idf_fault_no_abort__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 6.591674,
+      "severity": 3,
+      "signature": {
+        "boot_slot": "exec",
+        "fault_type": "w",
+        "image_hash_match": "na",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 6.591674,
+      "severity": 3,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "w",
+        "image_hash_match": "na",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "w",
+        "image_hash_match": "unknown",
+        "outcome": "wrong_image",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "e",
+        "image_hash_match": "unknown",
+        "outcome": "wrong_image",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "e",
+        "image_hash_match": "unknown",
+        "outcome": "wrong_image",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "b",
+        "image_hash_match": "exec_image",
+        "outcome": "wrong_image",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "b",
+        "image_hash_match": "unknown",
+        "outcome": "wrong_image",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "case_count": 1,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 1,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 2.079442,
+      "severity": 3,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "b",
+        "image_hash_match": "na",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "case_count": 1,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 1,
+      "kind": "fault_anomaly",
+      "profile_count": 1,
+      "score": 2.079442,
+      "severity": 3,
+      "signature": {
+        "boot_slot": "staging",
+        "fault_type": "b",
+        "image_hash_match": "na",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    }
+  ],
+  "config": {
+    "bounded_step_limit": 1572864,
+    "criteria_presets": [
+      "profile",
+      "image_hash_exec"
+    ],
+    "fault_presets": [
+      "profile",
+      "write_erase_bit"
+    ],
+    "max_cases": 24,
+    "profile_patterns": [
+      "profiles/esp_idf_ota_upgrade.yaml",
+      "profiles/esp_idf_ota_rollback.yaml",
+      "profiles/esp_idf_ota_no_rollback.yaml",
+      "profiles/esp_idf_ota_crc_guard.yaml",
+      "profiles/esp_idf_fault_*.yaml"
+    ],
+    "quick": true,
+    "reuse_existing": false,
+    "workers": 1
+  },
+  "generated_at_utc": "2026-02-27T075114Z",
+  "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1",
+  "repo_root": "/Users/neil/mirala/ota-resilience",
+  "runs": [
+    {
+      "case_id": "esp_idf_fault_crc_covers_state__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state__f_profile__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_crc_covers_state__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort__f_profile__c_profile'...\nCalibration: 2049 NVM writes, 2 page erases.\nRunning 5 fault points (3 writes + 2 erases) for 'esp_idf_fault_no_abort__f_profile__c_profile'...\nASSERTION FAILED: control point outcome 'no_boot' != expected 'success'\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.2,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000FC040\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 5\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 1 (20.0%)\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_abort__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2049 NVM writes, 2 page erases.\nRunning 5 fault points (3 writes + 2 erases) for 'esp_idf_fault_no_abort__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 5,\n      \"total_fault_points\": 5\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort__f_write_erase_bit__c_profile'...\nCalibration: 2049 NVM writes, 2 page erases.\nRunning 8 fault points (3 writes + 2 erases + 3 bit-corrupt) for 'esp_idf_fault_no_abort__f_write_erase_bit__c_profile'...\nASSERTION FAILED: control point outcome 'no_boot' != expected 'success'\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.125,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000FC040\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 7,\n      \"total_fault_points\": 8\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 1 (12.5%)\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2049 NVM writes, 2 page erases.\nRunning 8 fault points (3 writes + 2 erases + 3 bit-corrupt) for 'esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 8,\n      \"total_fault_points\": 8\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc__f_profile__c_profile'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5555555555555556,\n      \"bricks\": 5,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"wrong_image\": 5\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_profile__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc__f_write_erase_bit__c_profile'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5555555555555556,\n      \"bricks\": 5,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"wrong_image\": 5\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_copy_guard__f_profile__c_profile'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_copy_guard__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_copy_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_profile__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_fault_no_crc_crc_guard__f_profile__c_profile'...\nASSERTION FAILED: control point outcome 'no_boot' != expected 'success'\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.25,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000F9018\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 3,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 4,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile'...\nASSERTION FAILED: control point outcome 'no_boot' != expected 'success'\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.42857142857142855,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000F9018\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 1,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "nonzero_exit",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 7,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_fallback__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback__f_profile__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_no_fallback__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_fallback__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_fallback__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_no_fallback__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_fallback__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback__f_write_erase_bit__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_fallback__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/profiles/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/mirala/renode/renode-test",
+        "--renode-remote-server-dir",
+        "/tmp/renode-server",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    }
+  ],
+  "totals": {
+    "anomalous_points_total": 16,
+    "cases_control_mismatch": 4,
+    "cases_missing_report": 0,
+    "cases_total": 24,
+    "cases_with_report": 24
+  }
+}
