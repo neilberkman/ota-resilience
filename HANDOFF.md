@@ -115,6 +115,12 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `esp_idf_ota_upgrade`: `2052 writes / 3 erases`
      - `esp_idf_ota_rollback`: `3 writes / 1 erase`
    - Quick runs are still non-differential (0 bricks across baseline and defect profiles), but stateless/no-op calibrations were removed for key defect variants.
+   - Deep sweeps (full heuristic sets, 4 workers) are also currently non-differential:
+     - `esp_idf_ota_upgrade`: `0/365` bricks
+     - `esp_idf_fault_no_fallback`: `0/365` bricks
+     - `esp_idf_fault_crc_covers_state`: `0/365` bricks
+     - `esp_idf_fault_no_abort`: `0/359` bricks
+   - Deep reports: `results/oss_validation/reports/2026-02-27-esp-idf-deep/*.full.json`
    - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
 
 ### Bootloader Coverage
@@ -289,6 +295,21 @@ for p in \
     --renode-test /Users/neil/mirala/renode/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-refresh/${p}.quick.json"
+done
+
+# ESP-IDF deep sweeps (full heuristic set, parallel workers)
+mkdir -p results/oss_validation/reports/2026-02-27-esp-idf-deep
+for p in \
+  esp_idf_ota_upgrade \
+  esp_idf_fault_no_fallback \
+  esp_idf_fault_crc_covers_state \
+  esp_idf_fault_no_abort; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --workers 4 \
+    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-remote-server-dir /tmp/renode-server \
+    --output "results/oss_validation/reports/2026-02-27-esp-idf-deep/${p}.full.json"
 done
 ```
 
