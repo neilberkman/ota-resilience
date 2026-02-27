@@ -111,6 +111,10 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `esp_idf_fault_no_fallback`: `2052 writes / 3 erases`
      - `esp_idf_fault_crc_covers_state`: `2052 writes / 3 erases`
      - `esp_idf_fault_single_sector`: `3 writes / 1 erase`
+   - Matching baseline quick runs:
+     - `esp_idf_ota_upgrade`: `2052 writes / 3 erases`
+     - `esp_idf_ota_rollback`: `3 writes / 1 erase`
+   - Quick runs are still non-differential (0 bricks across baseline and defect profiles), but stateless/no-op calibrations were removed for key defect variants.
    - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
 
 ### Bootloader Coverage
