@@ -60,9 +60,10 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ## Current State
 
-### Branch: `erase-trace-replay-fix` (active development branch)
+### Branch: `main` (active branch)
 
-- Last main-repo commit: `117a084` — OSS validation assets for MCUboot PR2205/2206/2214 + near-max slot image
+- Last main-repo commit at previous handoff update: `be73842` — geometry trigger profiles/assets/reports for PR2206 + PR2214 follow-up
+- Latest committed additions in this batch: PR2206 threshold sweep tooling + non-geometry threshold reports
 - Working tree: clean at commit time of this handoff update
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -90,6 +91,12 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Two payload probes (`img_size=0x69000` and `0x66000`) still fail control boot with `no_boot` for both revisions, so no clean differential yet.
    - PR2214 fuller offset image still calibrates as `0 writes / 118 erases` on this target and remains non-differential.
    - Reports: `results/oss_validation/reports/2026-02-26-geometry/*.quick.json`
+
+6. **PR2206 non-geometry threshold sweep (2026-02-27)**:
+   - Added `scripts/sweep_pr2206_geometry_threshold.py` to automatically size-sweep staging images, find fixed control-boot threshold, and compare broken vs fixed around the boundary.
+   - Fixed threshold on this target: `0x9000` payload boots; `0xA000` payload does not boot.
+   - Broken and fixed match at all comparison points (`0x8000`, `0x9000`, `0xA000`) → no differential found in this geometry either.
+   - Reports: `results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2.json` and per-run JSONs in `results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2/`
 
 ### Bootloader Coverage
 
@@ -127,6 +134,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | `scripts/invariants.py`            | Metadata invariant checks for state fuzzer                              |
 | `scripts/mcuboot_state_fuzzer.py`  | MCUboot-specific state fuzzer (not widely used)                         |
 | `scripts/bootstrap_mcuboot_geometry_assets.sh` | Rebuild geometry-trigger MCUboot assets (PR2206 forced trailer + large images) |
+| `scripts/sweep_pr2206_geometry_threshold.py` | Control-only payload-size sweep for PR2206 threshold and broken/fixed comparison |
 | `scripts/run_oss_validation.py`    | MCUboot build + validate pipeline                                       |
 | `scripts/geometry_matrix.py`       | MCUboot swap geometry analysis                                          |
 
@@ -223,6 +231,16 @@ done
 
 # Rebuild geometry-trigger assets (PR2206 forced-trailer + fuller images)
 scripts/bootstrap_mcuboot_geometry_assets.sh
+
+# PR2206 threshold sweep (control-only, broken/fixed around boundary)
+python3 scripts/sweep_pr2206_geometry_threshold.py \
+  --repo-root /Users/neil/mirala/ota-resilience \
+  --fixed-elf results/oss_validation/assets/oss_mcuboot_pr2206_scratch_fixed.elf \
+  --broken-elf results/oss_validation/assets/oss_mcuboot_pr2206_scratch_broken.elf \
+  --output results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2.json \
+  --results-dir results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2 \
+  --min-payload 0x5000 --max-payload 0x30000 --quantum 0x1000 \
+  --max-step-limit 0x180000 --max-writes-cap 0x20000 --reuse-existing
 ```
 
 ## What Needs To Be Done
@@ -305,13 +323,13 @@ Currently results are JSON blobs. Could benefit from:
 - Comparison view: broken vs fixed side by side
 - Aggregated report across all profiles
 
-### 8. Push + Update PR
+### 8. Push Directly To Main
 
-Main branch contains additional local commits (including PR2205/2206/2214 assets). Push branch and update PR with:
+Current workflow is direct-to-main (no PR required):
 
-- Newly added MCUboot assets in `results/oss_validation/assets/`
-- Exploratory profile set for PR2205/2206/2214
-- Exploratory quick reports in `results/oss_validation/reports/2026-02-26-pr2205-2206-2214/`
+- Commit incremental artifacts and scripts on `main`
+- Push to `origin/main`
+- Keep `HANDOFF.md` current after each batch so next agent can resume immediately
 
 ## Gotchas and Lessons Learned
 
@@ -332,6 +350,8 @@ Main branch contains additional local commits (including PR2205/2206/2214 assets
 8. **Phase 2 DiffLookahead**: Set `nvmc.DiffLookahead = 32` for recovery boot phase (no write counting needed, 10x faster). Set `int.MaxValue` for calibration/sweep.
 
 9. **Geometry bugs need geometry triggers**: PR2205/2206/2214 are not guaranteed to reproduce on default nRF52840 partition/sector geometry. Mixed-sector layouts and trailer-at-boundary cases are often required.
+
+10. **Threshold sweeps are expensive unless tuned**: `scripts/sweep_pr2206_geometry_threshold.py` should usually run with lower `--max-step-limit` plus `--reuse-existing` to avoid rerunning completed points. Generated `slot1_payload_*.bin` files are intermediate and can be dropped once JSON reports are captured.
 
 ## Profile YAML Schema Quick Reference
 
