@@ -1,0 +1,63 @@
+{
+  "calibrated_erases": 0,
+  "calibrated_writes": 1,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/audit_bootloader.py --profile /var/folders/b4/20t0rrh545zdn_f8jxx6_xww0000gn/T/pr2206_profile_7mysishi/pr2206_broken_payload_30000.yaml --output /Users/neil/mirala/ota-resilience/results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2/pr2206_broken_payload_30000.json --fault-start 0 --fault-end 0 --no-assert-control-boots --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server",
+    "run_utc": "2026-02-27T03:17:58Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 0,
+  "git": {
+    "commit": "09d07597d39591f4fa97f96e82d3fcbd01a4974e",
+    "dirty": "true",
+    "short_commit": "09d0759"
+  },
+  "heuristic": null,
+  "profile": "pr2206_broken_payload_30000",
+  "profile_path": "/var/folders/b4/20t0rrh545zdn_f8jxx6_xww0000gn/T/pr2206_profile_7mysishi/pr2206_broken_payload_30000.yaml",
+  "quick": false,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 28156,
+      "boot_outcome": "no_boot",
+      "boot_slot": null,
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "image_hash_match": "unknown",
+        "marker_actual": "0x00000000",
+        "marker_ok": false,
+        "pc": "0x000025D8",
+        "pc_ok": true,
+        "vtor": "0x00000000",
+        "vtor_ok": false
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "control": {
+        "boot_outcome": "no_boot",
+        "boot_slot": null
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {},
+      "recoveries": 0,
+      "total_fault_points": 0
+    }
+  },
+  "verdict": "PASS"
+}

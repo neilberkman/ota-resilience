@@ -98,6 +98,12 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Broken and fixed match at all comparison points (`0x8000`, `0x9000`, `0xA000`) → no differential found in this geometry either.
    - Reports: `results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2.json` and per-run JSONs in `results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2/`
 
+7. **PR2206 forced-trailer geometry threshold sweep (2026-02-27)**:
+   - Ran the same threshold sweep against `oss_mcuboot_pr2206_scratch_geom_{broken,fixed}.elf`.
+   - No fixed-success point was found in the tested window (`0x3000..0x30000`): outcomes were `wrong_image` at smaller payloads and `no_boot` at larger payloads.
+   - Broken and fixed still match at candidate comparison points (`0x5000`, `0x30000`) → no differential found.
+   - Reports: `results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2.json` and per-run JSONs in `results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -240,6 +246,17 @@ python3 scripts/sweep_pr2206_geometry_threshold.py \
   --output results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2.json \
   --results-dir results/oss_validation/reports/2026-02-27-pr2206-nongeom-threshold-v2 \
   --min-payload 0x5000 --max-payload 0x30000 --quantum 0x1000 \
+  --max-step-limit 0x180000 --max-writes-cap 0x20000 --reuse-existing
+
+# Same sweep against forced-trailer geometry pair
+python3 scripts/sweep_pr2206_geometry_threshold.py \
+  --repo-root /Users/neil/mirala/ota-resilience \
+  --fixed-elf results/oss_validation/assets/oss_mcuboot_pr2206_scratch_geom_fixed.elf \
+  --broken-elf results/oss_validation/assets/oss_mcuboot_pr2206_scratch_geom_broken.elf \
+  --output results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2.json \
+  --results-dir results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2 \
+  --min-payload 0x5000 --max-payload 0x30000 --quantum 0x1000 \
+  --floor-payload 0x3000 \
   --max-step-limit 0x180000 --max-writes-cap 0x20000 --reuse-existing
 ```
 
