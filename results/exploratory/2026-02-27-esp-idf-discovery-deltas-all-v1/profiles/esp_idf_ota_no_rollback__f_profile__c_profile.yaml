@@ -1,0 +1,56 @@
+schema_version: 1
+name: esp_idf_ota_no_rollback__f_profile__c_profile
+description: "ESP-IDF OTA bootloader model \u2014 upgrade WITHOUT rollback support.\
+  \ Same otadata format and slot selection, but no PENDING_VERIFY state transitions.\
+  \ Bootloader reads otadata, picks highest valid ota_seq, boots that slot. Zero flash\
+  \ writes = inherently power-loss safe (like riotboot). This is the ESP-IDF configuration\
+  \ without CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE.\n"
+platform: platforms/cortex_m4_flash_fast.repl
+bootloader:
+  elf: examples/esp_idf_ota/esp_idf_ota_no_rollback.elf
+  entry: 0
+memory:
+  sram:
+    start: 536870912
+    end: 537133056
+  write_granularity: 4
+  slots:
+    exec:
+      base: 49152
+      size: 475136
+    staging:
+      base: 524288
+      size: 475136
+images:
+  exec: examples/esp_idf_ota/slot0.bin
+  staging: examples/esp_idf_ota/slot1.bin
+pre_boot_state:
+- address: 1015808
+  u32: 1
+- address: 1015832
+  u32: 2
+- address: 1015836
+  u32: 1195612314
+- address: 1019904
+  u32: 2
+- address: 1019928
+  u32: 0
+- address: 1019932
+  u32: 1442199412
+success_criteria:
+  vtor_in_slot: staging
+  marker_address: 1032192
+  marker_value: 1
+fault_sweep:
+  mode: runtime
+  evaluation_mode: execute
+  max_writes: auto
+  max_writes_cap: 200000
+  run_duration: '2.0'
+  max_step_limit: 20000000
+  fault_types:
+  - power_loss
+  - interrupted_erase
+expect:
+  should_find_issues: false
+skip_self_test: true

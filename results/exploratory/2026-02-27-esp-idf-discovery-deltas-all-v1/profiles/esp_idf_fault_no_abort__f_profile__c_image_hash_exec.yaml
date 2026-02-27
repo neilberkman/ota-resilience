@@ -1,0 +1,60 @@
+schema_version: 1
+name: esp_idf_fault_no_abort__f_profile__c_image_hash_exec
+description: 'ESP-IDF OTA model that never aborts PENDING_VERIFY entries. Rollback
+  scenario: entry 1 has PENDING_VERIFY (unconfirmed image). Correct behavior: abort
+  entry 1, boot entry 0 (rollback). Defect: PENDING_VERIFY is still considered valid,
+  entry 1 selected (higher seq), boots the unconfirmed image forever. No rollback.
+
+  '
+platform: platforms/cortex_m4_flash_fast.repl
+bootloader:
+  elf: examples/esp_idf_ota/esp_idf_fault_no_abort.elf
+  entry: 0
+memory:
+  sram:
+    start: 536870912
+    end: 537133056
+  write_granularity: 4
+  slots:
+    exec:
+      base: 49152
+      size: 475136
+    staging:
+      base: 524288
+      size: 475136
+images:
+  exec: examples/esp_idf_ota/slot0.bin
+  staging: examples/esp_idf_ota/slot1.bin
+pre_boot_state:
+- address: 1015808
+  u32: 1
+- address: 1015832
+  u32: 2
+- address: 1015836
+  u32: 1195612314
+- address: 1019904
+  u32: 2
+- address: 1019928
+  u32: 1
+- address: 1019932
+  u32: 1442199412
+- address: 1032256
+  u32: 1430540321
+success_criteria:
+  vtor_in_slot: any
+  image_hash: true
+  image_hash_slot: exec
+  expected_image: staging
+fault_sweep:
+  mode: runtime
+  evaluation_mode: execute
+  max_writes: auto
+  max_writes_cap: 200000
+  run_duration: '2.0'
+  max_step_limit: 20000000
+  fault_types:
+  - power_loss
+  - interrupted_erase
+expect:
+  should_find_issues: false
+skip_self_test: true

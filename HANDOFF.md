@@ -158,6 +158,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - Use coarser cluster signatures (drop over-specific `boot_slot` / `image_hash_match` keys from primary cluster identity).
      - Emit per-case metrics (`case_metrics`) including failure/brick/wrong-image rates.
      - Rank baseline-vs-defect regressions (`defect_deltas`) by delta score.
+     - Classify OtaData drift as `benign_state_transition` vs `suspicious_*` and score defect deltas using suspicious drift only.
      - Detect and cluster `otadata_drift` anomalies from runtime signals.
    - Upgraded `scripts/run_runtime_fault_sweep.resc` to emit post-boot OtaData signals:
      - entry0/entry1 seq/state/crc words
@@ -166,8 +167,15 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Fresh matrix run (16 cases, baseline+no_crc pairs) now reports:
      - `8` clusters (including OtaData drift clusters)
      - `8` defect delta comparisons, with `2` ranked regressions (`no_crc` vs baseline in `criteria=profile`)
+   - Expanded full ESP matrix run (44 cases, baseline + all defect profiles) now reports:
+     - `24` clusters, `24` defect delta comparisons, `4` control mismatches
+     - Top regressions include:
+       - `no_crc_crc_guard` vs `ota_crc_guard` (`Δcontrol=+1`, `Δbrick up to +0.428571`)
+       - `no_abort` vs `ota_upgrade` (`Δcontrol=+1`, `Δbrick up to +0.2`)
+       - `no_crc` vs `ota_upgrade` (`Δfailure=+0.555556`, wrong-image class)
    - Artifacts:
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2/`
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
 ### Bootloader Coverage
 
@@ -438,6 +446,13 @@ python3 scripts/run_exploratory_matrix.py \
   --quick \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2
+
+# Full ESP exploratory matrix (all baseline + defect profiles)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --include-defect-profiles \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
 ```
 
 ## What Needs To Be Done
@@ -467,7 +482,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
 - Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
-- Refine OtaData drift scoring so expected state transitions are separated from suspicious drift (reduce benign drift noise in discovery ranking).
+- Add scenario-aware allowlists for OtaData drift classes so known-good state evolution is filtered per scenario (reduce false-positive `suspicious_crc/seq` dominance in top clusters).
 
 ### 3. More Fault Types
 

@@ -40,6 +40,7 @@ KNOWN_ESP_DEFECTS = (
 SCENARIO_TAG_ALIASES = {
     "copy_guard": "upgrade_copy_guard",
 }
+HEALTHY_OTADATA_STATES = {"NEW", "PENDING_VERIFY", "VALID"}
 
 
 @dataclass
@@ -459,6 +460,84 @@ def _otadata_digest(signals: Dict[str, Any]) -> str:
     return "|".join(parts)
 
 
+def _parse_u32_token(value: Any) -> Optional[int]:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        return int(text, 0) & 0xFFFFFFFF
+    except ValueError:
+        return None
+
+
+def _extract_control_signals(points: Sequence[Any]) -> Dict[str, Any]:
+    for p in points:
+        if isinstance(p, dict) and p.get("is_control", False):
+            maybe_signals = p.get("signals", {})
+            if isinstance(maybe_signals, dict):
+                return maybe_signals
+    return {}
+
+
+def _classify_otadata_drift(
+    control_signals: Dict[str, Any],
+    point_signals: Dict[str, Any],
+    outcome: str,
+) -> str:
+    control_digest = _otadata_digest(control_signals)
+    point_digest = _otadata_digest(point_signals)
+    if not control_digest or not point_digest:
+        return "none"
+    if control_digest == point_digest:
+        return "none"
+
+    if outcome != "success":
+        return "suspicious_failure"
+
+    control_active = _as_signal_token(control_signals.get("otadata_active_entry"), "")
+    point_active = _as_signal_token(point_signals.get("otadata_active_entry"), "")
+    if (
+        control_active
+        and point_active
+        and control_active not in ("tie",)
+        and point_active not in ("tie",)
+        and control_active != point_active
+    ):
+        return "suspicious_active_entry"
+
+    state_changed = False
+    for idx in (0, 1):
+        control_seq = _parse_u32_token(control_signals.get("otadata{}_seq".format(idx)))
+        point_seq = _parse_u32_token(point_signals.get("otadata{}_seq".format(idx)))
+        if control_seq is not None and point_seq is not None and control_seq != point_seq:
+            return "suspicious_seq"
+
+        control_crc = _parse_u32_token(control_signals.get("otadata{}_crc".format(idx)))
+        point_crc = _parse_u32_token(point_signals.get("otadata{}_crc".format(idx)))
+        if control_crc is not None and point_crc is not None and control_crc != point_crc:
+            return "suspicious_crc"
+
+        control_state = _as_signal_token(
+            control_signals.get("otadata{}_state_name".format(idx)), ""
+        ).upper()
+        point_state = _as_signal_token(
+            point_signals.get("otadata{}_state_name".format(idx)), ""
+        ).upper()
+
+        if control_state and control_state not in HEALTHY_OTADATA_STATES:
+            return "suspicious_state"
+        if point_state and point_state not in HEALTHY_OTADATA_STATES:
+            return "suspicious_state"
+        if control_state and point_state and control_state != point_state:
+            state_changed = True
+
+    if state_changed:
+        return "benign_state_transition"
+    return "suspicious_unknown"
+
+
 def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str, Any]:
     summary = report.get("summary", {})
     sweep_summary = summary.get("runtime_sweep", {})
@@ -477,13 +556,7 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
     if not isinstance(points, list):
         points = []
 
-    control_signals: Dict[str, Any] = {}
-    for p in points:
-        if isinstance(p, dict) and p.get("is_control", False):
-            maybe_signals = p.get("signals", {})
-            if isinstance(maybe_signals, dict):
-                control_signals = maybe_signals
-            break
+    control_signals = _extract_control_signals(points)
     control_otadata = _otadata_digest(control_signals)
 
     fault_points_total = 0
@@ -491,7 +564,10 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
     hard_failure_points = 0
     wrong_image_points = 0
     otadata_drift_points = 0
+    otadata_transition_points = 0
+    otadata_suspicious_drift_points = 0
     outcomes = Counter()
+    otadata_drift_classes = Counter()
 
     for p in points:
         if not isinstance(p, dict):
@@ -508,9 +584,14 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
         point_signals = p.get("signals", {})
         if not isinstance(point_signals, dict):
             point_signals = {}
-        point_otadata = _otadata_digest(point_signals)
-        if control_otadata and point_otadata and point_otadata != control_otadata:
+        drift_class = _classify_otadata_drift(control_signals, point_signals, outcome)
+        if drift_class != "none":
             otadata_drift_points += 1
+            otadata_drift_classes[drift_class] += 1
+            if drift_class.startswith("benign_"):
+                otadata_transition_points += 1
+            elif drift_class.startswith("suspicious_"):
+                otadata_suspicious_drift_points += 1
 
         if outcome != "success":
             anomalous_points += 1
@@ -537,12 +618,19 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
         "hard_failure_points": hard_failure_points,
         "wrong_image_points": wrong_image_points,
         "otadata_drift_points": otadata_drift_points,
+        "otadata_transition_points": otadata_transition_points,
+        "otadata_suspicious_drift_points": otadata_suspicious_drift_points,
         "failure_rate": round(float(anomalous_points) / denom, 6),
         "brick_rate": round(float(hard_failure_points) / denom, 6),
         "wrong_image_rate": round(float(wrong_image_points) / denom, 6),
         "otadata_drift_rate": round(float(otadata_drift_points) / denom, 6),
+        "otadata_transition_rate": round(float(otadata_transition_points) / denom, 6),
+        "otadata_suspicious_drift_rate": round(
+            float(otadata_suspicious_drift_points) / denom, 6
+        ),
         "control_otadata_digest": control_otadata,
         "outcome_counts": dict(sorted(outcomes.items())),
+        "otadata_drift_class_counts": dict(sorted(otadata_drift_classes.items())),
     }
 
 
@@ -584,6 +672,9 @@ def build_defect_deltas(
         otadata_drift_delta = _delta(
             defect_metrics, baseline_metrics, "otadata_drift_rate"
         )
+        otadata_suspicious_drift_delta = _delta(
+            defect_metrics, baseline_metrics, "otadata_suspicious_drift_rate"
+        )
         anomaly_points_delta = int(defect_metrics.get("anomalous_points", 0)) - int(
             baseline_metrics.get("anomalous_points", 0)
         )
@@ -593,14 +684,14 @@ def build_defect_deltas(
             max(failure_delta, 0.0),
             max(brick_delta, 0.0),
             max(wrong_image_delta, 0.0),
-            max(otadata_drift_delta, 0.0),
+            max(otadata_suspicious_drift_delta, 0.0),
         )
         negative_signal = min(
             float(min(control_delta, 0)),
             min(failure_delta, 0.0),
             min(brick_delta, 0.0),
             min(wrong_image_delta, 0.0),
-            min(otadata_drift_delta, 0.0),
+            min(otadata_suspicious_drift_delta, 0.0),
         )
         if positive_signal > 0:
             direction = "worse"
@@ -613,7 +704,7 @@ def build_defect_deltas(
             4.0 * max(float(control_delta), 0.0)
             + 3.0 * max(brick_delta, 0.0)
             + 2.0 * max(failure_delta, 0.0)
-            + 1.5 * max(otadata_drift_delta, 0.0)
+            + 1.5 * max(otadata_suspicious_drift_delta, 0.0)
             + 1.0 * max(wrong_image_delta, 0.0)
             + 0.1 * max(float(anomaly_points_delta), 0.0)
         )
@@ -634,6 +725,9 @@ def build_defect_deltas(
                     "brick_rate": round(brick_delta, 6),
                     "wrong_image_rate": round(wrong_image_delta, 6),
                     "otadata_drift_rate": round(otadata_drift_delta, 6),
+                    "otadata_suspicious_drift_rate": round(
+                        otadata_suspicious_drift_delta, 6
+                    ),
                     "anomalous_points": anomaly_points_delta,
                 },
                 "defect_metrics": {
@@ -642,6 +736,10 @@ def build_defect_deltas(
                     "brick_rate": float(defect_metrics.get("brick_rate", 0.0) or 0.0),
                     "otadata_drift_rate": float(
                         defect_metrics.get("otadata_drift_rate", 0.0) or 0.0
+                    ),
+                    "otadata_suspicious_drift_rate": float(
+                        defect_metrics.get("otadata_suspicious_drift_rate", 0.0)
+                        or 0.0
                     ),
                 },
                 "baseline_metrics": {
@@ -654,6 +752,10 @@ def build_defect_deltas(
                     "brick_rate": float(baseline_metrics.get("brick_rate", 0.0) or 0.0),
                     "otadata_drift_rate": float(
                         baseline_metrics.get("otadata_drift_rate", 0.0) or 0.0
+                    ),
+                    "otadata_suspicious_drift_rate": float(
+                        baseline_metrics.get("otadata_suspicious_drift_rate", 0.0)
+                        or 0.0
                     ),
                 },
             }
@@ -685,6 +787,8 @@ def extract_anomalies(
         "cases_control_mismatch": 0,
         "anomalous_points_total": 0,
         "otadata_drift_points_total": 0,
+        "otadata_transition_points_total": 0,
+        "otadata_suspicious_drift_points_total": 0,
     }
 
     for rr in run_records:
@@ -704,7 +808,6 @@ def extract_anomalies(
         control_outcome = _as_signal_token(case_metrics.get("control_outcome"), "unknown")
         control_slot = _as_signal_token(case_metrics.get("control_slot"), "none")
         expected_control = case.expected_control_outcome
-        control_otadata = _as_signal_token(case_metrics.get("control_otadata_digest"), "")
 
         if bool(case_metrics.get("control_mismatch", False)):
             totals["cases_control_mismatch"] += 1
@@ -743,6 +846,7 @@ def extract_anomalies(
         points = report.get("runtime_sweep_results", [])
         if not isinstance(points, list):
             points = []
+        control_signals = _extract_control_signals(points)
         calibrated_writes = int(report.get("calibrated_writes", 0) or 0)
         calibrated_erases = int(report.get("calibrated_erases", 0) or 0)
 
@@ -761,15 +865,19 @@ def extract_anomalies(
             image_hash_match = str(signals.get("image_hash_match", "na"))
             total = calibrated_erases if fault_type in ("e", "a") else calibrated_writes
             phase = phase_bucket(fault_at, max(total, 1))
-            point_otadata = _otadata_digest(signals)
-            otadata_drift = bool(
-                control_otadata and point_otadata and point_otadata != control_otadata
-            )
+            drift_class = _classify_otadata_drift(control_signals, signals, outcome)
+            otadata_drift = drift_class != "none"
+            otadata_suspicious_drift = drift_class.startswith("suspicious_")
 
             if otadata_drift:
                 totals["otadata_drift_points_total"] += 1
+            if drift_class.startswith("benign_"):
+                totals["otadata_transition_points_total"] += 1
+            if otadata_suspicious_drift:
+                totals["otadata_suspicious_drift_points_total"] += 1
                 drift_key = (
                     "otadata_drift",
+                    drift_class,
                     fault_type,
                     phase,
                 )
@@ -778,6 +886,7 @@ def extract_anomalies(
                     {
                         "kind": "otadata_drift",
                         "signature": {
+                            "drift_class": drift_class,
                             "fault_type": fault_type,
                             "phase": phase,
                         },
@@ -792,6 +901,8 @@ def extract_anomalies(
                         "severity": 2,
                     },
                 )
+                if drift_class == "suspicious_failure":
+                    drift_entry["severity"] = 3
                 drift_entry["count"] += 1
                 drift_entry["case_ids"].add(case_id)
                 drift_entry["base_profiles"].add(case.base_profile_name)
@@ -841,7 +952,7 @@ def extract_anomalies(
             entry["scenarios"].add(case.scenario_tag)
             entry["boot_slots"][boot_slot] += 1
             entry["image_hash_matches"][image_hash_match] += 1
-            entry["otadata_drift"]["yes" if otadata_drift else "no"] += 1
+            entry["otadata_drift"][drift_class] += 1
             totals["anomalous_points_total"] += 1
 
     cluster_rows: List[Dict[str, Any]] = []
@@ -906,7 +1017,17 @@ def render_markdown_summary(
     lines.append("- Cases missing report: `{}`".format(totals.get("cases_missing_report", 0)))
     lines.append("- Control mismatches: `{}`".format(totals.get("cases_control_mismatch", 0)))
     lines.append("- Anomalous fault points: `{}`".format(totals.get("anomalous_points_total", 0)))
-    lines.append("- OtaData drift points: `{}`".format(totals.get("otadata_drift_points_total", 0)))
+    lines.append("- OtaData drift points (all): `{}`".format(totals.get("otadata_drift_points_total", 0)))
+    lines.append(
+        "- OtaData benign transitions: `{}`".format(
+            totals.get("otadata_transition_points_total", 0)
+        )
+    )
+    lines.append(
+        "- OtaData suspicious drift points: `{}`".format(
+            totals.get("otadata_suspicious_drift_points_total", 0)
+        )
+    )
     lines.append("")
     lines.append("## Top Clusters")
     lines.append("")
@@ -939,7 +1060,7 @@ def render_markdown_summary(
     else:
         lines.append(
             "| Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | "
-            "Δfailure | Δbrick | Δcontrol | Δotadata |"
+            "Δfailure | Δbrick | Δcontrol | Δotadata(susp) |"
         )
         lines.append("| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |")
         for idx, row in enumerate(regressions[:top_n], 1):
@@ -957,7 +1078,7 @@ def render_markdown_summary(
                     float(delta.get("failure_rate", 0.0)),
                     float(delta.get("brick_rate", 0.0)),
                     int(delta.get("control_mismatch", 0)),
-                    float(delta.get("otadata_drift_rate", 0.0)),
+                    float(delta.get("otadata_suspicious_drift_rate", 0.0)),
                 )
             )
     lines.append("")
