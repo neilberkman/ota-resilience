@@ -398,10 +398,14 @@ static int vector_looks_valid(uint32_t base)
     uint32_t sp = *(const volatile uint32_t *)(base);
     uint32_t rv = *(const volatile uint32_t *)(base + 4);
     uint32_t pc = rv & ~1U;
+    int pc_in_any_slot = (
+        (pc >= SLOT0_BASE && pc < SLOT0_BASE + SLOT_SIZE)
+        || (pc >= SLOT1_BASE && pc < SLOT1_BASE + SLOT_SIZE)
+    );
 
     return (sp >= SRAM_START && sp <= SRAM_END)
         && ((rv & 1U) == 1U)
-        && (pc >= base && pc < base + SLOT_SIZE);
+        && pc_in_any_slot;
 }
 
 /* ------------------------------------------------------------------ */

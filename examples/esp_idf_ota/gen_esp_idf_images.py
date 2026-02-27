@@ -133,14 +133,9 @@ def make_slot_firmware(slot_base, slot_id):
     code_offset = 0x40
 
     code = b""
-    # Set VTOR to our base
-    code += movw(0, 0xED08)
-    code += movt(0, 0xE000)
-    code += movw(1, slot_base & 0xFFFF)
-    code += movt(1, (slot_base >> 16) & 0xFFFF)
-    code += struct.pack("<H", 0x6001)  # STR R1, [R0]
-
-    # Write slot_id marker to MARKER_ADDR
+    # Preserve bootloader-selected VTOR; only write marker for observability.
+    # This keeps boot-slot attribution based on bootloader behavior rather
+    # than image self-relocation.
     code += movw(0, MARKER_ADDR & 0xFFFF)
     code += movt(0, (MARKER_ADDR >> 16) & 0xFFFF)
     code += movw(1, slot_id & 0xFFFF)

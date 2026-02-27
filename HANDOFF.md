@@ -62,8 +62,8 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Last main-repo commit at previous handoff update: `be73842` — geometry trigger profiles/assets/reports for PR2206 + PR2214 follow-up
-- Latest committed additions in this batch: PR2206 threshold sweep tooling + non-geometry threshold reports
+- Last pushed main commit before this handoff batch: `0cf2696` — bounded ESP-IDF baseline deep comparison
+- Latest committed additions in that batch: bounded baseline report + handoff refresh
 - Working tree: clean at commit time of this handoff update
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -126,6 +126,19 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Deep reports: `results/oss_validation/reports/2026-02-27-esp-idf-deep/*.full.json`
    - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
 
+9. **ESP-IDF model tuning follow-up (2026-02-27, later batch)**:
+   - Added `success_criteria.image_hash_slot` plumbing end-to-end (`profile_loader.py` → Robot vars → `run_runtime_fault_sweep.resc`) so hash checks can be gated to a specific boot slot (used as `exec` for copy-path checks).
+   - Normalized profile image digests to slot data length (truncate/pad with `0xFF`) so profile-side SHA-256 matches runtime exec-slot hashing.
+   - Fixed synthetic ESP slot firmware masking: `gen_esp_idf_images.py` no longer rewrites `VTOR` inside app code, so observed `boot_slot` reflects bootloader choice.
+   - Relaxed ESP model vector validation to accept reset vectors in either OTA slot, which avoids copy-path false fallback caused by slot-address-coupled vectors.
+   - Exploratory copy-guard pair (`esp_idf_ota_upgrade_copy_guard` vs `esp_idf_fault_no_crc_copy_guard`) remains non-differential even with deep bounded sweep: both `0/727` bricks, control `boot_slot=exec`.
+   - New CRC-guard pair now provides a concrete `no_crc` differential:
+     - Baseline `esp_idf_ota_crc_guard`: `0/4` bricks, control `success/exec` (PASS)
+     - Defect `esp_idf_fault_no_crc_crc_guard`: `1/4` bricks (`no_boot`), control `no_boot/staging` (PASS because issues expected)
+   - Reports:
+     - `results/oss_validation/reports/2026-02-27-esp-idf-copy-guard/*.json`
+     - `results/oss_validation/reports/2026-02-27-esp-idf-crc-guard/*.json`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -138,7 +151,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
 | MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
 | MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
-| ESP-IDF OTA           | Model                    | 8 (3 baseline + 5 defect variants)                               | Clean-room otadata + copy-on-boot stress path  |
+| ESP-IDF OTA           | Model                    | 12 (5 baseline + 7 defect-focused variants)                      | Clean-room otadata + copy-on-boot stress path  |
 
 ## Files You Need to Know
 
@@ -246,6 +259,9 @@ python3 scripts/audit_bootloader.py \
 
 # Build ESP-IDF variants
 cd examples/esp_idf_ota && make clean && make all && make strip
+python3 gen_esp_idf_images.py slot --index 0 --output slot0.bin
+python3 gen_esp_idf_images.py slot --index 1 --output slot1.bin
+cd /Users/neil/mirala/ota-resilience
 
 # Quick differential batch for PR2205/2206/2214 exploratory profiles
 mkdir -p results/oss_validation/reports/2026-02-26-pr2205-2206-2214
@@ -336,6 +352,31 @@ python3 scripts/audit_bootloader.py \
   --renode-test /Users/neil/mirala/renode/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output results/oss_validation/reports/2026-02-27-esp-idf-deep/esp_idf_ota_upgrade_hash_bit_bounded.full.json
+
+# ESP-IDF copy-guard exploratory pair (non-differential in current model)
+mkdir -p results/oss_validation/reports/2026-02-27-esp-idf-copy-guard
+for p in \
+  esp_idf_ota_upgrade_copy_guard \
+  esp_idf_fault_no_crc_copy_guard; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --workers 4 \
+    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-remote-server-dir /tmp/renode-server \
+    --output "results/oss_validation/reports/2026-02-27-esp-idf-copy-guard/${p}.full.json"
+done
+
+# ESP-IDF CRC-guard differential pair (baseline vs no_crc)
+mkdir -p results/oss_validation/reports/2026-02-27-esp-idf-crc-guard
+for p in \
+  esp_idf_ota_crc_guard \
+  esp_idf_fault_no_crc_crc_guard; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-remote-server-dir /tmp/renode-server \
+    --output "results/oss_validation/reports/2026-02-27-esp-idf-crc-guard/${p}.full.json"
+done
 ```
 
 ## What Needs To Be Done
@@ -348,21 +389,23 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 
 **Current status (improved, still incomplete):**
 
-- `esp_idf_fault_no_abort`: now exercises copy-on-boot path (`~2049 writes / 2 erases` in quick calibration)
-- `esp_idf_fault_no_fallback`: now exercises copy-on-boot path (`~2052 writes / 3 erases`)
-- `esp_idf_fault_crc_covers_state`: pre-boot CRC seeds corrected for defect semantics and copy-on-boot enabled (`~2052 writes / 3 erases`)
-- `esp_idf_fault_single_sector`: rollback seed layout adjusted so the defect path is no longer stateless (`~3 writes / 1 erase`)
+- `esp_idf_fault_no_abort`, `esp_idf_fault_no_fallback`, and `esp_idf_fault_crc_covers_state` now exercise copy-on-boot write-heavy paths (~2k writes each), and `esp_idf_fault_single_sector` is no longer stateless.
+- Added `success_criteria.image_hash_slot` (slot-gated hash checks) plus hash normalization (profile image digests now pad/truncate to runtime slot data length).
+- Fixed synthetic-image masking by removing app-side VTOR rewrite in `gen_esp_idf_images.py`; observed `boot_slot` now tracks bootloader decisions.
+- Added two exploratory ESP pair sets:
+  - `copy_guard` pair: still non-differential at deep scale (`0/727` bricks for both baseline and no_crc).
+  - `crc_guard` pair: differential achieved for no_crc (`baseline 0/4` vs `no_crc 1/4`, plus no_crc control `no_boot/staging`).
 
 **Remaining gap:**
 
-- Higher write counts are now present in most defect profiles, but differential detectability vs the correct profile is still weak for several variants.
-- The strongest next step is pairwise differential tuning (correct vs defect) with explicit success criteria and fault windows targeted at copy verification and rollback transitions.
+- Differential evidence now exists for `no_crc`, but only in a narrow low-write CRC-guard scenario.
+- High-write copy-path differentials are still missing for `no_crc`, and other ESP defects remain mostly non-differential.
 
 **High-value next steps:**
 
-- Build differential profile pairs for each ESP defect (same scenario, same success criteria) and compare brick/failure signatures directly.
-- Add one ESP-specific metric beyond VTOR/hash (e.g., persistent otadata state expectation after reboot) so correctness bugs become observable.
-- Expand quick point selection around copy-path boundaries (early copy writes + verification writes) to avoid missing defect-specific windows.
+- Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
+- Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
+- Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
 
 ### 3. More Fault Types
 
@@ -443,11 +486,16 @@ Current workflow is direct-to-main (no PR required):
 
 11. **Bit-corruption deep chunks can tail badly**: In large parallel batches that include many `'b'` points, one worker can run much longer than the rest under default `max_step_limit=20000000`. For comparison experiments, lower step caps in profiles (or dedicated temp profiles) keep runs bounded.
 
+12. **Synthetic app code can mask boot-slot attribution**: If test images rewrite `VTOR` internally, reported `boot_slot` may reflect app behavior rather than bootloader decision. ESP images now preserve bootloader-selected `VTOR` to avoid this trap.
+
+13. **Heuristic reduction can hide tiny-profile failures**: For very small write counts (e.g., 3 writes), heuristic selection may skip a critical write. Use `fault_sweep.sweep_strategy: exhaustive` when you need every write point.
+
 ## Profile YAML Schema Quick Reference
 
 ```yaml
 schema_version: 1
 name: string
+skip_self_test: false # optional: true to exclude exploratory profiles
 description: string
 platform: platforms/cortex_m4_flash_fast.repl # or cortex_m0_nvm.repl
 bootloader:
@@ -468,12 +516,15 @@ pre_boot_state: # static flash writes before boot
 success_criteria:
   vtor_in_slot: exec # or staging, or any, or omit for "any boot = success"
   # pc_in_slot: exec    # optional
-  # image_hash: true    # optional: SHA-256 of exec slot vs expected
+  # image_hash: true    # optional: SHA-256 of exec slot
+  # expected_image: staging # optional: which profile image exec should match
+  # image_hash_slot: exec   # optional: only enforce image_hash when boot_slot matches
   # marker_address: 0x... # optional: app-written marker
   # marker_value: 0x...   # optional
 fault_sweep:
   mode: runtime
   evaluation_mode: execute # or state, or omit for auto
+  sweep_strategy: heuristic # or exhaustive
   max_writes: auto # or integer
   max_writes_cap: 200000
   run_duration: "2.0"

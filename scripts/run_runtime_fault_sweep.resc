@@ -52,6 +52,7 @@ $trace_file?=""
 $fault_types?="write"
 $fault_type_csv?=""
 $success_image_hash?="false"
+$success_image_hash_slot?=""
 $image_exec_sha256?=""
 $image_staging_sha256?=""
 $expected_exec_sha256?=""
@@ -127,6 +128,7 @@ success_marker_value = int(success_marker_value_raw, 0) if success_marker_value_
 
 # Image hash mode.
 success_image_hash = str(monitor.GetVariable('success_image_hash')).strip().lower() in ('1', 'true', 'yes')
+success_image_hash_slot = str(monitor.GetVariable('success_image_hash_slot')).strip()
 image_exec_sha256 = str(monitor.GetVariable('image_exec_sha256')).strip()
 image_staging_sha256 = str(monitor.GetVariable('image_staging_sha256')).strip()
 expected_exec_sha256 = str(monitor.GetVariable('expected_exec_sha256')).strip()
@@ -353,6 +355,12 @@ def compute_exec_slot_hash():
 
 def evaluate_boot_outcome(vtor_value, pc_value):
     # Shared boot outcome evaluation for all execution modes.
+    boot_slot = None
+    for sn, (s_lo, s_hi) in slot_ranges.items():
+        if s_lo <= vtor_value < s_hi:
+            boot_slot = sn
+            break
+
     vtor_ok = not bool(success_vtor_slot)
     if success_vtor_slot == 'any':
         # Any defined slot is acceptable.
@@ -370,21 +378,27 @@ def evaluate_boot_outcome(vtor_value, pc_value):
     hash_result = None
     actual_marker_val = 0
     if success_image_hash:
-        actual_hash = compute_exec_slot_hash()
-        if actual_hash == image_exec_sha256:
-            hash_result = 'exec_image'
-        elif actual_hash == image_staging_sha256:
-            hash_result = 'staging_image'
-        elif expected_exec_sha256 and actual_hash == expected_exec_sha256:
-            hash_result = 'expected_image'
+        enforce_hash = True
+        if success_image_hash_slot and success_image_hash_slot != 'any':
+            enforce_hash = (boot_slot == success_image_hash_slot)
+        if enforce_hash:
+            actual_hash = compute_exec_slot_hash()
+            if actual_hash == image_exec_sha256:
+                hash_result = 'exec_image'
+            elif actual_hash == image_staging_sha256:
+                hash_result = 'staging_image'
+            elif expected_exec_sha256 and actual_hash == expected_exec_sha256:
+                hash_result = 'expected_image'
+            else:
+                hash_result = 'unknown'
+            # Success = exec slot matches the expected post-operation hash.
+            if expected_exec_sha256:
+                marker_ok = (actual_hash == expected_exec_sha256)
+            else:
+                # No expected hash: any known image is success.
+                marker_ok = (hash_result != 'unknown')
         else:
-            hash_result = 'unknown'
-        # Success = exec slot matches the expected post-operation hash.
-        if expected_exec_sha256:
-            marker_ok = (actual_hash == expected_exec_sha256)
-        else:
-            # No expected hash: any known image is success.
-            marker_ok = (hash_result != 'unknown')
+            hash_result = 'skipped'
     elif success_marker_addr != 0:
         actual_marker_val = as_int(bus.ReadDoubleWord(success_marker_addr))
         marker_ok = (actual_marker_val == success_marker_value)
@@ -398,12 +412,6 @@ def evaluate_boot_outcome(vtor_value, pc_value):
     else:
         boot_outcome = 'no_boot'
 
-    boot_slot = None
-    for sn, (s_lo, s_hi) in slot_ranges.items():
-        if s_lo <= vtor_value < s_hi:
-            boot_slot = sn
-            break
-
     signals = {
         'vtor': '0x{0:08X}'.format(vtor_value),
         'vtor_ok': vtor_ok,
@@ -414,6 +422,8 @@ def evaluate_boot_outcome(vtor_value, pc_value):
     }
     if hash_result is not None:
         signals['image_hash_match'] = hash_result
+    if success_image_hash_slot:
+        signals['image_hash_slot'] = success_image_hash_slot
 
     return boot_outcome, boot_slot, signals
 

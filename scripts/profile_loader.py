@@ -89,7 +89,7 @@ class MemoryConfig:
 
 class SuccessCriteria:
     __slots__ = ("vtor_in_slot", "pc_in_slot", "marker_address", "marker_value",
-                 "image_hash", "expected_image")
+                 "image_hash", "expected_image", "image_hash_slot")
 
     def __init__(
         self,
@@ -99,6 +99,7 @@ class SuccessCriteria:
         marker_value: Optional[int] = None,
         image_hash: bool = False,
         expected_image: Optional[str] = None,
+        image_hash_slot: Optional[str] = None,
     ) -> None:
         self.vtor_in_slot = vtor_in_slot
         self.pc_in_slot = pc_in_slot
@@ -106,6 +107,7 @@ class SuccessCriteria:
         self.marker_value = marker_value
         self.image_hash = image_hash
         self.expected_image = expected_image
+        self.image_hash_slot = image_hash_slot
 
 
 class FaultSweepConfig:
@@ -376,6 +378,8 @@ class ProfileConfig:
         if sc.image_hash:
             import hashlib
             vars_list.append("SUCCESS_IMAGE_HASH:true")
+            if sc.image_hash_slot:
+                vars_list.append("SUCCESS_IMAGE_HASH_SLOT:{}".format(sc.image_hash_slot))
             page_size = 4096
             exec_slot = mem.slots.get("exec")
             data_size = (exec_slot.size - page_size) if exec_slot and exec_slot.size > page_size else None
@@ -385,9 +389,13 @@ class ProfileConfig:
                 try:
                     with open(resolved, "rb") as fh:
                         raw = fh.read()
-                    # Truncate to data_size if image is padded to full slot.
-                    if data_size and len(raw) >= data_size:
-                        raw = raw[:data_size]
+                    # Normalize to slot data length: truncate oversized images
+                    # and pad short images with erased flash bytes.
+                    if data_size:
+                        if len(raw) >= data_size:
+                            raw = raw[:data_size]
+                        else:
+                            raw = raw + (b"\xFF" * (data_size - len(raw)))
                     digest = hashlib.sha256(raw).hexdigest()
                     vars_list.append("IMAGE_{}_SHA256:{}".format(img_name.upper(), digest))
                     image_digests[img_name] = digest
@@ -512,6 +520,7 @@ def _parse_success_criteria(raw: Optional[Dict[str, Any]]) -> SuccessCriteria:
         marker_value=_parse_int(raw["marker_value"], "success_criteria.marker_value") if "marker_value" in raw else None,
         image_hash=bool(raw.get("image_hash", False)),
         expected_image=raw.get("expected_image"),
+        image_hash_slot=raw.get("image_hash_slot"),
     )
 
 
@@ -722,6 +731,7 @@ def main() -> int:
         "state_fuzzer_enabled": profile.state_fuzzer.enabled,
         "expect_should_find_issues": profile.expect.should_find_issues,
         "image_hash": profile.success_criteria.image_hash,
+        "image_hash_slot": profile.success_criteria.image_hash_slot,
         "update_trigger": profile.update_trigger.type if profile.update_trigger else None,
         "pre_boot_state_count": len(profile.pre_boot_state),
     }
