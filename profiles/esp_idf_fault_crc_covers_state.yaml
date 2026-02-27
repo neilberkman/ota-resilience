@@ -23,10 +23,14 @@ images:
 pre_boot_state:
   - { address: 0x000F8000, u32: 0x00000001 }
   - { address: 0x000F8018, u32: 0x00000002 }
-  - { address: 0x000F801C, u32: 0x4743989A }
+  # CRC seeded for this defect model: covers ota_seq+ota_state (8 bytes).
+  - { address: 0x000F801C, u32: 0x995C37EA }
   - { address: 0x000F9000, u32: 0x00000002 }
   - { address: 0x000F9018, u32: 0x00000000 }
-  - { address: 0x000F901C, u32: 0x55F63774 }
+  # CRC seeded for this defect model: covers ota_seq+ota_state (8 bytes).
+  - { address: 0x000F901C, u32: 0xBDDAF882 }
+  # Trigger one-shot copy-on-boot path (magic at UPDATE_REQ_ADDR).
+  - { address: 0x000FC040, u32: 0x55445021 }
 success_criteria: {}
 fault_sweep:
   mode: runtime

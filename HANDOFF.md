@@ -104,6 +104,15 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Broken and fixed still match at candidate comparison points (`0x5000`, `0x30000`) → no differential found.
    - Reports: `results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2.json` and per-run JSONs in `results/oss_validation/reports/2026-02-27-pr2206-geom-threshold-v2/`
 
+8. **ESP-IDF defect profile refresh (2026-02-27)**:
+   - Updated defect profiles to avoid stateless runs: enabled copy-on-boot trigger for `no_abort` and `no_fallback`, fixed defect-specific CRC seeds for `crc_covers_state`, and adjusted `single_sector` rollback seed layout.
+   - Post-patch quick calibrations:
+     - `esp_idf_fault_no_abort`: `2049 writes / 2 erases`
+     - `esp_idf_fault_no_fallback`: `2052 writes / 3 erases`
+     - `esp_idf_fault_crc_covers_state`: `2052 writes / 3 erases`
+     - `esp_idf_fault_single_sector`: `3 writes / 1 erase`
+   - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -116,7 +125,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
 | MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
 | MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
-| ESP-IDF OTA           | Model                    | 8 (3 baseline + 5 defect variants)                               | Clean-room otadata algorithm, too simple       |
+| ESP-IDF OTA           | Model                    | 8 (3 baseline + 5 defect variants)                               | Clean-room otadata + copy-on-boot stress path  |
 
 ## Files You Need to Know
 
@@ -164,13 +173,17 @@ All pre-built at `results/oss_validation/assets/*.elf`. Built via `scripts/boots
 
 Implemented in `NRF52NVMC.cs` and dispatched via the profile's `fault_types` list:
 
-| Profile Name        | Code  | Implemented            | How It Works                                                                                                                          |
-| ------------------- | ----- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `power_loss`        | `'w'` | Yes                    | Block the Nth write entirely. Flash snapshot has N-1 writes completed.                                                                |
-| `interrupted_erase` | `'e'` | Yes                    | Partial erase at Nth erase: first half 0xFF, second half untouched.                                                                   |
-| `bit_corruption`    | `'b'` | Yes                    | NOR flash physics: partially program the Nth write. ~50% of 1→0 bit transitions complete, rest stay at 1. Deterministic via LCG PRNG. |
-| `write_rejection`   | —     | No                     | Future: erase-before-write violation                                                                                                  |
-| `reset_at_time`     | —     | No                     | Future: arbitrary-time reset, not just at write boundary                                                                              |
+| Profile Name             | Code  | Implemented | How It Works                                                                                                                          |
+| ------------------------ | ----- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `power_loss`             | `'w'` | Yes        | Block the Nth write entirely. Flash snapshot has N-1 writes completed.                                                                |
+| `bit_corruption`         | `'b'` | Yes        | NOR flash physics: partially program the Nth write. ~50% of 1→0 bit transitions complete, rest stay at 1. Deterministic via LCG PRNG. |
+| `silent_write_failure`   | `'s'` | Yes        | Faulted write "succeeds" but stores deterministic all-`0xFFFFFFFF` or all-`0x00000000`.                                              |
+| `write_disturb`          | `'d'` | Yes        | Target word commits; adjacent words get unintended 1→0 flips (neighbor-cell disturb).                                                |
+| `wear_leveling_corruption` | `'l'` | Yes      | Target write commits, then deterministic page-local aging bit errors are injected.                                                    |
+| `interrupted_erase`      | `'e'` | Yes        | Partial erase at Nth erase: first half 0xFF, second half untouched.                                                                   |
+| `multi_sector_atomicity` | `'a'` | Yes        | Partial erase on target page plus neighboring-page damage (cross-sector inconsistency).                                               |
+| `write_rejection`        | —     | No         | Future: explicit erase-before-write rejection semantics.                                                                               |
+| `reset_at_time`          | —     | No         | Future: arbitrary-time reset, not just at write/erase boundaries.                                                                     |
 
 ### Bit Corruption Details (committed)
 
@@ -258,6 +271,21 @@ python3 scripts/sweep_pr2206_geometry_threshold.py \
   --min-payload 0x5000 --max-payload 0x30000 --quantum 0x1000 \
   --floor-payload 0x3000 \
   --max-step-limit 0x180000 --max-writes-cap 0x20000 --reuse-existing
+
+# ESP-IDF defect profile refresh quick batch
+mkdir -p results/oss_validation/reports/2026-02-27-esp-idf-refresh
+for p in \
+  esp_idf_fault_no_abort \
+  esp_idf_fault_no_fallback \
+  esp_idf_fault_crc_covers_state \
+  esp_idf_fault_single_sector; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-remote-server-dir /tmp/renode-server \
+    --output "results/oss_validation/reports/2026-02-27-esp-idf-refresh/${p}.quick.json"
+done
 ```
 
 ## What Needs To Be Done
@@ -268,38 +296,31 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 
 ### 2. Beef Up the ESP-IDF Model (HIGH PRIORITY)
 
-**The problem**: The ESP-IDF OTA model only does 3 flash writes and 1 erase during a boot. That's because it only updates the 32-byte otadata entry, and only 3 of those 8 words differ from erased state. This means:
+**Current status (improved, still incomplete):**
 
-- The 5 defect variants (`NO_CRC`, `SINGLE_SECTOR`, `NO_ABORT`, `NO_FALLBACK`, `CRC_COVERS_STATE`) all show `should_find_issues: false` — the fault model can't distinguish them from the correct implementation
-- Bit corruption produces identical results to power-loss because both slots always have valid firmware
-- The vulnerability window is too narrow for meaningful testing
+- `esp_idf_fault_no_abort`: now exercises copy-on-boot path (`~2049 writes / 2 erases` in quick calibration)
+- `esp_idf_fault_no_fallback`: now exercises copy-on-boot path (`~2052 writes / 3 erases`)
+- `esp_idf_fault_crc_covers_state`: pre-boot CRC seeds corrected for defect semantics and copy-on-boot enabled (`~2052 writes / 3 erases`)
+- `esp_idf_fault_single_sector`: rollback seed layout adjusted so the defect path is no longer stateless (`~3 writes / 1 erase`)
 
-**What the real ESP-IDF bootloader does that our model doesn't**:
+**Remaining gap:**
 
-- Image hash validation (reads entire slot, computes SHA-256)
-- Secure boot signature verification
-- Writes verification status to otadata after checking
-- Multiple state transitions across boot cycles
+- Higher write counts are now present in most defect profiles, but differential detectability vs the correct profile is still weak for several variants.
+- The strongest next step is pairwise differential tuning (correct vs defect) with explicit success criteria and fault windows targeted at copy verification and rollback transitions.
 
-**Possible approaches**:
+**High-value next steps:**
 
-- Add image copy phase (bootloader copies firmware from staging → exec before booting). Creates hundreds of writes. But this overlaps with naive_copy models.
-- Add image hash validation (CRC or SHA-256 check of the selected slot before booting, write "verified" flag). More writes + reads.
-- Add a multi-stage update simulation: erase target → write image → write header → update otadata. The "OTA agent" phase happens in-bootloader.
-- Best: make the bootloader actually DO the update (erase + copy + validate + commit), not just select a pre-staged slot. This is how some real bootloaders work (copy-on-boot pattern like MCUboot).
-
-**Goal**: The no-CRC defect should be DETECTABLE — bit corruption during hash/CRC writes should cause the bootloader to accept corrupted data without CRC, while the correct version rejects it.
+- Build differential profile pairs for each ESP defect (same scenario, same success criteria) and compare brick/failure signatures directly.
+- Add one ESP-specific metric beyond VTOR/hash (e.g., persistent otadata state expectation after reboot) so correctness bugs become observable.
+- Expand quick point selection around copy-path boundaries (early copy writes + verification writes) to avoid missing defect-specific windows.
 
 ### 3. More Fault Types
 
 User explicitly requested ("uh can we do all of this?!?!?"):
 
-- **Silent write failure**: Write appears to succeed but value is all-0xFF or all-0x00. Different from bit corruption (which partially programs). Would catch bootloaders that don't verify writes.
-- **Write disturb**: Writing one cell disturbs adjacent cells. Would catch bootloaders with insufficient wear-leveling or sector isolation.
-- **Multi-sector atomicity failures**: Fault during multi-sector operations where partial completion leaves inconsistent state across sectors.
-- **Wear leveling corruption**: NOR flash cells degrade after many erase cycles. Simulated via probabilistic bit errors on aged sectors.
-
-Implementation pattern: Add new values to `WriteFaultMode` in `NRF52NVMC.cs`, add profile schema `fault_types` values in `profile_loader.py`, add dispatch in `run_runtime_fault_sweep.resc`.
+- Implemented and wired end-to-end: `silent_write_failure`, `write_disturb`, `multi_sector_atomicity`, `wear_leveling_corruption` (plus existing `power_loss`, `bit_corruption`, `interrupted_erase`).
+- Remaining TODO fault types: `write_rejection`, `reset_at_time`.
+- Practical next step is profile coverage: add targeted defect profiles that specifically benefit from each new mode, then validate with quick differential runs.
 
 ### 4. Additional Real-World Bootloader Differentials
 

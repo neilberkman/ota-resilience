@@ -2,8 +2,9 @@ schema_version: 1
 name: esp_idf_fault_single_sector
 description: >
   ESP-IDF OTA model reading only otadata sector 0 (no redundancy).
-  Rollback scenario: entry 1 is PENDING_VERIFY but invisible to bootloader.
-  No rollback possible — unconfirmed image boots repeatedly.
+  Rollback scenario: entry 0 is PENDING_VERIFY and must be ABORTED, while
+  entry 1 is VALID. Correct bootloader reads both sectors and rolls back to
+  entry 1. Defect only reads sector 0, so it loses the valid fallback entry.
 
 platform: platforms/cortex_m4_flash_fast.repl
 bootloader:
@@ -18,17 +19,17 @@ memory:
 images:
   exec: examples/esp_idf_ota/slot0.bin
   staging: examples/esp_idf_ota/slot1.bin
-# Rollback scenario: entry 0 = seq 1/VALID, entry 1 = seq 2/PENDING_VERIFY
+# Rollback scenario: entry 0 = seq 2/PENDING_VERIFY, entry 1 = seq 1/VALID
 pre_boot_state:
-  - { address: 0x000F8000, u32: 0x00000001 }
-  - { address: 0x000F8018, u32: 0x00000002 }
-  - { address: 0x000F801C, u32: 0x4743989A }
-  - { address: 0x000F9000, u32: 0x00000002 }
-  - { address: 0x000F9018, u32: 0x00000001 }
-  - { address: 0x000F901C, u32: 0x55F63774 }
+  - { address: 0x000F8000, u32: 0x00000002 }
+  - { address: 0x000F8018, u32: 0x00000001 }
+  - { address: 0x000F801C, u32: 0x55F63774 }
+  - { address: 0x000F9000, u32: 0x00000001 }
+  - { address: 0x000F9018, u32: 0x00000002 }
+  - { address: 0x000F901C, u32: 0x4743989A }
 success_criteria:
-  # With defect: boots slot 0 (only sees entry 0). Correct: boots slot 0 after aborting entry 1.
-  # Both boot exec, but the defect means rollback is just luck (only entry 0 visible).
+  # Expected correct behavior: rollback to entry 1 (slot 0 / exec) after
+  # aborting entry 0.
   vtor_in_slot: exec
   marker_address: 0x000FC000
   marker_value: 0x00000000

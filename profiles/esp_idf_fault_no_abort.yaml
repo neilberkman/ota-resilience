@@ -28,6 +28,8 @@ pre_boot_state:
   - { address: 0x000F9000, u32: 0x00000002 }
   - { address: 0x000F9018, u32: 0x00000001 }
   - { address: 0x000F901C, u32: 0x55F63774 }
+  # Trigger one-shot copy-on-boot path (magic at UPDATE_REQ_ADDR).
+  - { address: 0x000FC040, u32: 0x55445021 }
 success_criteria:
   # Correct bootloader rolls back to exec (slot 0).
   # Defective bootloader boots staging (slot 1) — the unconfirmed image.
@@ -43,5 +45,5 @@ fault_sweep:
   fault_types: [power_loss, interrupted_erase]
 expect:
   # Defect: no rollback. Control boots staging (wrong — should be exec).
-  # No writes → no fault points → no bricks. The bug is in the control outcome.
+  # With copy trigger enabled this now exercises write/erase-heavy paths.
   should_find_issues: false

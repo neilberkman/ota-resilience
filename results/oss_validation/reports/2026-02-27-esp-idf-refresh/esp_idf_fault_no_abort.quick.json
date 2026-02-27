@@ -1,0 +1,165 @@
+{
+  "calibrated_erases": 2,
+  "calibrated_writes": 2049,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 scripts/audit_bootloader.py --profile profiles/esp_idf_fault_no_abort.yaml --quick --renode-test /Users/neil/mirala/renode/renode-test --renode-remote-server-dir /tmp/renode-server --output /tmp/esp_idf_fault_no_abort.quick.postpatch.json",
+    "run_utc": "2026-02-27T03:49:46Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": false
+  },
+  "fault_points_tested": 5,
+  "git": {
+    "commit": "bcb0075570b7d5845d3e6e7a2dcd9071702dbd4f",
+    "dirty": "true",
+    "short_commit": "bcb0075"
+  },
+  "heuristic": null,
+  "profile": "esp_idf_fault_no_abort",
+  "profile_path": "profiles/esp_idf_fault_no_abort.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 0,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x000FC040",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "phase1_ms": 15,
+        "phase2_ms": 248,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 1024,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x0000CFFC",
+      "fault_at": 1024,
+      "fault_injected": true,
+      "fault_requested": 1024,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "phase1_ms": 26,
+        "phase2_ms": 86,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 2048,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x0000DFFC",
+      "fault_at": 2048,
+      "fault_injected": true,
+      "fault_requested": 2048,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "phase1_ms": 21,
+        "phase2_ms": 107,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 1,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x00000000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 2,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x00000000",
+      "fault_at": 1,
+      "fault_injected": true,
+      "fault_requested": 1,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    },
+    {
+      "actual_writes": 2049,
+      "boot_outcome": "success",
+      "boot_slot": "staging",
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "pc": "0x00080066",
+        "pc_ok": true,
+        "vtor": "0x00080000",
+        "vtor_ok": true
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 0.0,
+      "bricks": 0,
+      "control": {
+        "boot_outcome": "success",
+        "boot_slot": "staging"
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {},
+      "recoveries": 5,
+      "total_fault_points": 5
+    }
+  },
+  "verdict": "PASS"
+}
