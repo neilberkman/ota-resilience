@@ -120,6 +120,8 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `esp_idf_fault_no_fallback`: `0/365` bricks
      - `esp_idf_fault_crc_covers_state`: `0/365` bricks
      - `esp_idf_fault_no_abort`: `0/359` bricks
+   - `esp_idf_fault_no_crc` full run (includes bit-corruption points) is high-signal: `719/727` wrong-image failures (`brick_rate ≈ 98.9%`).
+   - Matching baseline with the same `image_hash + bit_corruption` success mode still needs a bounded-step rerun (default `max_step_limit=20000000` caused a very long tail on one worker).
    - Deep reports: `results/oss_validation/reports/2026-02-27-esp-idf-deep/*.full.json`
    - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
 
@@ -303,7 +305,8 @@ for p in \
   esp_idf_ota_upgrade \
   esp_idf_fault_no_fallback \
   esp_idf_fault_crc_covers_state \
-  esp_idf_fault_no_abort; do
+  esp_idf_fault_no_abort \
+  esp_idf_fault_no_crc; do
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
     --workers 4 \
@@ -398,7 +401,7 @@ Current workflow is direct-to-main (no PR required):
 
 1. **TRACE REPLAY FALSE POSITIVES**: Trace replay only replays writes. If you add a new fault type that depends on peripheral state (like bit corruption, or erase behavior), it MUST use full execute mode, not trace replay. We learned this the hard way with erase trace — 76 false positives because erases weren't replayed.
 
-2. **NVMC counts CHANGED words, not all writes**: Writing 0xFF to erased flash doesn't count as a write. The diff-based counting means `TotalWordWrites` only increments for words that actually changed. This is why the ESP-IDF model shows 3 writes instead of 8.
+2. **NVMC counts CHANGED words, not all writes**: Writing 0xFF to erased flash doesn't count as a write. The diff-based counting means `TotalWordWrites` only increments for words that actually changed. Otadata-only ESP-IDF scenarios therefore sit around `3 writes / 1 erase` unless copy-on-boot stress is enabled.
 
 3. **`emulation RunFor` NOT `cpu.Step()`**: RunFor is ~350x faster. Never use Step for anything but single-instruction debugging.
 
@@ -415,6 +418,8 @@ Current workflow is direct-to-main (no PR required):
 9. **Geometry bugs need geometry triggers**: PR2205/2206/2214 are not guaranteed to reproduce on default nRF52840 partition/sector geometry. Mixed-sector layouts and trailer-at-boundary cases are often required.
 
 10. **Threshold sweeps are expensive unless tuned**: `scripts/sweep_pr2206_geometry_threshold.py` should usually run with lower `--max-step-limit` plus `--reuse-existing` to avoid rerunning completed points. Generated `slot1_payload_*.bin` files are intermediate and can be dropped once JSON reports are captured.
+
+11. **Bit-corruption deep chunks can tail badly**: In large parallel batches that include many `'b'` points, one worker can run much longer than the rest under default `max_step_limit=20000000`. For comparison experiments, lower step caps in profiles (or dedicated temp profiles) keep runs bounded.
 
 ## Profile YAML Schema Quick Reference
 
