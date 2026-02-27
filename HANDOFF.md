@@ -159,6 +159,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - Emit per-case metrics (`case_metrics`) including failure/brick/wrong-image rates.
      - Rank baseline-vs-defect regressions (`defect_deltas`) by delta score.
      - Classify OtaData drift as `benign_state_transition` vs `suspicious_*` and score defect deltas using suspicious drift only.
+     - Down-weight OtaData-only clusters in anomaly ranking so control mismatches and boot-outcome anomalies surface first.
      - Detect and cluster `otadata_drift` anomalies from runtime signals.
    - Upgraded `scripts/run_runtime_fault_sweep.resc` to emit post-boot OtaData signals:
      - entry0/entry1 seq/state/crc words

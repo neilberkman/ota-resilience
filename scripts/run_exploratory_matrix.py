@@ -700,11 +700,21 @@ def build_defect_deltas(
         else:
             direction = "same"
 
+        behavior_regression = (
+            control_delta > 0
+            or failure_delta > 0.0
+            or brick_delta > 0.0
+            or wrong_image_delta > 0.0
+        )
+        otadata_score_term = (
+            max(otadata_suspicious_drift_delta, 0.0) if behavior_regression else 0.0
+        )
+
         delta_score = (
             4.0 * max(float(control_delta), 0.0)
             + 3.0 * max(brick_delta, 0.0)
             + 2.0 * max(failure_delta, 0.0)
-            + 1.5 * max(otadata_suspicious_drift_delta, 0.0)
+            + 1.5 * otadata_score_term
             + 1.0 * max(wrong_image_delta, 0.0)
             + 0.1 * max(float(anomaly_points_delta), 0.0)
         )
@@ -963,7 +973,15 @@ def extract_anomalies(
         novelty = 1.0 / float(max(profile_count, 1))
         reproducibility = float(case_count)
         severity = float(entry["severity"])
-        score = severity * reproducibility * novelty * math.log1p(occurrence_count)
+        kind = str(entry.get("kind", ""))
+        kind_weight = 0.25 if kind == "otadata_drift" else 1.0
+        score = (
+            severity
+            * reproducibility
+            * novelty
+            * math.log1p(occurrence_count)
+            * kind_weight
+        )
         cluster_rows.append(
             {
                 "kind": entry["kind"],

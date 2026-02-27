@@ -804,7 +804,7 @@
         "upgrade",
         "upgrade_copy_guard"
       ],
-      "score": 22.665707,
+      "score": 5.666427,
       "severity": 2,
       "signature": {
         "drift_class": "suspicious_crc",
@@ -858,7 +858,7 @@
         "upgrade",
         "upgrade_copy_guard"
       ],
-      "score": 22.665707,
+      "score": 5.666427,
       "severity": 2,
       "signature": {
         "drift_class": "suspicious_seq",
@@ -910,7 +910,7 @@
         "upgrade",
         "upgrade_copy_guard"
       ],
-      "score": 18.956351,
+      "score": 4.739088,
       "severity": 2,
       "signature": {
         "drift_class": "suspicious_crc",
@@ -1396,7 +1396,7 @@
       "scenario_tag": "upgrade_copy_guard"
     }
   ],
-  "generated_at_utc": "2026-02-27T165132Z",
+  "generated_at_utc": "2026-02-27T171034Z",
   "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2",
   "repo_root": "/Users/neil/mirala/ota-resilience",
   "runs": [

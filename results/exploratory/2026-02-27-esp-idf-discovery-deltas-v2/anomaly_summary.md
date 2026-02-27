@@ -1,6 +1,6 @@
 # Exploratory Matrix Summary
 
-- Generated: `2026-02-27T165132Z`
+- Generated: `2026-02-27T171034Z`
 - Output dir: `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2`
 - Cases planned: `16`
 - Cases with report: `16`
@@ -15,9 +15,9 @@
 
 | Rank | Score | Kind | Signature | Occurrences | Cases | Profiles |
 | --- | ---: | --- | --- | ---: | ---: | ---: |
-| 1 | 22.666 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "w", "phase": "late"}` | 16 | 16 | 4 |
-| 2 | 22.666 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "e", "phase": "late"}` | 16 | 16 | 4 |
-| 3 | 18.956 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "b", "phase": "late"}` | 14 | 14 | 4 |
+| 1 | 5.666 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "w", "phase": "late"}` | 16 | 16 | 4 |
+| 2 | 5.666 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "e", "phase": "late"}` | 16 | 16 | 4 |
+| 3 | 4.739 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "b", "phase": "late"}` | 14 | 14 | 4 |
 | 4 | 4.394 | fault_anomaly | `{"fault_type": "w", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
 | 5 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
 | 6 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
