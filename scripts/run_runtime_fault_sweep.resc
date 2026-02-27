@@ -168,11 +168,83 @@ slot_ranges = {
 # Total words in the copy (for state mode).
 total_copy_writes = slot_exec_size // write_granularity
 
+# ESP-IDF otadata entry bases (used for post-boot state signals).
+OTADATA_ENTRY0_BASE = 0x000F8000
+OTADATA_ENTRY1_BASE = 0x000F9000
+OTADATA_SEQ_OFF = 0x00
+OTADATA_STATE_OFF = 0x18
+OTADATA_CRC_OFF = 0x1C
+
+OTADATA_STATE_NAMES = {
+    0x00000000: 'NEW',
+    0x00000001: 'PENDING_VERIFY',
+    0x00000002: 'VALID',
+    0x00000003: 'INVALID',
+    0x00000004: 'ABORTED',
+    0xFFFFFFFF: 'UNDEFINED',
+}
+
 def as_int(value):
     try:
         return int(value)
     except Exception:
         return int(str(value), 0)
+
+def fmt_u32(value):
+    return '0x{0:08X}'.format(as_int(value) & 0xFFFFFFFF)
+
+def read_otadata_entry(base_addr):
+    seq = as_int(bus.ReadDoubleWord(base_addr + OTADATA_SEQ_OFF))
+    state_raw = as_int(bus.ReadDoubleWord(base_addr + OTADATA_STATE_OFF))
+    crc_raw = as_int(bus.ReadDoubleWord(base_addr + OTADATA_CRC_OFF))
+    state_name = OTADATA_STATE_NAMES.get(state_raw, 'UNKNOWN')
+    return {
+        'seq_raw': seq & 0xFFFFFFFF,
+        'state_raw': state_raw & 0xFFFFFFFF,
+        'state_name': state_name,
+        'crc_raw': crc_raw & 0xFFFFFFFF,
+    }
+
+def select_otadata_active_entry(entry0, entry1):
+    # Mirrors ESP-IDF's "higher seq wins" behavior for observability.
+    seq0 = entry0['seq_raw']
+    seq1 = entry1['seq_raw']
+    if seq0 == seq1:
+        return 'tie'
+    return 'entry0' if seq0 > seq1 else 'entry1'
+
+def collect_otadata_signals():
+    # Best-effort only; some profiles may not model ESP-IDF otadata.
+    try:
+        e0 = read_otadata_entry(OTADATA_ENTRY0_BASE)
+        e1 = read_otadata_entry(OTADATA_ENTRY1_BASE)
+    except Exception:
+        return {
+            'otadata_available': False,
+        }
+
+    digest = '{0}|{1}'.format(
+        '{:08X}:{:08X}:{:08X}'.format(
+            e0['seq_raw'], e0['state_raw'], e0['crc_raw']
+        ),
+        '{:08X}:{:08X}:{:08X}'.format(
+            e1['seq_raw'], e1['state_raw'], e1['crc_raw']
+        ),
+    )
+
+    return {
+        'otadata_available': True,
+        'otadata_active_entry': select_otadata_active_entry(e0, e1),
+        'otadata_digest': digest,
+        'otadata0_seq': fmt_u32(e0['seq_raw']),
+        'otadata0_state': fmt_u32(e0['state_raw']),
+        'otadata0_state_name': e0['state_name'],
+        'otadata0_crc': fmt_u32(e0['crc_raw']),
+        'otadata1_seq': fmt_u32(e1['seq_raw']),
+        'otadata1_state': fmt_u32(e1['state_raw']),
+        'otadata1_state_name': e1['state_name'],
+        'otadata1_crc': fmt_u32(e1['crc_raw']),
+    }
 
 # ---------------------------------------------------------------------------
 # Write tracking abstraction: slow path (NVMemory) vs fast path (NVMC).
@@ -424,6 +496,7 @@ def evaluate_boot_outcome(vtor_value, pc_value):
         signals['image_hash_match'] = hash_result
     if success_image_hash_slot:
         signals['image_hash_slot'] = success_image_hash_slot
+    signals.update(collect_otadata_signals())
 
     return boot_outcome, boot_slot, signals
 

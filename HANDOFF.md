@@ -153,6 +153,22 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `results/exploratory/2026-02-27-esp-idf-discovery-v1/`
      - `results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1/`
 
+11. **Exploratory matrix analyzer v2 (2026-02-27, latest batch)**:
+   - Upgraded `scripts/run_exploratory_matrix.py` to:
+     - Use coarser cluster signatures (drop over-specific `boot_slot` / `image_hash_match` keys from primary cluster identity).
+     - Emit per-case metrics (`case_metrics`) including failure/brick/wrong-image rates.
+     - Rank baseline-vs-defect regressions (`defect_deltas`) by delta score.
+     - Detect and cluster `otadata_drift` anomalies from runtime signals.
+   - Upgraded `scripts/run_runtime_fault_sweep.resc` to emit post-boot OtaData signals:
+     - entry0/entry1 seq/state/crc words
+     - decoded state names
+     - active-entry guess and compact `otadata_digest`
+   - Fresh matrix run (16 cases, baseline+no_crc pairs) now reports:
+     - `8` clusters (including OtaData drift clusters)
+     - `8` defect delta comparisons, with `2` ranked regressions (`no_crc` vs baseline in `criteria=profile`)
+   - Artifacts:
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -242,8 +258,8 @@ Bit corruption and erase faults are forced through full execute mode (not trace 
 ### Prerequisites
 
 - Renode: binary at `/Users/neil/.local/bin/renode`
-- renode-test: `/Users/neil/mirala/renode/renode-test`
-- Server dir: `/tmp/renode-server` with `Renode.exe` symlink + `build_type` file
+- renode-test: `/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test`
+- Server dir (`/tmp/renode-server`) is only needed when using source-tree `renode-test` wrappers that expect `Renode.exe` in a build output directory.
 - ARM toolchain: `~/tools/gcc-arm-none-eabi-8-2018-q4-major/bin/`
 - Python 3.x with PyYAML
 
@@ -252,7 +268,7 @@ Bit corruption and erase faults are forced through full execute mode (not trace 
 ```bash
 # Self-test (all 45 profiles, ~45 min with --quick)
 python3 scripts/self_test.py \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --quick
 
@@ -260,7 +276,7 @@ python3 scripts/self_test.py \
 python3 scripts/audit_bootloader.py \
   --profile profiles/mcuboot_head_upgrade.yaml \
   --quick \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output /tmp/result.json
 
@@ -268,7 +284,7 @@ python3 scripts/audit_bootloader.py \
 python3 scripts/audit_bootloader.py \
   --profile profiles/mcuboot_pr2109_scratch_broken.yaml \
   --workers 4 \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output /tmp/result.json
 
@@ -287,7 +303,7 @@ for p in \
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
     --quick \
-    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-26-pr2205-2206-2214/${p}.quick.json"
 done
@@ -326,7 +342,7 @@ for p in \
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
     --quick \
-    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-refresh/${p}.quick.json"
 done
@@ -342,7 +358,7 @@ for p in \
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
     --workers 4 \
-    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-deep/${p}.full.json"
 done
@@ -364,7 +380,7 @@ PY
 python3 scripts/audit_bootloader.py \
   --profile /tmp/esp_idf_ota_upgrade_hash_bit_bounded.yaml \
   --workers 4 \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output results/oss_validation/reports/2026-02-27-esp-idf-deep/esp_idf_ota_upgrade_hash_bit_bounded.full.json
 
@@ -376,7 +392,7 @@ for p in \
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
     --workers 4 \
-    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-copy-guard/${p}.full.json"
 done
@@ -388,7 +404,7 @@ for p in \
   esp_idf_fault_no_crc_crc_guard; do
   python3 scripts/audit_bootloader.py \
     --profile "profiles/${p}.yaml" \
-    --renode-test /Users/neil/mirala/renode/renode-test \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-crc-guard/${p}.full.json"
 done
@@ -396,7 +412,7 @@ done
 # Exploratory matrix (baseline-only discovery lane)
 python3 scripts/run_exploratory_matrix.py \
   --quick \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-v1
 
@@ -405,9 +421,23 @@ python3 scripts/run_exploratory_matrix.py \
   --quick \
   --include-defect-profiles \
   --max-cases 24 \
-  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --renode-remote-server-dir /tmp/renode-server \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-with-defects-v1
+
+# Exploratory matrix analyzer v2 (baseline+defect delta ranking + OtaData drift)
+python3 scripts/run_exploratory_matrix.py \
+  --profile profiles/esp_idf_ota_upgrade.yaml \
+  --profile profiles/esp_idf_fault_no_crc.yaml \
+  --profile profiles/esp_idf_ota_upgrade_copy_guard.yaml \
+  --profile profiles/esp_idf_fault_no_crc_copy_guard.yaml \
+  --fault-preset profile \
+  --fault-preset write_erase_bit \
+  --criteria-preset profile \
+  --criteria-preset image_hash_exec \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2
 ```
 
 ## What Needs To Be Done
@@ -437,7 +467,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
 - Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
-- Expand `run_exploratory_matrix.py` clustering so signatures are grouped across profile families (reduce over-specific keys) and include baseline-vs-defect deltas in ranking.
+- Refine OtaData drift scoring so expected state transitions are separated from suspicious drift (reduce benign drift noise in discovery ranking).
 
 ### 3. More Fault Types
 
@@ -506,7 +536,7 @@ Current workflow is direct-to-main (no PR required):
 
 5. **ELF binaries contain build paths in DWARF**: Always strip before committing to the public repo. `arm-none-eabi-strip` or `objcopy --strip-debug`.
 
-6. **Renode-test setup**: Needs `/tmp/renode-server/Renode.exe` (symlink to actual binary) and `/tmp/renode-server/build_type` (contains "none"). Without these, renode-test fails silently.
+6. **Renode-test setup mismatch**: Source-tree `renode-test` wrappers can fail with `Robot framework remote server binary not found .../output/bin/Release/Renode.exe` unless that build output exists. The packaged path (`/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test`) works out of the box in this workspace.
 
 7. **vtor_in_slot: any**: Committed feature. Means "boot to ANY defined slot = success". Useful for bootloaders with graceful fallback where either slot is acceptable.
 

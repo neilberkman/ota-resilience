@@ -18,6 +18,7 @@ import math
 import os
 import subprocess
 import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -29,6 +30,16 @@ FAULT_PRESETS = ("profile", "write_erase", "write_erase_bit")
 CRITERIA_PRESETS = ("profile", "vtor_any", "image_hash_exec")
 ERASE_FAULT_TYPES = {"interrupted_erase", "multi_sector_atomicity"}
 HARD_OUTCOMES = {"no_boot", "hard_fault"}
+KNOWN_ESP_DEFECTS = (
+    "crc_covers_state",
+    "single_sector",
+    "no_fallback",
+    "no_abort",
+    "no_crc",
+)
+SCENARIO_TAG_ALIASES = {
+    "copy_guard": "upgrade_copy_guard",
+}
 
 
 @dataclass
@@ -36,6 +47,9 @@ class MatrixCase:
     case_id: str
     base_profile_path: Path
     base_profile_name: str
+    base_role: str
+    defect_kind: str
+    scenario_tag: str
     variant_profile_path: Path
     report_path: Path
     fault_preset: str
@@ -206,6 +220,31 @@ def sanitize_name(s: str) -> str:
     return "".join(out)
 
 
+def classify_profile_name(profile_name: str) -> Tuple[str, str, str]:
+    if profile_name.startswith("esp_idf_ota_"):
+        scenario = profile_name[len("esp_idf_ota_") :] or "upgrade"
+        return "baseline", "", scenario
+
+    if profile_name.startswith("esp_idf_fault_"):
+        rest = profile_name[len("esp_idf_fault_") :]
+        for defect in sorted(KNOWN_ESP_DEFECTS, key=len, reverse=True):
+            if rest == defect:
+                return "defect", defect, "upgrade"
+            prefix = defect + "_"
+            if rest.startswith(prefix):
+                scenario = rest[len(prefix) :] or "upgrade"
+                scenario = SCENARIO_TAG_ALIASES.get(scenario, scenario)
+                return "defect", defect, scenario
+        # Fallback parsing for unexpected defect name shapes.
+        if "_" in rest:
+            defect, scenario = rest.split("_", 1)
+            scenario = SCENARIO_TAG_ALIASES.get(scenario, scenario)
+            return "defect", defect, scenario
+        return "defect", rest, "upgrade"
+
+    return "other", "", profile_name
+
+
 def apply_fault_preset(
     profile_doc: Dict[str, Any],
     preset: str,
@@ -267,6 +306,7 @@ def build_matrix_cases(
     for base_path in base_profiles:
         base_doc = load_yaml(base_path)
         base_name = str(base_doc.get("name", base_path.stem))
+        base_role, defect_kind, scenario_tag = classify_profile_name(base_name)
         for fp in fault_presets:
             for cp in criteria_presets:
                 variant = copy.deepcopy(base_doc)
@@ -285,6 +325,9 @@ def build_matrix_cases(
                         case_id=case_id,
                         base_profile_path=base_path,
                         base_profile_name=base_name,
+                        base_role=base_role,
+                        defect_kind=defect_kind,
+                        scenario_tag=scenario_tag,
                         variant_profile_path=variant_path,
                         report_path=report_path,
                         fault_preset=fp,
@@ -387,12 +430,253 @@ def severity_for_outcome(outcome: str, control_mismatch: bool) -> int:
     return 1
 
 
+def _as_signal_token(value: Any, fallback: str = "na") -> str:
+    if value is None:
+        return fallback
+    text = str(value).strip()
+    return text if text else fallback
+
+
+def _sorted_counter(counter: Counter) -> Dict[str, int]:
+    return {
+        key: int(counter[key])
+        for key, _ in sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))
+    }
+
+
+def _otadata_digest(signals: Dict[str, Any]) -> str:
+    digest = _as_signal_token(signals.get("otadata_digest"), "")
+    if digest:
+        return digest
+    parts: List[str] = []
+    for idx in (0, 1):
+        seq = _as_signal_token(signals.get("otadata{}_seq".format(idx)), "")
+        state = _as_signal_token(signals.get("otadata{}_state".format(idx)), "")
+        crc = _as_signal_token(signals.get("otadata{}_crc".format(idx)), "")
+        if not (seq or state or crc):
+            continue
+        parts.append("{}:{}:{}".format(seq, state, crc))
+    return "|".join(parts)
+
+
+def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str, Any]:
+    summary = report.get("summary", {})
+    sweep_summary = summary.get("runtime_sweep", {})
+    if not isinstance(sweep_summary, dict):
+        sweep_summary = {}
+    control_summary = sweep_summary.get("control", {})
+    if not isinstance(control_summary, dict):
+        control_summary = {}
+
+    control_outcome = _as_signal_token(control_summary.get("boot_outcome"), "unknown")
+    control_slot = _as_signal_token(control_summary.get("boot_slot"), "none")
+    expected_control = case.expected_control_outcome
+    control_mismatch = control_outcome != expected_control
+
+    points = report.get("runtime_sweep_results", [])
+    if not isinstance(points, list):
+        points = []
+
+    control_signals: Dict[str, Any] = {}
+    for p in points:
+        if isinstance(p, dict) and p.get("is_control", False):
+            maybe_signals = p.get("signals", {})
+            if isinstance(maybe_signals, dict):
+                control_signals = maybe_signals
+            break
+    control_otadata = _otadata_digest(control_signals)
+
+    fault_points_total = 0
+    anomalous_points = 0
+    hard_failure_points = 0
+    wrong_image_points = 0
+    otadata_drift_points = 0
+    outcomes = Counter()
+
+    for p in points:
+        if not isinstance(p, dict):
+            continue
+        if p.get("is_control", False):
+            continue
+        if not p.get("fault_injected", False):
+            continue
+
+        fault_points_total += 1
+        outcome = _as_signal_token(p.get("boot_outcome"), "unknown")
+        outcomes[outcome] += 1
+
+        point_signals = p.get("signals", {})
+        if not isinstance(point_signals, dict):
+            point_signals = {}
+        point_otadata = _otadata_digest(point_signals)
+        if control_otadata and point_otadata and point_otadata != control_otadata:
+            otadata_drift_points += 1
+
+        if outcome != "success":
+            anomalous_points += 1
+            if outcome in HARD_OUTCOMES:
+                hard_failure_points += 1
+            if outcome == "wrong_image":
+                wrong_image_points += 1
+
+    denom = float(max(fault_points_total, 1))
+    return {
+        "case_id": case.case_id,
+        "base_profile_name": case.base_profile_name,
+        "base_role": case.base_role,
+        "defect_kind": case.defect_kind,
+        "scenario_tag": case.scenario_tag,
+        "fault_preset": case.fault_preset,
+        "criteria_preset": case.criteria_preset,
+        "expected_control_outcome": expected_control,
+        "control_outcome": control_outcome,
+        "control_slot": control_slot,
+        "control_mismatch": control_mismatch,
+        "fault_points_total": fault_points_total,
+        "anomalous_points": anomalous_points,
+        "hard_failure_points": hard_failure_points,
+        "wrong_image_points": wrong_image_points,
+        "otadata_drift_points": otadata_drift_points,
+        "failure_rate": round(float(anomalous_points) / denom, 6),
+        "brick_rate": round(float(hard_failure_points) / denom, 6),
+        "wrong_image_rate": round(float(wrong_image_points) / denom, 6),
+        "otadata_drift_rate": round(float(otadata_drift_points) / denom, 6),
+        "control_otadata_digest": control_otadata,
+        "outcome_counts": dict(sorted(outcomes.items())),
+    }
+
+
+def _delta(a: Dict[str, Any], b: Dict[str, Any], key: str) -> float:
+    return float(a.get(key, 0.0) or 0.0) - float(b.get(key, 0.0) or 0.0)
+
+
+def build_defect_deltas(
+    cases: Sequence[MatrixCase],
+    case_metrics_by_id: Dict[str, Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    baseline_by_key: Dict[Tuple[str, str, str], List[str]] = {}
+    for c in cases:
+        if c.base_role != "baseline":
+            continue
+        key = (c.scenario_tag, c.fault_preset, c.criteria_preset)
+        baseline_by_key.setdefault(key, []).append(c.case_id)
+
+    deltas: List[Dict[str, Any]] = []
+    for c in cases:
+        if c.base_role != "defect":
+            continue
+        key = (c.scenario_tag, c.fault_preset, c.criteria_preset)
+        baseline_ids = sorted(baseline_by_key.get(key, []))
+        if not baseline_ids:
+            continue
+        baseline_case_id = baseline_ids[0]
+        defect_metrics = case_metrics_by_id.get(c.case_id)
+        baseline_metrics = case_metrics_by_id.get(baseline_case_id)
+        if defect_metrics is None or baseline_metrics is None:
+            continue
+
+        control_delta = int(bool(defect_metrics.get("control_mismatch"))) - int(
+            bool(baseline_metrics.get("control_mismatch"))
+        )
+        failure_delta = _delta(defect_metrics, baseline_metrics, "failure_rate")
+        brick_delta = _delta(defect_metrics, baseline_metrics, "brick_rate")
+        wrong_image_delta = _delta(defect_metrics, baseline_metrics, "wrong_image_rate")
+        otadata_drift_delta = _delta(
+            defect_metrics, baseline_metrics, "otadata_drift_rate"
+        )
+        anomaly_points_delta = int(defect_metrics.get("anomalous_points", 0)) - int(
+            baseline_metrics.get("anomalous_points", 0)
+        )
+
+        positive_signal = max(
+            float(max(control_delta, 0)),
+            max(failure_delta, 0.0),
+            max(brick_delta, 0.0),
+            max(wrong_image_delta, 0.0),
+            max(otadata_drift_delta, 0.0),
+        )
+        negative_signal = min(
+            float(min(control_delta, 0)),
+            min(failure_delta, 0.0),
+            min(brick_delta, 0.0),
+            min(wrong_image_delta, 0.0),
+            min(otadata_drift_delta, 0.0),
+        )
+        if positive_signal > 0:
+            direction = "worse"
+        elif negative_signal < 0:
+            direction = "better"
+        else:
+            direction = "same"
+
+        delta_score = (
+            4.0 * max(float(control_delta), 0.0)
+            + 3.0 * max(brick_delta, 0.0)
+            + 2.0 * max(failure_delta, 0.0)
+            + 1.5 * max(otadata_drift_delta, 0.0)
+            + 1.0 * max(wrong_image_delta, 0.0)
+            + 0.1 * max(float(anomaly_points_delta), 0.0)
+        )
+
+        deltas.append(
+            {
+                "defect_case_id": c.case_id,
+                "baseline_case_id": baseline_case_id,
+                "defect_kind": c.defect_kind or "unknown",
+                "scenario_tag": c.scenario_tag,
+                "fault_preset": c.fault_preset,
+                "criteria_preset": c.criteria_preset,
+                "direction": direction,
+                "delta_score": round(delta_score, 6),
+                "deltas": {
+                    "control_mismatch": control_delta,
+                    "failure_rate": round(failure_delta, 6),
+                    "brick_rate": round(brick_delta, 6),
+                    "wrong_image_rate": round(wrong_image_delta, 6),
+                    "otadata_drift_rate": round(otadata_drift_delta, 6),
+                    "anomalous_points": anomaly_points_delta,
+                },
+                "defect_metrics": {
+                    "control_mismatch": bool(defect_metrics.get("control_mismatch", False)),
+                    "failure_rate": float(defect_metrics.get("failure_rate", 0.0) or 0.0),
+                    "brick_rate": float(defect_metrics.get("brick_rate", 0.0) or 0.0),
+                    "otadata_drift_rate": float(
+                        defect_metrics.get("otadata_drift_rate", 0.0) or 0.0
+                    ),
+                },
+                "baseline_metrics": {
+                    "control_mismatch": bool(
+                        baseline_metrics.get("control_mismatch", False)
+                    ),
+                    "failure_rate": float(
+                        baseline_metrics.get("failure_rate", 0.0) or 0.0
+                    ),
+                    "brick_rate": float(baseline_metrics.get("brick_rate", 0.0) or 0.0),
+                    "otadata_drift_rate": float(
+                        baseline_metrics.get("otadata_drift_rate", 0.0) or 0.0
+                    ),
+                },
+            }
+        )
+
+    deltas.sort(
+        key=lambda x: (
+            float(x.get("delta_score", 0.0)),
+            float(x.get("deltas", {}).get("failure_rate", 0.0)),
+            float(x.get("deltas", {}).get("brick_rate", 0.0)),
+        ),
+        reverse=True,
+    )
+    return deltas
+
+
 def extract_anomalies(
     cases: Sequence[MatrixCase],
     run_records: Sequence[Dict[str, Any]],
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Dict[str, Any]]]:
     case_by_id = {c.case_id: c for c in cases}
     clusters: Dict[Tuple[str, ...], Dict[str, Any]] = {}
+    case_metrics_by_id: Dict[str, Dict[str, Any]] = {}
 
     totals = {
         "cases_total": len(cases),
@@ -400,6 +684,7 @@ def extract_anomalies(
         "cases_missing_report": 0,
         "cases_control_mismatch": 0,
         "anomalous_points_total": 0,
+        "otadata_drift_points_total": 0,
     }
 
     for rr in run_records:
@@ -413,39 +698,47 @@ def extract_anomalies(
             continue
         totals["cases_with_report"] += 1
 
-        summary = report.get("summary", {})
-        sweep = summary.get("runtime_sweep", {})
-        control = sweep.get("control", {}) if isinstance(sweep, dict) else {}
-        control_outcome = str(control.get("boot_outcome", "unknown"))
-        control_slot = str(control.get("boot_slot", "none"))
-        expected_control = case.expected_control_outcome
+        case_metrics = _collect_case_metrics(case, report)
+        case_metrics_by_id[case.case_id] = case_metrics
 
-        if control_outcome != expected_control:
+        control_outcome = _as_signal_token(case_metrics.get("control_outcome"), "unknown")
+        control_slot = _as_signal_token(case_metrics.get("control_slot"), "none")
+        expected_control = case.expected_control_outcome
+        control_otadata = _as_signal_token(case_metrics.get("control_otadata_digest"), "")
+
+        if bool(case_metrics.get("control_mismatch", False)):
             totals["cases_control_mismatch"] += 1
             key = (
                 "control_mismatch",
-                control_outcome,
-                control_slot,
                 expected_control,
+                control_outcome,
             )
             entry = clusters.setdefault(
                 key,
                 {
                     "kind": "control_mismatch",
                     "signature": {
-                        "actual_control_outcome": control_outcome,
-                        "actual_control_slot": control_slot,
                         "expected_control_outcome": expected_control,
+                        "actual_control_outcome": control_outcome,
                     },
                     "count": 0,
                     "case_ids": set(),
                     "base_profiles": set(),
+                    "base_roles": set(),
+                    "defect_kinds": set(),
+                    "scenarios": set(),
+                    "control_slots": Counter(),
                     "severity": severity_for_outcome(control_outcome, True),
                 },
             )
             entry["count"] += 1
             entry["case_ids"].add(case_id)
             entry["base_profiles"].add(case.base_profile_name)
+            entry["base_roles"].add(case.base_role)
+            if case.defect_kind:
+                entry["defect_kinds"].add(case.defect_kind)
+            entry["scenarios"].add(case.scenario_tag)
+            entry["control_slots"][control_slot] += 1
 
         points = report.get("runtime_sweep_results", [])
         if not isinstance(points, list):
@@ -461,8 +754,6 @@ def extract_anomalies(
             if not p.get("fault_injected", False):
                 continue
             outcome = str(p.get("boot_outcome", "unknown"))
-            if outcome == "success":
-                continue
             fault_type = str(p.get("fault_type", "w"))
             fault_at = int(p.get("fault_at", 0) or 0)
             boot_slot = str(p.get("boot_slot", "none"))
@@ -470,14 +761,55 @@ def extract_anomalies(
             image_hash_match = str(signals.get("image_hash_match", "na"))
             total = calibrated_erases if fault_type in ("e", "a") else calibrated_writes
             phase = phase_bucket(fault_at, max(total, 1))
+            point_otadata = _otadata_digest(signals)
+            otadata_drift = bool(
+                control_otadata and point_otadata and point_otadata != control_otadata
+            )
+
+            if otadata_drift:
+                totals["otadata_drift_points_total"] += 1
+                drift_key = (
+                    "otadata_drift",
+                    fault_type,
+                    phase,
+                )
+                drift_entry = clusters.setdefault(
+                    drift_key,
+                    {
+                        "kind": "otadata_drift",
+                        "signature": {
+                            "fault_type": fault_type,
+                            "phase": phase,
+                        },
+                        "count": 0,
+                        "case_ids": set(),
+                        "base_profiles": set(),
+                        "base_roles": set(),
+                        "defect_kinds": set(),
+                        "scenarios": set(),
+                        "outcomes": Counter(),
+                        "boot_slots": Counter(),
+                        "severity": 2,
+                    },
+                )
+                drift_entry["count"] += 1
+                drift_entry["case_ids"].add(case_id)
+                drift_entry["base_profiles"].add(case.base_profile_name)
+                drift_entry["base_roles"].add(case.base_role)
+                if case.defect_kind:
+                    drift_entry["defect_kinds"].add(case.defect_kind)
+                drift_entry["scenarios"].add(case.scenario_tag)
+                drift_entry["outcomes"][outcome] += 1
+                drift_entry["boot_slots"][boot_slot] += 1
+
+            if outcome == "success":
+                continue
 
             key = (
                 "fault_anomaly",
                 outcome,
                 fault_type,
                 phase,
-                boot_slot,
-                image_hash_match,
             )
             entry = clusters.setdefault(
                 key,
@@ -487,18 +819,29 @@ def extract_anomalies(
                         "outcome": outcome,
                         "fault_type": fault_type,
                         "phase": phase,
-                        "boot_slot": boot_slot,
-                        "image_hash_match": image_hash_match,
                     },
                     "count": 0,
                     "case_ids": set(),
                     "base_profiles": set(),
+                    "base_roles": set(),
+                    "defect_kinds": set(),
+                    "scenarios": set(),
+                    "boot_slots": Counter(),
+                    "image_hash_matches": Counter(),
+                    "otadata_drift": Counter(),
                     "severity": severity_for_outcome(outcome, False),
                 },
             )
             entry["count"] += 1
             entry["case_ids"].add(case_id)
             entry["base_profiles"].add(case.base_profile_name)
+            entry["base_roles"].add(case.base_role)
+            if case.defect_kind:
+                entry["defect_kinds"].add(case.defect_kind)
+            entry["scenarios"].add(case.scenario_tag)
+            entry["boot_slots"][boot_slot] += 1
+            entry["image_hash_matches"][image_hash_match] += 1
+            entry["otadata_drift"]["yes" if otadata_drift else "no"] += 1
             totals["anomalous_points_total"] += 1
 
     cluster_rows: List[Dict[str, Any]] = []
@@ -521,13 +864,27 @@ def extract_anomalies(
                 "score": round(score, 6),
                 "case_ids": sorted(entry["case_ids"]),
                 "base_profiles": sorted(entry["base_profiles"]),
+                "base_roles": sorted(entry.get("base_roles", set())),
+                "defect_kinds": sorted(entry.get("defect_kinds", set())),
+                "scenarios": sorted(entry.get("scenarios", set())),
             }
         )
+        extra = cluster_rows[-1]
+        if isinstance(entry.get("boot_slots"), Counter):
+            extra["boot_slots"] = _sorted_counter(entry["boot_slots"])
+        if isinstance(entry.get("image_hash_matches"), Counter):
+            extra["image_hash_matches"] = _sorted_counter(entry["image_hash_matches"])
+        if isinstance(entry.get("otadata_drift"), Counter):
+            extra["otadata_drift"] = _sorted_counter(entry["otadata_drift"])
+        if isinstance(entry.get("outcomes"), Counter):
+            extra["outcomes"] = _sorted_counter(entry["outcomes"])
+        if isinstance(entry.get("control_slots"), Counter):
+            extra["control_slots"] = _sorted_counter(entry["control_slots"])
     cluster_rows.sort(
         key=lambda x: (x["score"], x["severity"], x["case_count"], x["count"]),
         reverse=True,
     )
-    return cluster_rows, totals
+    return cluster_rows, totals, case_metrics_by_id
 
 
 def render_markdown_summary(
@@ -536,6 +893,7 @@ def render_markdown_summary(
     runs: Sequence[Dict[str, Any]],
     clusters: Sequence[Dict[str, Any]],
     totals: Dict[str, Any],
+    defect_deltas: Sequence[Dict[str, Any]],
     top_n: int,
 ) -> str:
     lines: List[str] = []
@@ -548,31 +906,60 @@ def render_markdown_summary(
     lines.append("- Cases missing report: `{}`".format(totals.get("cases_missing_report", 0)))
     lines.append("- Control mismatches: `{}`".format(totals.get("cases_control_mismatch", 0)))
     lines.append("- Anomalous fault points: `{}`".format(totals.get("anomalous_points_total", 0)))
+    lines.append("- OtaData drift points: `{}`".format(totals.get("otadata_drift_points_total", 0)))
     lines.append("")
     lines.append("## Top Clusters")
     lines.append("")
     if not clusters:
         lines.append("No anomalies detected.")
-        lines.append("")
-        return "\n".join(lines)
-
-    lines.append("| Rank | Score | Kind | Signature | Occurrences | Cases | Profiles |")
-    lines.append("| --- | ---: | --- | --- | ---: | ---: | ---: |")
-    for idx, c in enumerate(clusters[:top_n], 1):
-        sig = json.dumps(c["signature"], sort_keys=True)
-        if len(sig) > 120:
-            sig = sig[:117] + "..."
-        lines.append(
-            "| {} | {:.3f} | {} | `{}` | {} | {} | {} |".format(
-                idx,
-                float(c["score"]),
-                c["kind"],
-                sig,
-                c["count"],
-                c["case_count"],
-                c["profile_count"],
+    else:
+        lines.append("| Rank | Score | Kind | Signature | Occurrences | Cases | Profiles |")
+        lines.append("| --- | ---: | --- | --- | ---: | ---: | ---: |")
+        for idx, c in enumerate(clusters[:top_n], 1):
+            sig = json.dumps(c["signature"], sort_keys=True)
+            if len(sig) > 120:
+                sig = sig[:117] + "..."
+            lines.append(
+                "| {} | {:.3f} | {} | `{}` | {} | {} | {} |".format(
+                    idx,
+                    float(c["score"]),
+                    c["kind"],
+                    sig,
+                    c["count"],
+                    c["case_count"],
+                    c["profile_count"],
+                )
             )
+    lines.append("")
+    lines.append("## Baseline vs Defect Deltas")
+    lines.append("")
+    regressions = [d for d in defect_deltas if d.get("direction") == "worse"]
+    if not regressions:
+        lines.append("No defect regressions against baseline were detected.")
+    else:
+        lines.append(
+            "| Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | "
+            "Δfailure | Δbrick | Δcontrol | Δotadata |"
         )
+        lines.append("| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |")
+        for idx, row in enumerate(regressions[:top_n], 1):
+            delta = row.get("deltas", {})
+            lines.append(
+                "| {} | {:.3f} | `{}` | `{}` | `{}` | `{}` | `{}` | "
+                "{:+.3f} | {:+.3f} | {:+d} | {:+.3f} |".format(
+                    idx,
+                    float(row.get("delta_score", 0.0)),
+                    row.get("defect_case_id", ""),
+                    row.get("baseline_case_id", ""),
+                    row.get("scenario_tag", ""),
+                    row.get("fault_preset", ""),
+                    row.get("criteria_preset", ""),
+                    float(delta.get("failure_rate", 0.0)),
+                    float(delta.get("brick_rate", 0.0)),
+                    int(delta.get("control_mismatch", 0)),
+                    float(delta.get("otadata_drift_rate", 0.0)),
+                )
+            )
     lines.append("")
     lines.append("## Run Records")
     lines.append("")
@@ -650,7 +1037,8 @@ def main() -> int:
         )
         run_records.append(rr)
 
-    clusters, totals = extract_anomalies(cases, run_records)
+    clusters, totals, case_metrics_by_id = extract_anomalies(cases, run_records)
+    defect_deltas = build_defect_deltas(cases, case_metrics_by_id)
 
     matrix_payload = {
         "generated_at_utc": ts,
@@ -671,6 +1059,9 @@ def main() -> int:
                 "case_id": c.case_id,
                 "base_profile_name": c.base_profile_name,
                 "base_profile_path": c.base_profile_path.relative_to(repo_root).as_posix(),
+                "base_role": c.base_role,
+                "defect_kind": c.defect_kind,
+                "scenario_tag": c.scenario_tag,
                 "variant_profile_path": c.variant_profile_path.as_posix(),
                 "report_path": c.report_path.as_posix(),
                 "fault_preset": c.fault_preset,
@@ -682,6 +1073,11 @@ def main() -> int:
         "runs": run_records,
         "totals": totals,
         "clusters": clusters,
+        "case_metrics": [
+            case_metrics_by_id[k]
+            for k in sorted(case_metrics_by_id.keys())
+        ],
+        "defect_deltas": defect_deltas,
     }
 
     matrix_json = output_dir / "matrix_results.json"
@@ -696,6 +1092,7 @@ def main() -> int:
         runs=run_records,
         clusters=clusters,
         totals=totals,
+        defect_deltas=defect_deltas,
         top_n=args.top_clusters,
     )
     summary_md = output_dir / "anomaly_summary.md"
@@ -710,6 +1107,7 @@ def main() -> int:
                 "cases": len(cases),
                 "clusters": len(clusters),
                 "control_mismatches": totals.get("cases_control_mismatch", 0),
+                "defect_deltas": len(defect_deltas),
             },
             indent=2,
             sort_keys=True,
