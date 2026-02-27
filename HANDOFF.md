@@ -121,7 +121,8 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `esp_idf_fault_crc_covers_state`: `0/365` bricks
      - `esp_idf_fault_no_abort`: `0/359` bricks
    - `esp_idf_fault_no_crc` full run (includes bit-corruption points) is high-signal: `719/727` wrong-image failures (`brick_rate ≈ 98.9%`).
-   - Matching baseline with the same `image_hash + bit_corruption` success mode still needs a bounded-step rerun (default `max_step_limit=20000000` caused a very long tail on one worker).
+   - Matching bounded baseline rerun completed (`esp_idf_ota_upgrade_hash_bit_bounded.full.json`, `image_hash + bit_corruption`, `max_step_limit=0x180000`): also `719/727` wrong-image failures (`brick_rate ≈ 98.9%`).
+   - Conclusion: `no_crc` vs baseline is currently non-differential under this configuration; both share the same high wrong-image failure signature.
    - Deep reports: `results/oss_validation/reports/2026-02-27-esp-idf-deep/*.full.json`
    - Reports: `results/oss_validation/reports/2026-02-27-esp-idf-refresh/*.quick.json`
 
@@ -314,6 +315,27 @@ for p in \
     --renode-remote-server-dir /tmp/renode-server \
     --output "results/oss_validation/reports/2026-02-27-esp-idf-deep/${p}.full.json"
 done
+
+# Bounded baseline for no_crc comparison (image_hash + bit_corruption)
+cp profiles/esp_idf_ota_upgrade.yaml /tmp/esp_idf_ota_upgrade_hash_bit_bounded.yaml
+python3 - <<'PY'
+import yaml
+path = "/tmp/esp_idf_ota_upgrade_hash_bit_bounded.yaml"
+with open(path) as f:
+    doc = yaml.safe_load(f)
+doc.setdefault("success_criteria", {})["image_hash"] = True
+fs = doc.setdefault("fault_sweep", {})
+fs["fault_types"] = ["power_loss", "interrupted_erase", "bit_corruption"]
+fs["max_step_limit"] = 0x180000
+with open(path, "w") as f:
+    yaml.safe_dump(doc, f, sort_keys=False)
+PY
+python3 scripts/audit_bootloader.py \
+  --profile /tmp/esp_idf_ota_upgrade_hash_bit_bounded.yaml \
+  --workers 4 \
+  --renode-test /Users/neil/mirala/renode/renode-test \
+  --renode-remote-server-dir /tmp/renode-server \
+  --output results/oss_validation/reports/2026-02-27-esp-idf-deep/esp_idf_ota_upgrade_hash_bit_bounded.full.json
 ```
 
 ## What Needs To Be Done
