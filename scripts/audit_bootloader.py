@@ -93,6 +93,10 @@ def parse_args() -> argparse.Namespace:
         help="Disable control-boot assertion.",
     )
     parser.add_argument(
+        "--no-assert-verdict", action="store_true",
+        help="Disable verdict assertion (still writes summary and report).",
+    )
+    parser.add_argument(
         "--workers", type=int, default=1,
         help="Number of parallel Renode instances (default: 1).",
     )
@@ -1131,7 +1135,7 @@ def main() -> int:
                 )
                 return EXIT_ASSERTION_FAILURE
 
-        if verdict.startswith("FAIL"):
+        if verdict.startswith("FAIL") and not args.no_assert_verdict:
             return EXIT_ASSERTION_FAILURE
 
         return 0

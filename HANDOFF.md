@@ -11,7 +11,7 @@ A Renode-based fault injection testbed for OTA firmware updates. It simulates po
 ## Architecture Overview
 
 ```
-profiles/*.yaml          -- Declarative bootloader profiles (51 total: 45 self-test + 6 exploratory)
+profiles/*.yaml          -- Declarative bootloader profiles (53 total: 45 self-test + 8 exploratory)
     |
     v
 scripts/profile_loader.py  -- Parses YAML, generates robot variables
@@ -62,7 +62,7 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Main has the exploratory matrix stack through OtaData drift de-emphasis (`e12ebfb`, `6664374`) and this handoff tracks the next allowlist refinement batch.
+- Main has the exploratory matrix stack through OtaData drift de-emphasis and scenario allowlisting, with the latest batch adding OtaData success-criteria assertions and rollback-guard exploratory profiles.
 - Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -191,6 +191,29 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2/`
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
+13. **OtaData success-criteria assertions + rollback guard pair (2026-02-28, latest batch)**:
+   - Added `success_criteria.otadata_expect` end-to-end:
+     - `scripts/profile_loader.py` parses/normalizes OtaData expectations and emits `SUCCESS_OTADATA_EXPECT`.
+     - `tests/ota_fault_point.robot` forwards `SUCCESS_OTADATA_EXPECT` into Renode.
+     - `scripts/run_runtime_fault_sweep.resc` validates expected OtaData signals and exposes:
+       - `otadata_expect_ok`
+       - `otadata_expect_mismatches`
+     - OtaData expectation failures now classify as `wrong_image` when VTOR/PC checks pass.
+   - Added rollback guard exploratory pair:
+     - `profiles/esp_idf_ota_rollback_guard.yaml`
+     - `profiles/esp_idf_fault_no_abort_rollback_guard.yaml`
+   - Quick differential confirmation:
+     - Baseline guard: `0/4` bricks, control `success/exec`
+     - Defect guard: `5/5` bricks, control `wrong_image/exec` (OtaData mismatch: `PENDING_VERIFY` vs expected `ABORTED|UNDEFINED`)
+     - Reports: `results/oss_validation/reports/2026-02-28-esp-idf-rollback-guard/*.quick.json`
+   - Focused matrix confirmation (2-case lane):
+     - `5` clusters, `1` defect delta, top delta score `5.1`
+     - Artifact: `results/exploratory/2026-02-28-esp-idf-rollback-guard-matrix-v2/`
+   - Full ESP matrix refresh with new guard profiles included:
+     - `52` cases, `25` clusters, `6` control mismatches, `28` defect deltas
+     - `otadata_allowlist_scenarios=5`, `otadata_allowlisted_points_total=138`
+     - Artifact: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -203,7 +226,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
 | MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
 | MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
-| ESP-IDF OTA           | Model                    | 12 (5 baseline + 7 defect-focused variants)                      | Clean-room otadata + copy-on-boot stress path  |
+| ESP-IDF OTA           | Model                    | 14 (6 baseline + 8 defect-focused variants)                      | Clean-room otadata + copy-on-boot stress path  |
 
 ## Files You Need to Know
 
@@ -476,6 +499,28 @@ python3 scripts/run_exploratory_matrix.py \
   --reuse-existing \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
+
+# Rollback guard quick pair (new OtaData criteria profile pair)
+mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-rollback-guard
+for p in \
+  esp_idf_ota_rollback_guard \
+  esp_idf_fault_no_abort_rollback_guard; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+    --output "results/oss_validation/reports/2026-02-28-esp-idf-rollback-guard/${p}.quick.json"
+done
+
+# Focused exploratory matrix for rollback guard pair
+python3 scripts/run_exploratory_matrix.py \
+  --profile profiles/esp_idf_ota_rollback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_abort_rollback_guard.yaml \
+  --fault-preset profile \
+  --criteria-preset profile \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-28-esp-idf-rollback-guard-matrix-v2
 ```
 
 ## What Needs To Be Done
@@ -494,16 +539,19 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Added two exploratory ESP pair sets:
   - `copy_guard` pair: still non-differential at deep scale (`0/727` bricks for both baseline and no_crc).
   - `crc_guard` pair: differential achieved for no_crc (`baseline 0/4` vs `no_crc 1/4`, plus no_crc control `no_boot/staging`).
+- Added explicit OtaData assertion support (`success_criteria.otadata_expect`) and a rollback guard pair:
+  - `esp_idf_ota_rollback_guard` (baseline) vs `esp_idf_fault_no_abort_rollback_guard` (defect)
+  - Quick differential: baseline `0/4` bricks vs defect `5/5` bricks.
 
 **Remaining gap:**
 
-- Differential evidence now exists for `no_crc`, but only in a narrow low-write CRC-guard scenario.
+- Differential evidence now exists for `no_crc` (CRC guard) and `no_abort` (rollback guard), but coverage is still narrow.
 - High-write copy-path differentials are still missing for `no_crc`, and other ESP defects remain mostly non-differential.
 
 **High-value next steps:**
 
-- Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
-- Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
+- Build equivalent guard-style differential pairs for `no_fallback`, `crc_covers_state`, and `single_sector` (same pattern now used for `no_abort`).
+- Expand `otadata_expect` usage to additional baseline/defect scenarios and add a matrix criteria preset that enforces OtaData assertions consistently.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
 - Tighten per-scenario OtaData allowlist boundaries (e.g., optional keying by `criteria_tag` and `fault_tag`) so baseline drift from one lane cannot over-normalize another lane.
 
@@ -590,6 +638,8 @@ Current workflow is direct-to-main (no PR required):
 
 13. **Heuristic reduction can hide tiny-profile failures**: For very small write counts (e.g., 3 writes), heuristic selection may skip a critical write. Use `fault_sweep.sweep_strategy: exhaustive` when you need every write point.
 
+14. **Exploratory matrix should not gate on profile verdict assertions**: `scripts/run_exploratory_matrix.py` now invokes `audit_bootloader.py` with `--no-assert-control-boots --no-assert-verdict`. This keeps discovery lanes from dropping cases due expectation mismatches while still preserving full control/failure signals in report JSON.
+
 ## Profile YAML Schema Quick Reference
 
 ```yaml
@@ -621,6 +671,11 @@ success_criteria:
   # image_hash_slot: exec   # optional: only enforce image_hash when boot_slot matches
   # marker_address: 0x... # optional: app-written marker
   # marker_value: 0x...   # optional
+  # otadata_expect:        # optional: post-boot OtaData signal assertions
+  #   otadata_available: true
+  #   otadata_active_entry: entry1
+  #   otadata0_state_name: VALID
+  #   otadata1_state_name: [ABORTED, UNDEFINED] # scalar or list accepted
 fault_sweep:
   mode: runtime
   evaluation_mode: execute # or state, or omit for auto

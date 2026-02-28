@@ -88,8 +88,16 @@ class MemoryConfig:
 
 
 class SuccessCriteria:
-    __slots__ = ("vtor_in_slot", "pc_in_slot", "marker_address", "marker_value",
-                 "image_hash", "expected_image", "image_hash_slot")
+    __slots__ = (
+        "vtor_in_slot",
+        "pc_in_slot",
+        "marker_address",
+        "marker_value",
+        "image_hash",
+        "expected_image",
+        "image_hash_slot",
+        "otadata_expect",
+    )
 
     def __init__(
         self,
@@ -100,6 +108,7 @@ class SuccessCriteria:
         image_hash: bool = False,
         expected_image: Optional[str] = None,
         image_hash_slot: Optional[str] = None,
+        otadata_expect: Optional[Dict[str, List[str]]] = None,
     ) -> None:
         self.vtor_in_slot = vtor_in_slot
         self.pc_in_slot = pc_in_slot
@@ -108,6 +117,7 @@ class SuccessCriteria:
         self.image_hash = image_hash
         self.expected_image = expected_image
         self.image_hash_slot = image_hash_slot
+        self.otadata_expect = otadata_expect or {}
 
 
 class FaultSweepConfig:
@@ -371,6 +381,16 @@ class ProfileConfig:
             vars_list.append("SUCCESS_MARKER_ADDR:0x{:08X}".format(sc.marker_address))
         if sc.marker_value is not None:
             vars_list.append("SUCCESS_MARKER_VALUE:0x{:08X}".format(sc.marker_value))
+        if sc.otadata_expect:
+            encoded_entries: List[str] = []
+            for key in sorted(sc.otadata_expect.keys()):
+                values = [v for v in sc.otadata_expect[key] if v]
+                if not values:
+                    continue
+                encoded_entries.append("{}={}".format(key, "|".join(values)))
+            vars_list.append("SUCCESS_OTADATA_EXPECT:{}".format(";".join(encoded_entries)))
+        else:
+            vars_list.append("SUCCESS_OTADATA_EXPECT:")
 
         # Image hash mode: pre-compute SHA-256 of each image binary.
         # Hash only the data portion (slot_size - page_size), excluding the
@@ -479,6 +499,57 @@ def _parse_int(value: Any, field_name: str) -> int:
     raise ProfileError("{}: expected integer, got {!r}".format(field_name, value))
 
 
+def _normalize_criterion_token(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return "0x{:08X}".format(value & 0xFFFFFFFF)
+    text = str(value).strip()
+    if not text:
+        return ""
+    if text.lower() in ("true", "false"):
+        return text.lower()
+    try:
+        parsed = int(text, 0)
+    except ValueError:
+        return text
+    return "0x{:08X}".format(parsed & 0xFFFFFFFF)
+
+
+def _parse_otadata_expect(raw: Any) -> Dict[str, List[str]]:
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        raise ProfileError("success_criteria.otadata_expect: expected mapping")
+
+    parsed: Dict[str, List[str]] = {}
+    for key, value in raw.items():
+        token_key = str(key).strip()
+        if not token_key:
+            continue
+
+        values: List[Any]
+        if isinstance(value, list):
+            values = value
+        else:
+            values = [value]
+
+        token_values: List[str] = []
+        for item in values:
+            token = _normalize_criterion_token(item)
+            if token:
+                token_values.append(token)
+        if not token_values:
+            raise ProfileError(
+                "success_criteria.otadata_expect.{}: expected non-empty value list".format(
+                    token_key
+                )
+            )
+        parsed[token_key] = token_values
+
+    return parsed
+
+
 def _require(data: Dict[str, Any], key: str, context: str = "") -> Any:
     """Require a key to exist in a dict."""
     if key not in data:
@@ -521,6 +592,7 @@ def _parse_success_criteria(raw: Optional[Dict[str, Any]]) -> SuccessCriteria:
         image_hash=bool(raw.get("image_hash", False)),
         expected_image=raw.get("expected_image"),
         image_hash_slot=raw.get("image_hash_slot"),
+        otadata_expect=_parse_otadata_expect(raw.get("otadata_expect")),
     )
 
 
@@ -732,6 +804,7 @@ def main() -> int:
         "expect_should_find_issues": profile.expect.should_find_issues,
         "image_hash": profile.success_criteria.image_hash,
         "image_hash_slot": profile.success_criteria.image_hash_slot,
+        "otadata_expect": profile.success_criteria.otadata_expect,
         "update_trigger": profile.update_trigger.type if profile.update_trigger else None,
         "pre_boot_state_count": len(profile.pre_boot_state),
     }

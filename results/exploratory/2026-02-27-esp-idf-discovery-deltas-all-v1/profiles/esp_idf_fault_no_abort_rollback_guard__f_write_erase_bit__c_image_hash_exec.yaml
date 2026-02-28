@@ -1,0 +1,61 @@
+schema_version: 1
+name: esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec
+skip_self_test: true
+description: 'ESP-IDF no_abort defect with the same rollback guard criteria as the
+  baseline rollback_guard profile. This highlights correctness regressions where metadata
+  is not transitioned to ABORTED after an unconfirmed boot.
+
+  '
+platform: platforms/cortex_m4_flash_fast.repl
+bootloader:
+  elf: examples/esp_idf_ota/esp_idf_fault_no_abort.elf
+  entry: 0
+memory:
+  sram:
+    start: 536870912
+    end: 537133056
+  write_granularity: 4
+  slots:
+    exec:
+      base: 49152
+      size: 475136
+    staging:
+      base: 524288
+      size: 475136
+images:
+  exec: examples/esp_idf_ota/slot0.bin
+  staging: examples/esp_idf_ota/slot1.bin
+pre_boot_state:
+- address: 1015808
+  u32: 1
+- address: 1015832
+  u32: 2
+- address: 1015836
+  u32: 1195612314
+- address: 1019904
+  u32: 2
+- address: 1019928
+  u32: 1
+- address: 1019932
+  u32: 1442199412
+- address: 1032256
+  u32: 1430540321
+success_criteria:
+  vtor_in_slot: any
+  image_hash: true
+  image_hash_slot: exec
+  expected_image: staging
+fault_sweep:
+  mode: runtime
+  evaluation_mode: execute
+  max_writes: auto
+  max_writes_cap: 200000
+  run_duration: '2.0'
+  max_step_limit: 1572864
+  fault_types:
+  - power_loss
+  - interrupted_erase
+  - bit_corruption
+expect:
+  should_find_issues: true
+  control_outcome: wrong_image

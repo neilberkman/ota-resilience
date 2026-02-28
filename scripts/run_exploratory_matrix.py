@@ -163,6 +163,7 @@ def default_profile_patterns(include_defects: bool) -> List[str]:
     base = [
         "profiles/esp_idf_ota_upgrade.yaml",
         "profiles/esp_idf_ota_rollback.yaml",
+        "profiles/esp_idf_ota_rollback_guard.yaml",
         "profiles/esp_idf_ota_no_rollback.yaml",
         "profiles/esp_idf_ota_crc_guard.yaml",
     ]
@@ -367,6 +368,8 @@ def run_case(
         str(case.report_path),
         "--renode-test",
         renode_test,
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
     ]
     if renode_remote_server_dir:
         cmd.extend(["--renode-remote-server-dir", renode_remote_server_dir])

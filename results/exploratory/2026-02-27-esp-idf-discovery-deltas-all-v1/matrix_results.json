@@ -288,6 +288,140 @@
     },
     {
       "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "failure_rate": 0.0,
+      "fault_points_total": 5,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {},
+      "otadata_drift_points": 0,
+      "otadata_drift_rate": 0.0,
+      "otadata_drift_raw_class_counts": {},
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "success": 5
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 5,
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_role": "defect",
+      "brick_rate": 0.8,
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "failure_rate": 1.0,
+      "fault_points_total": 5,
+      "fault_preset": "profile",
+      "hard_failure_points": 4,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {},
+      "otadata_drift_points": 0,
+      "otadata_drift_rate": 0.0,
+      "otadata_drift_raw_class_counts": {},
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "no_boot": 4,
+        "wrong_image": 1
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 1,
+      "wrong_image_rate": 0.2
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "failure_rate": 0.0,
+      "fault_points_total": 8,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {},
+      "otadata_drift_points": 0,
+      "otadata_drift_rate": 0.0,
+      "otadata_drift_raw_class_counts": {},
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "success": 8
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 8,
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_role": "defect",
+      "brick_rate": 0.875,
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "failure_rate": 1.0,
+      "fault_points_total": 8,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 7,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {},
+      "otadata_drift_points": 0,
+      "otadata_drift_rate": 0.0,
+      "otadata_drift_raw_class_counts": {},
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "no_boot": 7,
+        "wrong_image": 1
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 1,
+      "wrong_image_rate": 0.125
+    },
+    {
+      "anomalous_points": 0,
       "base_profile_name": "esp_idf_fault_no_crc",
       "base_role": "defect",
       "brick_rate": 0.0,
@@ -1492,6 +1626,161 @@
     },
     {
       "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000004:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000004:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000004:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 7,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 7
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 7,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 7
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 1,
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000004:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.142857,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 6,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 6,
+        "suspicious_failure": 1
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 3,
+        "suspicious_failure": 1,
+        "suspicious_seq": 3
+      },
+      "otadata_suspicious_drift_points": 1,
+      "otadata_suspicious_drift_rate": 0.142857,
+      "otadata_transition_points": 6,
+      "otadata_transition_rate": 0.857143,
+      "outcome_counts": {
+        "success": 6,
+        "wrong_image": 1
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 1,
+      "wrong_image_rate": 0.142857
+    },
+    {
+      "anomalous_points": 0,
       "base_profile_name": "esp_idf_ota_upgrade",
       "base_role": "baseline",
       "brick_rate": 0.0,
@@ -1747,6 +2036,58 @@
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.json",
       "scenario_tag": "upgrade",
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
       "base_profile_name": "esp_idf_fault_no_crc",
@@ -2165,6 +2506,58 @@
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_ota_rollback_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_profile__c_profile.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_ota_rollback_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_ota_rollback_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_ota_rollback_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
       "base_profile_name": "esp_idf_ota_upgrade",
       "base_profile_path": "profiles/esp_idf_ota_upgrade.yaml",
       "base_role": "baseline",
@@ -2257,6 +2650,81 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 4
+      },
+      "case_count": 4,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 4,
+      "defect_kinds": [
+        "no_abort",
+        "no_crc"
+      ],
+      "image_hash_matches": {
+        "na": 4
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2,
+        "suspicious_failure": 2
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_guard",
+        "rollback_guard"
+      ],
+      "score": 9.656627,
+      "severity": 3,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec"
+      ],
+      "control_slots": {
+        "exec": 2
+      },
+      "count": 2,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "kind": "control_mismatch",
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 8.788898,
+      "severity": 4,
+      "signature": {
+        "actual_control_outcome": "success",
+        "expected_control_outcome": "wrong_image"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_no_abort"
       ],
       "base_roles": [
@@ -2295,7 +2763,7 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_abort_rollback_guard"
       ],
       "base_roles": [
         "defect"
@@ -2305,30 +2773,144 @@
       },
       "case_count": 2,
       "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
       ],
       "count": 2,
       "defect_kinds": [
-        "no_crc"
+        "no_abort"
       ],
       "image_hash_matches": {
         "na": 2
       },
       "kind": "fault_anomaly",
       "otadata_drift": {
-        "suspicious_failure": 2
+        "none": 2
       },
       "profile_count": 1,
       "scenarios": [
-        "crc_guard"
+        "rollback_guard"
       ],
       "score": 6.591674,
       "severity": 3,
       "signature": {
         "fault_type": "w",
         "outcome": "no_boot",
-        "phase": "mid"
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 6.591674,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 6.591674,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 4.394449,
+      "severity": 2,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "wrong_image",
+        "phase": "early"
       }
     },
     {
@@ -2485,7 +3067,53 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc"
+        "esp_idf_fault_no_crc",
+        "esp_idf_ota_rollback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 1,
+        "staging": 2
+      },
+      "case_count": 3,
+      "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 3,
+      "defect_kinds": [
+        "no_crc"
+      ],
+      "image_hash_matches": {
+        "na": 1,
+        "unknown": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2,
+        "suspicious_failure": 1
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "rollback_guard",
+        "upgrade"
+      ],
+      "score": 4.158883,
+      "severity": 2,
+      "signature": {
+        "fault_type": "b",
+        "outcome": "wrong_image",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_no_crc_crc_guard"
       ],
       "base_roles": [
         "defect"
@@ -2495,29 +3123,74 @@
       },
       "case_count": 2,
       "case_ids": [
-        "esp_idf_fault_no_crc__f_profile__c_profile",
-        "esp_idf_fault_no_crc__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
       ],
       "count": 2,
       "defect_kinds": [
+        "no_abort",
         "no_crc"
       ],
       "image_hash_matches": {
-        "unknown": 2
+        "na": 2
       },
       "kind": "fault_anomaly",
       "otadata_drift": {
-        "none": 2
+        "none": 1,
+        "suspicious_failure": 1
       },
-      "profile_count": 1,
+      "profile_count": 2,
       "scenarios": [
-        "upgrade"
+        "crc_guard",
+        "rollback_guard"
       ],
-      "score": 4.394449,
-      "severity": 2,
+      "score": 3.295837,
+      "severity": 3,
       "signature": {
         "fault_type": "b",
-        "outcome": "wrong_image",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_no_crc_crc_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_abort",
+        "no_crc"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 1,
+        "suspicious_failure": 1
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_guard",
+        "rollback_guard"
+      ],
+      "score": 3.295837,
+      "severity": 3,
+      "signature": {
+        "fault_type": "b",
+        "outcome": "no_boot",
         "phase": "mid"
       }
     },
@@ -2708,7 +3381,7 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_abort_rollback_guard"
       ],
       "base_roles": [
         "defect"
@@ -2718,66 +3391,29 @@
       },
       "case_count": 1,
       "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
       ],
       "count": 1,
       "defect_kinds": [
-        "no_crc"
+        "no_abort"
       ],
       "image_hash_matches": {
         "na": 1
       },
       "kind": "fault_anomaly",
       "otadata_drift": {
-        "suspicious_failure": 1
+        "none": 1
       },
       "profile_count": 1,
       "scenarios": [
-        "crc_guard"
+        "rollback_guard"
       ],
       "score": 2.079442,
       "severity": 3,
       "signature": {
         "fault_type": "b",
         "outcome": "no_boot",
-        "phase": "early"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "staging": 1
-      },
-      "case_count": 1,
-      "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 1,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "image_hash_matches": {
-        "na": 1
-      },
-      "kind": "fault_anomaly",
-      "otadata_drift": {
-        "suspicious_failure": 1
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "crc_guard"
-      ],
-      "score": 2.079442,
-      "severity": 3,
-      "signature": {
-        "fault_type": "b",
-        "outcome": "no_boot",
-        "phase": "mid"
+        "phase": "late"
       }
     },
     {
@@ -2817,36 +3453,42 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_ota_rollback_guard"
       ],
       "base_roles": [
+        "baseline",
         "defect"
       ],
       "boot_slots": {
+        "exec": 1,
         "staging": 1
       },
-      "case_count": 1,
+      "case_count": 2,
       "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
       ],
-      "count": 1,
+      "count": 2,
       "defect_kinds": [
         "no_crc"
       ],
       "kind": "otadata_drift",
       "outcomes": {
-        "no_boot": 1
+        "no_boot": 1,
+        "wrong_image": 1
       },
-      "profile_count": 1,
+      "profile_count": 2,
       "scenarios": [
-        "crc_guard"
+        "crc_guard",
+        "rollback_guard"
       ],
-      "score": 0.51986,
+      "score": 0.823959,
       "severity": 3,
       "signature": {
         "drift_class": "suspicious_failure",
         "fault_type": "b",
-        "phase": "early"
+        "phase": "mid"
       }
     },
     {
@@ -2880,7 +3522,7 @@
       "signature": {
         "drift_class": "suspicious_failure",
         "fault_type": "b",
-        "phase": "mid"
+        "phase": "early"
       }
     },
     {
@@ -2932,6 +3574,7 @@
     "profile_patterns": [
       "profiles/esp_idf_ota_upgrade.yaml",
       "profiles/esp_idf_ota_rollback.yaml",
+      "profiles/esp_idf_ota_rollback_guard.yaml",
       "profiles/esp_idf_ota_no_rollback.yaml",
       "profiles/esp_idf_ota_crc_guard.yaml",
       "profiles/esp_idf_fault_*.yaml"
@@ -3008,6 +3651,39 @@
       "scenario_tag": "crc_guard"
     },
     {
+      "baseline_case_id": "esp_idf_ota_rollback_guard__f_profile__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+      "defect_kind": "no_abort",
+      "defect_metrics": {
+        "brick_rate": 0.8,
+        "control_mismatch": false,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 5.1,
+      "deltas": {
+        "anomalous_points": 5,
+        "brick_rate": 0.8,
+        "control_mismatch": 0,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": -1.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.2
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "rollback_guard"
+    },
+    {
       "baseline_case_id": "esp_idf_ota_upgrade__f_profile__c_profile",
       "baseline_metrics": {
         "brick_rate": 0.0,
@@ -3041,6 +3717,39 @@
       "scenario_tag": "upgrade"
     },
     {
+      "baseline_case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.142857,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.142857
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+      "defect_kind": "no_abort",
+      "defect_metrics": {
+        "brick_rate": 0.875,
+        "control_mismatch": false,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 5.039286,
+      "deltas": {
+        "anomalous_points": 7,
+        "brick_rate": 0.875,
+        "control_mismatch": 0,
+        "failure_rate": 0.857143,
+        "otadata_drift_rate": -1.0,
+        "otadata_suspicious_drift_rate": -0.142857,
+        "wrong_image_rate": -0.017857
+      },
+      "direction": "worse",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "rollback_guard"
+    },
+    {
       "baseline_case_id": "esp_idf_ota_upgrade__f_write_erase_bit__c_profile",
       "baseline_metrics": {
         "brick_rate": 0.0,
@@ -3072,6 +3781,72 @@
       "direction": "worse",
       "fault_preset": "write_erase_bit",
       "scenario_tag": "upgrade"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
+      "defect_kind": "no_abort",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": true,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 4.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 1,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": -1.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "rollback_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "defect_kind": "no_abort",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": true,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 4.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 1,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": -1.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "rollback_guard"
     },
     {
       "baseline_case_id": "esp_idf_ota_upgrade__f_profile__c_profile",
@@ -3734,7 +4509,7 @@
       "scenario_tag": "upgrade"
     }
   ],
-  "generated_at_utc": "2026-02-28T040818Z",
+  "generated_at_utc": "2026-02-28T042553Z",
   "otadata_allowlist": {
     "crc_guard": [
       "suspicious_active_entry",
@@ -3742,6 +4517,10 @@
     ],
     "no_rollback": [],
     "rollback": [
+      "suspicious_crc",
+      "suspicious_seq"
+    ],
+    "rollback_guard": [
       "suspicious_crc",
       "suspicious_seq"
     ],
@@ -3799,6 +4578,30 @@
       "case_id": "esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec",
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec.json",
       "status": "reused"
     },
     {
@@ -3994,6 +4797,30 @@
       "status": "reused"
     },
     {
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_profile",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_profile__c_profile.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile.json",
+      "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "reused"
+    },
+    {
       "case_id": "esp_idf_ota_upgrade__f_profile__c_profile",
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_upgrade__f_profile__c_profile.json",
@@ -4019,15 +4846,15 @@
     }
   ],
   "totals": {
-    "anomalous_points_total": 16,
-    "cases_control_mismatch": 4,
+    "anomalous_points_total": 30,
+    "cases_control_mismatch": 6,
     "cases_missing_report": 0,
-    "cases_total": 44,
-    "cases_with_report": 44,
-    "otadata_allowlist_scenarios": 4,
-    "otadata_allowlisted_points_total": 117,
-    "otadata_drift_points_total": 142,
-    "otadata_suspicious_drift_points_total": 25,
-    "otadata_transition_points_total": 117
+    "cases_total": 52,
+    "cases_with_report": 52,
+    "otadata_allowlist_scenarios": 5,
+    "otadata_allowlisted_points_total": 138,
+    "otadata_drift_points_total": 164,
+    "otadata_suspicious_drift_points_total": 26,
+    "otadata_transition_points_total": 138
   }
 }

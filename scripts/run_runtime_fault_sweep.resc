@@ -56,6 +56,7 @@ $success_image_hash_slot?=""
 $image_exec_sha256?=""
 $image_staging_sha256?=""
 $expected_exec_sha256?=""
+$success_otadata_expect?=""
 
 python """
 import json
@@ -132,6 +133,7 @@ success_image_hash_slot = str(monitor.GetVariable('success_image_hash_slot')).st
 image_exec_sha256 = str(monitor.GetVariable('image_exec_sha256')).strip()
 image_staging_sha256 = str(monitor.GetVariable('image_staging_sha256')).strip()
 expected_exec_sha256 = str(monitor.GetVariable('expected_exec_sha256')).strip()
+success_otadata_expect_raw = str(monitor.GetVariable('success_otadata_expect')).strip()
 
 # Pre-boot state binary.
 pre_boot_bin = str(monitor.GetVariable('pre_boot_state_bin')).strip()
@@ -192,6 +194,46 @@ def as_int(value):
 
 def fmt_u32(value):
     return '0x{0:08X}'.format(as_int(value) & 0xFFFFFFFF)
+
+def normalize_signal_token(value):
+    if isinstance(value, bool):
+        return 'true' if value else 'false'
+    if value is None:
+        return ''
+    text = str(value).strip()
+    if not text:
+        return ''
+    low = text.lower()
+    if low in ('true', 'false'):
+        return low
+    try:
+        parsed = int(text, 0)
+    except ValueError:
+        return text
+    return '0x{0:08X}'.format(parsed & 0xFFFFFFFF)
+
+def parse_otadata_expect(raw):
+    parsed = {}
+    if not raw:
+        return parsed
+    for pair in raw.split(';'):
+        pair = pair.strip()
+        if not pair or '=' not in pair:
+            continue
+        key, values_raw = pair.split('=', 1)
+        key = key.strip()
+        if not key:
+            continue
+        values = []
+        for item in values_raw.split('|'):
+            token = normalize_signal_token(item)
+            if token:
+                values.append(token)
+        if values:
+            parsed[key] = values
+    return parsed
+
+success_otadata_expect = parse_otadata_expect(success_otadata_expect_raw)
 
 def read_otadata_entry(base_addr):
     seq = as_int(bus.ReadDoubleWord(base_addr + OTADATA_SEQ_OFF))
@@ -475,15 +517,6 @@ def evaluate_boot_outcome(vtor_value, pc_value):
         actual_marker_val = as_int(bus.ReadDoubleWord(success_marker_addr))
         marker_ok = (actual_marker_val == success_marker_value)
 
-    if vtor_ok and pc_ok and marker_ok:
-        boot_outcome = 'success'
-    elif vtor_ok and pc_ok and not marker_ok:
-        boot_outcome = 'wrong_image'
-    elif vtor_ok and not pc_ok:
-        boot_outcome = 'wrong_pc'
-    else:
-        boot_outcome = 'no_boot'
-
     signals = {
         'vtor': '0x{0:08X}'.format(vtor_value),
         'vtor_ok': vtor_ok,
@@ -497,6 +530,34 @@ def evaluate_boot_outcome(vtor_value, pc_value):
     if success_image_hash_slot:
         signals['image_hash_slot'] = success_image_hash_slot
     signals.update(collect_otadata_signals())
+
+    otadata_expect_ok = True
+    otadata_mismatches = []
+    if success_otadata_expect:
+        for key, expected_values in success_otadata_expect.items():
+            actual = normalize_signal_token(signals.get(key))
+            if actual not in expected_values:
+                otadata_expect_ok = False
+                otadata_mismatches.append(
+                    '{}:{}->{}'.format(
+                        key,
+                        actual if actual else 'missing',
+                        '|'.join(expected_values),
+                    )
+                )
+    signals['otadata_expect_ok'] = otadata_expect_ok
+    if otadata_mismatches:
+        signals['otadata_expect_mismatches'] = ';'.join(otadata_mismatches)
+
+    criteria_ok = marker_ok and otadata_expect_ok
+    if vtor_ok and pc_ok and criteria_ok:
+        boot_outcome = 'success'
+    elif vtor_ok and pc_ok and not criteria_ok:
+        boot_outcome = 'wrong_image'
+    elif vtor_ok and not pc_ok:
+        boot_outcome = 'wrong_pc'
+    else:
+        boot_outcome = 'no_boot'
 
     return boot_outcome, boot_slot, signals
 
