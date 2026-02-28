@@ -140,6 +140,8 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         //   1 = bit_corruption: faulted write partially programs.
         //   2 = silent_write_failure: write "succeeds" but stores either
         //       0xFFFFFFFF or 0x00000000 (deterministic per write index).
+        //   3 = write_rejection: target write is explicitly rejected
+        //       (word remains at pre-write value).
         //   4 = write_disturb: target word is written, adjacent words suffer
         //       spurious 1->0 flips (disturb on neighboring cells).
         //   5 = wear_leveling_corruption: target word is written, then extra
@@ -270,6 +272,12 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                     // Silent write failure: deterministic all-FF or all-00.
                     uint silentValue = ((TotalWordWrites & 1UL) == 0UL) ? 0xFFFFFFFFU : 0x00000000U;
                     WriteU32(snap, off, silentValue);
+                    break;
+                }
+                case 3:
+                {
+                    // Write rejection: drop the target write (keep old word).
+                    WriteU32(snap, off, oldWord);
                     break;
                 }
                 case 4:

@@ -57,6 +57,7 @@ $image_exec_sha256?=""
 $image_staging_sha256?=""
 $expected_exec_sha256?=""
 $success_otadata_expect?=""
+$success_otadata_expect_scope?="always"
 
 python """
 import json
@@ -134,6 +135,9 @@ image_exec_sha256 = str(monitor.GetVariable('image_exec_sha256')).strip()
 image_staging_sha256 = str(monitor.GetVariable('image_staging_sha256')).strip()
 expected_exec_sha256 = str(monitor.GetVariable('expected_exec_sha256')).strip()
 success_otadata_expect_raw = str(monitor.GetVariable('success_otadata_expect')).strip()
+success_otadata_expect_scope = str(monitor.GetVariable('success_otadata_expect_scope')).strip().lower()
+if success_otadata_expect_scope not in ('always', 'control'):
+    success_otadata_expect_scope = 'always'
 
 # Pre-boot state binary.
 pre_boot_bin = str(monitor.GetVariable('pre_boot_state_bin')).strip()
@@ -145,7 +149,8 @@ setup_script = str(monitor.GetVariable('setup_script')).strip()
 # fault_types controls which operations are tracked during calibration.
 # fault_type_csv provides per-fault-point type:
 #   write-based: 'w' power_loss, 'b' bit_corruption, 's' silent_write_failure,
-#                'd' write_disturb, 'l' wear_leveling_corruption
+#                'd' write_disturb, 'l' wear_leveling_corruption,
+#                'r' write_rejection, 't' reset_at_time
 #   erase-based: 'e' interrupted_erase, 'a' multi_sector_atomicity
 fault_types_raw = str(monitor.GetVariable('fault_types')).strip().lower()
 if fault_types_raw in ('both', 'write_and_erase', 'write,erase'):
@@ -467,7 +472,7 @@ def compute_exec_slot_hash():
         data = b''.join(chunks)
     return hashlib.sha256(data).hexdigest()
 
-def evaluate_boot_outcome(vtor_value, pc_value):
+def evaluate_boot_outcome(vtor_value, pc_value, fault_injected=False):
     # Shared boot outcome evaluation for all execution modes.
     boot_slot = None
     for sn, (s_lo, s_hi) in slot_ranges.items():
@@ -533,7 +538,11 @@ def evaluate_boot_outcome(vtor_value, pc_value):
 
     otadata_expect_ok = True
     otadata_mismatches = []
-    if success_otadata_expect:
+    enforce_otadata_expect = bool(success_otadata_expect)
+    if success_otadata_expect_scope == 'control':
+        enforce_otadata_expect = not bool(fault_injected)
+
+    if enforce_otadata_expect:
         for key, expected_values in success_otadata_expect.items():
             actual = normalize_signal_token(signals.get(key))
             if actual not in expected_values:
@@ -545,6 +554,8 @@ def evaluate_boot_outcome(vtor_value, pc_value):
                         '|'.join(expected_values),
                     )
                 )
+    signals['otadata_expect_scope'] = success_otadata_expect_scope
+    signals['otadata_expect_enforced'] = enforce_otadata_expect
     signals['otadata_expect_ok'] = otadata_expect_ok
     if otadata_mismatches:
         signals['otadata_expect_mismatches'] = ';'.join(otadata_mismatches)
@@ -685,13 +696,88 @@ def run_until_done(cpu_ref, time_slice='0.02', max_iters=200, wall_timeout=120, 
         as_int(cpu_ref.GetRegisterUnsafe(15)), elapsed))
     return iters + 1
 
+def parse_duration_seconds(default=2.0):
+    try:
+        return max(0.02, float(run_duration))
+    except Exception:
+        return default
+
+def run_timed_reset_fault(fault_at):
+    # reset_at_time: run Phase 1 for a deterministic time offset, then
+    # simulate a power reset regardless of write/erase boundaries.
+    cpu_ref = monitor.Machine['sysbus.cpu']
+    fp_t0 = _time.time()
+    log('fp={} type=t phase1_setup'.format(fault_at))
+
+    monitor.Parse('machine Pause')
+    cpu_ref.IsHalted = False
+    monitor.Parse('machine Reset')
+    reload_images()
+    apply_pre_boot_state()
+    reset_nvmc_for_sweep()
+    disarm_fault()
+
+    duration_s = parse_duration_seconds(default=2.0)
+    max_fp = max(fault_points) if fault_points else max(1, fault_at)
+    frac = 0.0 if max_fp <= 0 else min(1.0, max(0.0, float(fault_at) / float(max_fp)))
+    trigger_s = max(0.005, min(duration_s * 0.95, frac * duration_s))
+    log('fp={} type=t trigger_s={:.3f} frac={:.3f}'.format(fault_at, trigger_s, frac))
+    monitor.Parse('emulation RunFor "{:.3f}"'.format(trigger_s))
+
+    fault_injected = True
+    fault_address = 0
+    actual_writes = get_total_writes() if USE_FAST_PATH else 0
+
+    if USE_FAST_PATH:
+        flash_ref = nvmc.Flash
+        flash_size = int(nvmc.FlashSize)
+        saved_flash = flash_ref.ReadBytes(0, flash_size)
+        restore_flash_and_boot(saved_flash)
+        reset_nvmc_for_recovery()
+    else:
+        monitor.Parse('machine Reset')
+        monitor.Parse('machine Pause')
+        bus.LoadELF(bootloader_elf, True)
+        restore_hw_init()
+
+    log('fp={} type=t phase2_step'.format(fault_at))
+    run_until_done(
+        cpu_ref,
+        label='fp{}_t_p2'.format(fault_at),
+        expect_writes=False,
+        wall_timeout=30,
+    )
+
+    vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
+    pc_value = as_int(cpu_ref.GetRegisterUnsafe(15))
+    boot_outcome, boot_slot, signals = evaluate_boot_outcome(
+        vtor_value, pc_value, fault_injected=fault_injected
+    )
+    signals['timed_reset_trigger_s'] = round(trigger_s, 6)
+    signals['timed_reset_fraction'] = round(frac, 6)
+    signals['timed_reset_elapsed_s'] = round(_time.time() - fp_t0, 6)
+
+    return {
+        'fault_at': fault_at,
+        'fault_requested': fault_at,
+        'fault_type': 't',
+        'fault_injected': fault_injected,
+        'fault_address': '0x{0:08X}'.format(fault_address),
+        'boot_outcome': boot_outcome,
+        'boot_slot': boot_slot,
+        'actual_writes': actual_writes,
+        'signals': signals,
+    }
+
 def run_execute_fault(fault_at, fault_type='w'):
     # Execute mode: full CPU boot with fault injection.
     #
     # fault_type:
     #   write: 'w' power_loss, 'b' bit_corruption, 's' silent_write_failure,
-    #          'd' write_disturb, 'l' wear_leveling_corruption
+    #          'r' write_rejection, 'd' write_disturb,
+    #          'l' wear_leveling_corruption
     #   erase: 'e' interrupted_erase, 'a' multi_sector_atomicity
+    #   timed: 't' reset_at_time
     #
     # Fast path (NVMC CONFIG tracking): fault injection works by counting
     # NVMC CONFIG WEN->REN transitions. When the target write count is
@@ -705,6 +791,9 @@ def run_execute_fault(fault_at, fault_type='w'):
     #
     # Slow path (NVMemory): uses FaultAtWordWrite which corrupts the Nth
     # word during writing (partial-write fault injection).
+
+    if fault_type == 't':
+        return run_timed_reset_fault(fault_at)
 
     cpu_ref = monitor.Machine['sysbus.cpu']
     fp_t0 = _time.time()
@@ -731,12 +820,14 @@ def run_execute_fault(fault_at, fault_type='w'):
     else:
         # Write faults:
         #   'w' power_loss (0), 'b' bit_corruption (1),
-        #   's' silent_write_failure (2), 'd' write_disturb (4),
+        #   's' silent_write_failure (2), 'r' write_rejection (3),
+        #   'd' write_disturb (4),
         #   'l' wear_leveling_corruption (5).
         write_mode = {
             'w': 0,
             'b': 1,
             's': 2,
+            'r': 3,
             'd': 4,
             'l': 5,
         }.get(fault_type, 0)
@@ -812,7 +903,9 @@ def run_execute_fault(fault_at, fault_type='w'):
     # Read final state.
     vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
     pc_value = as_int(cpu_ref.GetRegisterUnsafe(15))
-    boot_outcome, boot_slot, signals = evaluate_boot_outcome(vtor_value, pc_value)
+    boot_outcome, boot_slot, signals = evaluate_boot_outcome(
+        vtor_value, pc_value, fault_injected=fault_injected
+    )
 
     result = {
         'fault_at': fault_at,
@@ -938,7 +1031,9 @@ def run_cascading_fault(write_fault_at, erase_fault_at):
     # Read final state.
     vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
     pc_value = as_int(cpu_ref.GetRegisterUnsafe(15))
-    boot_outcome, boot_slot, signals = evaluate_boot_outcome(vtor_value, pc_value)
+    boot_outcome, boot_slot, signals = evaluate_boot_outcome(
+        vtor_value, pc_value, fault_injected=(p1_injected and p2_injected)
+    )
 
     elapsed = _time.time() - fp_t0
     return {
@@ -1105,7 +1200,9 @@ def run_trace_replay_fault(fault_at):
     # Read final state — always use evaluate_boot_outcome for consistency.
     vtor_value = as_int(bus.ReadDoubleWord(0xE000ED08))
     pc_value = as_int(cpu_ref.GetRegisterUnsafe(15))
-    boot_outcome, boot_slot, signals = evaluate_boot_outcome(vtor_value, pc_value)
+    boot_outcome, boot_slot, signals = evaluate_boot_outcome(
+        vtor_value, pc_value, fault_injected=fault_injected
+    )
     signals['phase1_ms'] = phase1_ms
     signals['phase2_ms'] = phase2_ms
 
@@ -1269,9 +1366,9 @@ else:
             w_at = int(parts[1])
             e_at = int(parts[2])
             results.append(run_cascading_fault(w_at, e_at))
-        # Non-power-loss synthetic faults always use full execute mode
+        # Synthetic/non-default faults always use full execute mode
         # (not trace replay — they depend on NVMC peripheral state/PRNG).
-        elif ft in ('e', 'a', 'b', 's', 'd', 'l'):
+        elif ft in ('e', 'a', 'b', 's', 'd', 'l', 'r', 't'):
             results.append(run_execute_fault(fp, fault_type=ft))
         elif run_fn == run_execute_fault:
             results.append(run_fn(fp, fault_type=ft))

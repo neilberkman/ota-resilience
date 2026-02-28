@@ -26,7 +26,13 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import yaml
 
 
-FAULT_PRESETS = ("profile", "write_erase", "write_erase_bit")
+FAULT_PRESETS = (
+    "profile",
+    "write_erase",
+    "write_erase_bit",
+    "write_reject",
+    "time_reset",
+)
 CRITERIA_PRESETS = ("profile", "vtor_any", "image_hash_exec")
 ERASE_FAULT_TYPES = {"interrupted_erase", "multi_sector_atomicity"}
 HARD_OUTCOMES = {"no_boot", "hard_fault"}
@@ -162,8 +168,10 @@ def utc_stamp() -> str:
 def default_profile_patterns(include_defects: bool) -> List[str]:
     base = [
         "profiles/esp_idf_ota_upgrade.yaml",
+        "profiles/esp_idf_ota_crc_schema_guard.yaml",
         "profiles/esp_idf_ota_rollback.yaml",
         "profiles/esp_idf_ota_rollback_guard.yaml",
+        "profiles/esp_idf_ota_ss_guard.yaml",
         "profiles/esp_idf_ota_no_rollback.yaml",
         "profiles/esp_idf_ota_crc_guard.yaml",
     ]
@@ -259,6 +267,12 @@ def apply_fault_preset(
         fs["fault_types"] = ["power_loss", "interrupted_erase"]
     elif preset == "write_erase_bit":
         fs["fault_types"] = ["power_loss", "interrupted_erase", "bit_corruption"]
+        fs["max_step_limit"] = bounded_step_limit
+    elif preset == "write_reject":
+        fs["fault_types"] = ["write_rejection"]
+        fs["max_step_limit"] = bounded_step_limit
+    elif preset == "time_reset":
+        fs["fault_types"] = ["reset_at_time"]
         fs["max_step_limit"] = bounded_step_limit
     else:
         raise ValueError("Unknown fault preset: {}".format(preset))

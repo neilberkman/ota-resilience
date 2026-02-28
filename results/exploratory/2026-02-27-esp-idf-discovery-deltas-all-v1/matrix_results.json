@@ -154,6 +154,160 @@
     },
     {
       "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:995C37EA|00000002:00000001:BDDAF882",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "success": 6
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 3,
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_role": "defect",
+      "brick_rate": 0.5,
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000002:995C37EA|00000002:00000001:BDDAF882",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.5,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 3,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 3,
+        "success": 3
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:995C37EA|00000002:00000001:BDDAF882",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 9,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 3,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 3
+      },
+      "otadata_drift_points": 3,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 3,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "success": 9
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 5,
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_role": "defect",
+      "brick_rate": 0.555556,
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000002:995C37EA|00000002:00000001:BDDAF882",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.555556,
+      "fault_points_total": 9,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 5,
+      "otadata_allowlisted_points": 3,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 3
+      },
+      "otadata_drift_points": 3,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 3,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 5,
+        "success": 4
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
       "base_profile_name": "esp_idf_fault_no_abort",
       "base_role": "defect",
       "brick_rate": 0.0,
@@ -1198,6 +1352,156 @@
     },
     {
       "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 4,
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_role": "defect",
+      "brick_rate": 1.0,
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "no_boot",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "failure_rate": 1.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 4,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {
+        "suspicious_failure": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_failure": 4
+      },
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "no_boot": 4
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_role": "defect",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 7,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 7
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 7,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 7
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 7,
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_role": "defect",
+      "brick_rate": 1.0,
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "no_boot",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "failure_rate": 1.0,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 7,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {
+        "suspicious_failure": 7
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_failure": 7
+      },
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "no_boot": 7
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
       "base_profile_name": "esp_idf_ota_crc_guard",
       "base_role": "baseline",
       "brick_rate": 0.0,
@@ -1345,6 +1649,160 @@
         "success": 7
       },
       "scenario_tag": "crc_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "success": 6
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 3,
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.5,
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.5,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 3,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 3,
+        "success": 3
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 9,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 3,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 3
+      },
+      "otadata_drift_points": 3,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 3,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "success": 9
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 5,
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.555556,
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.555556,
+      "fault_points_total": 9,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 5,
+      "otadata_allowlisted_points": 3,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 3
+      },
+      "otadata_drift_points": 3,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 3,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 5,
+        "success": 4
+      },
+      "scenario_tag": "crc_schema_guard",
       "wrong_image_points": 0,
       "wrong_image_rate": 0.0
     },
@@ -1781,6 +2239,158 @@
     },
     {
       "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "staging",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "staging",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "staging",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 7,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 7
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 7,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 7
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+      "control_outcome": "success",
+      "control_slot": "staging",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 7,
+      "fault_preset": "write_erase_bit",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 7,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 7
+      },
+      "otadata_drift_points": 7,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 7,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 7
+      },
+      "scenario_tag": "ss_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
       "base_profile_name": "esp_idf_ota_upgrade",
       "base_role": "baseline",
       "brick_rate": 0.0,
@@ -1984,6 +2594,58 @@
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json",
       "scenario_tag": "upgrade",
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
       "base_profile_name": "esp_idf_fault_no_abort",
@@ -2350,6 +3012,58 @@
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_profile_path": "profiles/esp_idf_fault_single_sector_ss_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_profile_path": "profiles/esp_idf_fault_single_sector_ss_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_profile_path": "profiles/esp_idf_fault_single_sector_ss_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_single_sector_ss_guard",
+      "base_profile_path": "profiles/esp_idf_fault_single_sector_ss_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "single_sector",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
       "base_profile_name": "esp_idf_ota_crc_guard",
       "base_profile_path": "profiles/esp_idf_ota_crc_guard.yaml",
       "base_role": "baseline",
@@ -2400,6 +3114,58 @@
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec.json",
       "scenario_tag": "crc_guard",
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_profile.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
       "base_profile_name": "esp_idf_ota_no_rollback",
@@ -2558,6 +3324,58 @@
       "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec.yaml"
     },
     {
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_profile_path": "profiles/esp_idf_ota_ss_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_profile.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_profile__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_profile_path": "profiles/esp_idf_ota_ss_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_profile_path": "profiles/esp_idf_ota_ss_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile",
+      "criteria_preset": "profile",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_ss_guard",
+      "base_profile_path": "profiles/esp_idf_ota_ss_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "criteria_preset": "image_hash_exec",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "write_erase_bit",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "scenario_tag": "ss_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.yaml"
+    },
+    {
       "base_profile_name": "esp_idf_ota_upgrade",
       "base_profile_path": "profiles/esp_idf_ota_upgrade.yaml",
       "base_role": "baseline",
@@ -2614,34 +3432,39 @@
     {
       "base_profiles": [
         "esp_idf_fault_no_abort",
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
         "defect"
       ],
-      "case_count": 4,
+      "case_count": 6,
       "case_ids": [
         "esp_idf_fault_no_abort__f_profile__c_profile",
         "esp_idf_fault_no_abort__f_write_erase_bit__c_profile",
         "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
       "control_slots": {
-        "exec": 2,
+        "exec": 4,
         "staging": 2
       },
-      "count": 4,
+      "count": 6,
       "defect_kinds": [
         "no_abort",
-        "no_crc"
+        "no_crc",
+        "single_sector"
       ],
       "kind": "control_mismatch",
-      "profile_count": 2,
+      "profile_count": 3,
       "scenarios": [
         "crc_guard",
+        "ss_guard",
         "upgrade"
       ],
-      "score": 12.875503,
+      "score": 15.567281,
       "severity": 4,
       "signature": {
         "actual_control_outcome": "no_boot",
@@ -2650,10 +3473,117 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
         "esp_idf_fault_no_abort_rollback_guard",
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_schema_guard"
       ],
       "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2,
+        "staging": 8
+      },
+      "case_count": 10,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 10,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_abort",
+        "no_crc",
+        "single_sector"
+      ],
+      "image_hash_matches": {
+        "na": 10
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 6,
+        "suspicious_failure": 4
+      },
+      "profile_count": 5,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 14.387372,
+      "severity": 3,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 6
+      },
+      "case_count": 6,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 6,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 6
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 6
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_schema_guard",
+        "rollback_guard"
+      ],
+      "score": 11.675461,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
         "defect"
       ],
       "boot_slots": {
@@ -2661,15 +3591,56 @@
       },
       "case_count": 4,
       "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 4,
+      "defect_kinds": [
+        "crc_covers_state"
+      ],
+      "image_hash_matches": {
+        "na": 4
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 4
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_schema_guard"
+      ],
+      "score": 9.656627,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort",
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 4
+      },
+      "case_count": 4,
+      "case_ids": [
+        "esp_idf_fault_no_abort__f_profile__c_profile",
+        "esp_idf_fault_no_abort__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
       "count": 4,
       "defect_kinds": [
         "no_abort",
-        "no_crc"
+        "single_sector"
       ],
       "image_hash_matches": {
         "na": 4
@@ -2681,15 +3652,91 @@
       },
       "profile_count": 2,
       "scenarios": [
-        "crc_guard",
-        "rollback_guard"
+        "ss_guard",
+        "upgrade"
       ],
       "score": 9.656627,
       "severity": 3,
       "signature": {
         "fault_type": "w",
         "outcome": "no_boot",
-        "phase": "mid"
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2,
+        "staging": 2
+      },
+      "case_count": 4,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 4,
+      "defect_kinds": [
+        "no_abort",
+        "single_sector"
+      ],
+      "image_hash_matches": {
+        "na": 4
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2,
+        "suspicious_failure": 2
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 9.656627,
+      "severity": 3,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "no_boot",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile"
+      ],
+      "control_slots": {
+        "exec": 2
+      },
+      "count": 2,
+      "defect_kinds": [
+        "crc_covers_state"
+      ],
+      "kind": "control_mismatch",
+      "profile_count": 1,
+      "scenarios": [
+        "crc_schema_guard"
+      ],
+      "score": 8.788898,
+      "severity": 4,
+      "signature": {
+        "actual_control_outcome": "wrong_image",
+        "expected_control_outcome": "success"
       }
     },
     {
@@ -2725,7 +3772,45 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_abort"
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 6.591674,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
         "defect"
@@ -2735,144 +3820,138 @@
       },
       "case_count": 2,
       "case_ids": [
-        "esp_idf_fault_no_abort__f_profile__c_profile",
-        "esp_idf_fault_no_abort__f_write_erase_bit__c_profile"
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
       "count": 2,
       "defect_kinds": [
-        "no_abort"
+        "single_sector"
       ],
       "image_hash_matches": {
         "na": 2
       },
       "kind": "fault_anomaly",
       "otadata_drift": {
-        "none": 2
+        "suspicious_failure": 2
       },
       "profile_count": 1,
       "scenarios": [
-        "upgrade"
-      ],
-      "score": 6.591674,
-      "severity": 3,
-      "signature": {
-        "fault_type": "w",
-        "outcome": "no_boot",
-        "phase": "early"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_abort_rollback_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "staging": 2
-      },
-      "case_count": 2,
-      "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 2,
-      "defect_kinds": [
-        "no_abort"
-      ],
-      "image_hash_matches": {
-        "na": 2
-      },
-      "kind": "fault_anomaly",
-      "otadata_drift": {
-        "none": 2
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "rollback_guard"
-      ],
-      "score": 6.591674,
-      "severity": 3,
-      "signature": {
-        "fault_type": "w",
-        "outcome": "no_boot",
-        "phase": "late"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_abort_rollback_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "staging": 2
-      },
-      "case_count": 2,
-      "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 2,
-      "defect_kinds": [
-        "no_abort"
-      ],
-      "image_hash_matches": {
-        "na": 2
-      },
-      "kind": "fault_anomaly",
-      "otadata_drift": {
-        "none": 2
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "rollback_guard"
+        "ss_guard"
       ],
       "score": 6.591674,
       "severity": 3,
       "signature": {
         "fault_type": "e",
         "outcome": "no_boot",
+        "phase": "single"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 1,
+        "staging": 4
+      },
+      "case_count": 5,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 5,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_abort",
+        "no_crc",
+        "single_sector"
+      ],
+      "image_hash_matches": {
+        "na": 5
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 3,
+        "suspicious_failure": 2
+      },
+      "profile_count": 5,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 5.375278,
+      "severity": 3,
+      "signature": {
+        "fault_type": "b",
+        "outcome": "no_boot",
         "phase": "early"
       }
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_abort_rollback_guard"
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_schema_guard"
       ],
       "base_roles": [
+        "baseline",
         "defect"
       ],
       "boot_slots": {
-        "staging": 2
+        "exec": 1,
+        "staging": 4
       },
-      "case_count": 2,
+      "case_count": 5,
       "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile"
       ],
-      "count": 2,
+      "count": 5,
       "defect_kinds": [
-        "no_abort"
+        "crc_covers_state",
+        "no_abort",
+        "no_crc",
+        "single_sector"
       ],
       "image_hash_matches": {
-        "na": 2
+        "na": 5
       },
       "kind": "fault_anomaly",
       "otadata_drift": {
-        "none": 2
+        "none": 3,
+        "suspicious_failure": 2
       },
-      "profile_count": 1,
+      "profile_count": 5,
       "scenarios": [
-        "rollback_guard"
+        "crc_guard",
+        "crc_schema_guard",
+        "rollback_guard",
+        "ss_guard"
       ],
-      "score": 6.591674,
+      "score": 5.375278,
       "severity": 3,
       "signature": {
-        "fault_type": "e",
+        "fault_type": "b",
         "outcome": "no_boot",
-        "phase": "late"
+        "phase": "mid"
       }
     },
     {
@@ -3113,23 +4192,24 @@
     {
       "base_profiles": [
         "esp_idf_fault_no_abort_rollback_guard",
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
         "defect"
       ],
       "boot_slots": {
-        "staging": 2
+        "exec": 1,
+        "staging": 1
       },
       "case_count": 2,
       "case_ids": [
         "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
       "count": 2,
       "defect_kinds": [
         "no_abort",
-        "no_crc"
+        "single_sector"
       ],
       "image_hash_matches": {
         "na": 2
@@ -3141,57 +4221,15 @@
       },
       "profile_count": 2,
       "scenarios": [
-        "crc_guard",
-        "rollback_guard"
+        "rollback_guard",
+        "ss_guard"
       ],
       "score": 3.295837,
       "severity": 3,
       "signature": {
         "fault_type": "b",
         "outcome": "no_boot",
-        "phase": "early"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_abort_rollback_guard",
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "staging": 2
-      },
-      "case_count": 2,
-      "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 2,
-      "defect_kinds": [
-        "no_abort",
-        "no_crc"
-      ],
-      "image_hash_matches": {
-        "na": 2
-      },
-      "kind": "fault_anomaly",
-      "otadata_drift": {
-        "none": 1,
-        "suspicious_failure": 1
-      },
-      "profile_count": 2,
-      "scenarios": [
-        "crc_guard",
-        "rollback_guard"
-      ],
-      "score": 3.295837,
-      "severity": 3,
-      "signature": {
-        "fault_type": "b",
-        "outcome": "no_boot",
-        "phase": "mid"
+        "phase": "late"
       }
     },
     {
@@ -3381,69 +4419,38 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_abort_rollback_guard"
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
         "defect"
       ],
       "boot_slots": {
-        "staging": 1
-      },
-      "case_count": 1,
-      "case_ids": [
-        "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 1,
-      "defect_kinds": [
-        "no_abort"
-      ],
-      "image_hash_matches": {
-        "na": 1
-      },
-      "kind": "fault_anomaly",
-      "otadata_drift": {
-        "none": 1
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "rollback_guard"
-      ],
-      "score": 2.079442,
-      "severity": 3,
-      "signature": {
-        "fault_type": "b",
-        "outcome": "no_boot",
-        "phase": "late"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
+        "exec": 2,
         "staging": 2
       },
-      "case_count": 2,
+      "case_count": 4,
       "case_ids": [
         "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
-      "count": 2,
+      "count": 4,
       "defect_kinds": [
-        "no_crc"
+        "no_crc",
+        "single_sector"
       ],
       "kind": "otadata_drift",
       "outcomes": {
-        "no_boot": 2
+        "no_boot": 4
       },
-      "profile_count": 1,
+      "profile_count": 2,
       "scenarios": [
-        "crc_guard"
+        "crc_guard",
+        "ss_guard"
       ],
-      "score": 1.647918,
+      "score": 2.414157,
       "severity": 3,
       "signature": {
         "drift_class": "suspicious_failure",
@@ -3453,7 +4460,113 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "no_boot": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "ss_guard"
+      ],
+      "score": 1.647918,
+      "severity": 3,
+      "signature": {
+        "drift_class": "suspicious_failure",
+        "fault_type": "w",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "no_boot": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "ss_guard"
+      ],
+      "score": 1.647918,
+      "severity": 3,
+      "signature": {
+        "drift_class": "suspicious_failure",
+        "fault_type": "w",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "no_boot": 2
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "ss_guard"
+      ],
+      "score": 1.647918,
+      "severity": 3,
+      "signature": {
+        "drift_class": "suspicious_failure",
+        "fault_type": "e",
+        "phase": "single"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard",
         "esp_idf_ota_rollback_guard"
       ],
       "base_roles": [
@@ -3461,29 +4574,32 @@
         "defect"
       ],
       "boot_slots": {
-        "exec": 1,
+        "exec": 2,
         "staging": 1
       },
-      "case_count": 2,
+      "case_count": 3,
       "case_ids": [
         "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
         "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
       ],
-      "count": 2,
+      "count": 3,
       "defect_kinds": [
-        "no_crc"
+        "no_crc",
+        "single_sector"
       ],
       "kind": "otadata_drift",
       "outcomes": {
-        "no_boot": 1,
+        "no_boot": 2,
         "wrong_image": 1
       },
-      "profile_count": 2,
+      "profile_count": 3,
       "scenarios": [
         "crc_guard",
-        "rollback_guard"
+        "rollback_guard",
+        "ss_guard"
       ],
-      "score": 0.823959,
+      "score": 1.039721,
       "severity": 3,
       "signature": {
         "drift_class": "suspicious_failure",
@@ -3493,21 +4609,60 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
         "defect"
       ],
       "boot_slots": {
+        "exec": 1,
         "staging": 1
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "no_crc",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "no_boot": 2
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_guard",
+        "ss_guard"
+      ],
+      "score": 0.823959,
+      "severity": 3,
+      "signature": {
+        "drift_class": "suspicious_failure",
+        "fault_type": "b",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 1
       },
       "case_count": 1,
       "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile"
       ],
       "count": 1,
       "defect_kinds": [
-        "no_crc"
+        "single_sector"
       ],
       "kind": "otadata_drift",
       "outcomes": {
@@ -3515,14 +4670,14 @@
       },
       "profile_count": 1,
       "scenarios": [
-        "crc_guard"
+        "ss_guard"
       ],
       "score": 0.51986,
       "severity": 3,
       "signature": {
         "drift_class": "suspicious_failure",
         "fault_type": "b",
-        "phase": "early"
+        "phase": "late"
       }
     },
     {
@@ -3573,8 +4728,10 @@
     "max_cases": 0,
     "profile_patterns": [
       "profiles/esp_idf_ota_upgrade.yaml",
+      "profiles/esp_idf_ota_crc_schema_guard.yaml",
       "profiles/esp_idf_ota_rollback.yaml",
       "profiles/esp_idf_ota_rollback_guard.yaml",
+      "profiles/esp_idf_ota_ss_guard.yaml",
       "profiles/esp_idf_ota_no_rollback.yaml",
       "profiles/esp_idf_ota_crc_guard.yaml",
       "profiles/esp_idf_fault_*.yaml"
@@ -3584,6 +4741,72 @@
     "workers": 1
   },
   "defect_deltas": [
+    {
+      "baseline_case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+      "defect_kind": "single_sector",
+      "defect_metrics": {
+        "brick_rate": 1.0,
+        "control_mismatch": true,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 1.0
+      },
+      "delta_score": 11.2,
+      "deltas": {
+        "anomalous_points": 7,
+        "brick_rate": 1.0,
+        "control_mismatch": 1,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 1.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "ss_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_ss_guard__f_profile__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+      "defect_kind": "single_sector",
+      "defect_metrics": {
+        "brick_rate": 1.0,
+        "control_mismatch": true,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 1.0
+      },
+      "delta_score": 10.9,
+      "deltas": {
+        "anomalous_points": 4,
+        "brick_rate": 1.0,
+        "control_mismatch": 1,
+        "failure_rate": 1.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 1.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "ss_guard"
+    },
     {
       "baseline_case_id": "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
       "baseline_metrics": {
@@ -3781,6 +5004,72 @@
       "direction": "worse",
       "fault_preset": "write_erase_bit",
       "scenario_tag": "upgrade"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.5,
+        "control_mismatch": false,
+        "failure_rate": 0.5,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+      "defect_kind": "crc_covers_state",
+      "defect_metrics": {
+        "brick_rate": 0.5,
+        "control_mismatch": true,
+        "failure_rate": 0.5,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 4.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 1,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "crc_schema_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile",
+      "baseline_metrics": {
+        "brick_rate": 0.555556,
+        "control_mismatch": false,
+        "failure_rate": 0.555556,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "profile",
+      "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+      "defect_kind": "crc_covers_state",
+      "defect_metrics": {
+        "brick_rate": 0.555556,
+        "control_mismatch": true,
+        "failure_rate": 0.555556,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 4.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 1,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "crc_schema_guard"
     },
     {
       "baseline_case_id": "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
@@ -4045,6 +5334,72 @@
       "direction": "same",
       "fault_preset": "write_erase_bit",
       "scenario_tag": "upgrade"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 0.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 0,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "same",
+      "fault_preset": "profile",
+      "scenario_tag": "crc_schema_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "defect_kind": "crc_covers_state",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 0.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 0,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "same",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "crc_schema_guard"
     },
     {
       "baseline_case_id": "esp_idf_ota_upgrade__f_profile__c_image_hash_exec",
@@ -4507,9 +5862,75 @@
       "direction": "same",
       "fault_preset": "write_erase_bit",
       "scenario_tag": "upgrade"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+      "defect_kind": "single_sector",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 0.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 0,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "same",
+      "fault_preset": "profile",
+      "scenario_tag": "ss_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "image_hash_exec",
+      "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "defect_kind": "single_sector",
+      "defect_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 0.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 0,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "same",
+      "fault_preset": "write_erase_bit",
+      "scenario_tag": "ss_guard"
     }
   ],
-  "generated_at_utc": "2026-02-28T043208Z",
+  "generated_at_utc": "2026-02-28T060751Z",
   "otadata_allowlist": {
     "crc_guard": {
       "profile|image_hash_exec": [
@@ -4527,6 +5948,24 @@
       "write_erase_bit|profile": [
         "suspicious_active_entry",
         "suspicious_crc"
+      ]
+    },
+    "crc_schema_guard": {
+      "profile|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "profile|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
       ]
     },
     "no_rollback": {
@@ -4569,6 +6008,24 @@
       "write_erase_bit|profile": [
         "suspicious_crc",
         "suspicious_seq"
+      ]
+    },
+    "ss_guard": {
+      "profile|image_hash_exec": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "profile|profile": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_active_entry",
+        "suspicious_crc"
       ]
     },
     "upgrade": {
@@ -4616,6 +6073,90 @@
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json",
       "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 3,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5555555555555556,\n      \"bricks\": 5,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 5\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
     },
     {
       "case_id": "esp_idf_fault_no_abort__f_profile__c_profile",
@@ -4786,6 +6327,90 @@
       "status": "reused"
     },
     {
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_profile__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_fault_single_sector_ss_guard__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 4,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 4\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000F8000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x000F8018\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x000F801C\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 4,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 7,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 7\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x000F8000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x000F8018\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x000F801C\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 7,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+    },
+    {
       "case_id": "esp_idf_ota_crc_guard__f_profile__c_profile",
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_profile__c_profile.json",
@@ -4808,6 +6433,90 @@
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec.json",
       "status": "reused"
+    },
+    {
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_profile__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_ota_crc_schema_guard__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 3,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 3 (50.0%)\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 6,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5555555555555556,\n      \"bricks\": 5,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 5\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 4,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 5 (55.6%)\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 51e69f3509b1ad34...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 9 fault points (3 writes + 3 erases + 3 bit-corrupt) for 'esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 9,\n      \"total_fault_points\": 9\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
     },
     {
       "case_id": "esp_idf_ota_no_rollback__f_profile__c_profile",
@@ -4882,6 +6591,90 @@
       "status": "reused"
     },
     {
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_profile__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_profile__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_ota_ss_guard__f_profile__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_profile__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 4,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_ota_ss_guard__f_profile__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_ota_ss_guard__f_profile__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_profile__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 4,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_write_erase_bit__c_profile'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_ota_ss_guard__f_write_erase_bit__c_profile'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_write_erase_bit__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 7,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.json",
+      "status": "ok",
+      "stderr_tail": "Discovery mode: image hash validation enabled.\nCalibrating write count for 'esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec'...\nCalibration: exec slot hash = 6dabedafc12f6d64...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 7 fault points (3 writes + 1 erases + 3 bit-corrupt) for 'esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 7,\n      \"total_fault_points\": 7\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
       "case_id": "esp_idf_ota_upgrade__f_profile__c_profile",
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_upgrade__f_profile__c_profile.json",
@@ -4907,16 +6700,16 @@
     }
   ],
   "totals": {
-    "anomalous_points_total": 30,
-    "cases_control_mismatch": 6,
+    "anomalous_points_total": 57,
+    "cases_control_mismatch": 10,
     "cases_missing_report": 0,
-    "cases_total": 52,
-    "cases_with_report": 52,
-    "otadata_allowlist_lanes": 20,
-    "otadata_allowlist_scenarios": 5,
-    "otadata_allowlisted_points_total": 138,
-    "otadata_drift_points_total": 164,
-    "otadata_suspicious_drift_points_total": 26,
-    "otadata_transition_points_total": 138
+    "cases_total": 68,
+    "cases_with_report": 68,
+    "otadata_allowlist_lanes": 28,
+    "otadata_allowlist_scenarios": 7,
+    "otadata_allowlisted_points_total": 191,
+    "otadata_drift_points_total": 228,
+    "otadata_suspicious_drift_points_total": 37,
+    "otadata_transition_points_total": 191
   }
 }

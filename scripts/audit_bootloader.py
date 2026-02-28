@@ -283,7 +283,7 @@ def run_batch(
 
     # Determine fault_types mode for the .resc.
     erase_types = {'e', 'a'}
-    write_types = {'w', 'b', 's', 'd', 'l'}
+    write_types = {'w', 'b', 's', 'd', 'l', 'r', 't'}
     has_erase = bool(fault_types_list and any(ft in erase_types for ft in fault_types_list))
     has_write = bool(fault_types_list and any(ft in write_types for ft in fault_types_list))
     if has_erase and has_write:
@@ -781,10 +781,13 @@ def main() -> int:
             "interrupted_erase" in fault_types
             or "multi_sector_atomicity" in fault_types
         )
+        include_power_loss = "power_loss" in fault_types
         include_bit_corruption = "bit_corruption" in fault_types
         include_silent_write_failure = "silent_write_failure" in fault_types
         include_write_disturb = "write_disturb" in fault_types
         include_wear_leveling = "wear_leveling_corruption" in fault_types
+        include_write_rejection = "write_rejection" in fault_types
+        include_reset_at_time = "reset_at_time" in fault_types
         include_multi_sector_atomicity = "multi_sector_atomicity" in fault_types
 
         # Pass fault_types to calibration so erase trace is captured.
@@ -908,7 +911,8 @@ def main() -> int:
         # Build combined fault point list.
         # Each fault point has a type:
         #   'w' write power-loss, 'b' bit corruption, 's' silent write failure,
-        #   'd' write disturb, 'l' wear-leveling corruption,
+        #   'r' write rejection, 'd' write disturb,
+        #   'l' wear-leveling corruption, 't' reset-at-time,
         #   'e' interrupted erase, 'a' multi-sector atomicity fault.
         fault_types_list: Optional[List[str]] = None
         has_mixed_types = (
@@ -917,9 +921,13 @@ def main() -> int:
             or include_silent_write_failure
             or include_write_disturb
             or include_wear_leveling
+            or include_write_rejection
+            or include_reset_at_time
         )
         if has_mixed_types:
-            write_fps = [(fp, 'w') for fp in fault_points]
+            write_fps: List[Tuple[int, str]] = []
+            if include_power_loss:
+                write_fps = [(fp, 'w') for fp in fault_points]
             combined = list(write_fps)
 
             # Add erase-based fault points.
@@ -969,6 +977,22 @@ def main() -> int:
                 combined += [(wp, 'l') for wp in wear_fps]
                 wear_count = len(wear_fps)
 
+            rejection_count = 0
+            if include_write_rejection:
+                rejection_fps = list(fault_points)
+                if args.quick:
+                    rejection_fps = quick_subset(rejection_fps)
+                combined += [(rp, 'r') for rp in rejection_fps]
+                rejection_count = len(rejection_fps)
+
+            timed_reset_count = 0
+            if include_reset_at_time:
+                timed_reset_fps = list(fault_points)
+                if args.quick:
+                    timed_reset_fps = quick_subset(timed_reset_fps)
+                combined += [(tp, 't') for tp in timed_reset_fps]
+                timed_reset_count = len(timed_reset_fps)
+
             fault_points = [fp for fp, _ in combined]
             fault_types_list = [ft for _, ft in combined]
             parts = ["{} writes".format(len(write_fps))]
@@ -984,6 +1008,10 @@ def main() -> int:
                 parts.append("{} disturb".format(disturb_count))
             if wear_count:
                 parts.append("{} wear-level".format(wear_count))
+            if rejection_count:
+                parts.append("{} write-reject".format(rejection_count))
+            if timed_reset_count:
+                parts.append("{} timed-reset".format(timed_reset_count))
             print(
                 "Running {} fault points ({}) for '{}'...".format(
                     len(fault_points),

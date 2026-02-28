@@ -1,0 +1,251 @@
+{
+  "calibrated_erases": 1,
+  "calibrated_writes": 3,
+  "engine": "renode-test",
+  "execution": {
+    "artifacts_dir": "temporary",
+    "campaign_command": "python3 /Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py --profile /Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.yaml --output /Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test --no-assert-control-boots --no-assert-verdict --quick",
+    "run_utc": "2026-02-28T06:11:23Z",
+    "workers": 1
+  },
+  "expect": {
+    "brick_rate_min": 0.0,
+    "should_find_issues": true
+  },
+  "fault_points_tested": 4,
+  "git": {
+    "commit": "a8165f5cbeb78701aa266938f87e9325f6de6a29",
+    "dirty": "true",
+    "short_commit": "a8165f5"
+  },
+  "heuristic": null,
+  "profile": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
+  "profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/profiles/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.yaml",
+  "quick": true,
+  "runtime_sweep_results": [
+    {
+      "actual_writes": 0,
+      "boot_outcome": "no_boot",
+      "boot_slot": "exec",
+      "fault_address": "0x000F8000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "otadata0_crc": "0xFFFFFFFF",
+        "otadata0_seq": "0xFFFFFFFF",
+        "otadata0_state": "0xFFFFFFFF",
+        "otadata0_state_name": "UNDEFINED",
+        "otadata1_crc": "0x55F63774",
+        "otadata1_seq": "0x00000002",
+        "otadata1_state": "0x00000002",
+        "otadata1_state_name": "VALID",
+        "otadata_active_entry": "entry0",
+        "otadata_available": true,
+        "otadata_digest": "FFFFFFFF:FFFFFFFF:FFFFFFFF|00000002:00000002:55F63774",
+        "otadata_expect_enforced": false,
+        "otadata_expect_ok": true,
+        "otadata_expect_scope": "always",
+        "pc": "0x0000C054",
+        "pc_ok": true,
+        "phase1_ms": 13,
+        "phase2_ms": 329,
+        "vtor": "0x0000C000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 1,
+      "boot_outcome": "no_boot",
+      "boot_slot": "exec",
+      "fault_address": "0x000F8018",
+      "fault_at": 1,
+      "fault_injected": true,
+      "fault_requested": 1,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "otadata0_crc": "0xFFFFFFFF",
+        "otadata0_seq": "0x00000001",
+        "otadata0_state": "0xFFFFFFFF",
+        "otadata0_state_name": "UNDEFINED",
+        "otadata1_crc": "0x55F63774",
+        "otadata1_seq": "0x00000002",
+        "otadata1_state": "0x00000002",
+        "otadata1_state_name": "VALID",
+        "otadata_active_entry": "entry1",
+        "otadata_available": true,
+        "otadata_digest": "00000001:FFFFFFFF:FFFFFFFF|00000002:00000002:55F63774",
+        "otadata_expect_enforced": false,
+        "otadata_expect_ok": true,
+        "otadata_expect_scope": "always",
+        "pc": "0x0000C054",
+        "pc_ok": true,
+        "phase1_ms": 5,
+        "phase2_ms": 106,
+        "vtor": "0x0000C000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 2,
+      "boot_outcome": "no_boot",
+      "boot_slot": "exec",
+      "fault_address": "0x000F801C",
+      "fault_at": 2,
+      "fault_injected": true,
+      "fault_requested": 2,
+      "fault_type": "w",
+      "is_control": false,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "otadata0_crc": "0xFFFFFFFF",
+        "otadata0_seq": "0x00000001",
+        "otadata0_state": "0x00000004",
+        "otadata0_state_name": "ABORTED",
+        "otadata1_crc": "0x55F63774",
+        "otadata1_seq": "0x00000002",
+        "otadata1_state": "0x00000002",
+        "otadata1_state_name": "VALID",
+        "otadata_active_entry": "entry1",
+        "otadata_available": true,
+        "otadata_digest": "00000001:00000004:FFFFFFFF|00000002:00000002:55F63774",
+        "otadata_expect_enforced": false,
+        "otadata_expect_ok": true,
+        "otadata_expect_scope": "always",
+        "pc": "0x0000C054",
+        "pc_ok": true,
+        "phase1_ms": 4,
+        "phase2_ms": 106,
+        "vtor": "0x0000C000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 1,
+      "boot_outcome": "no_boot",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 0,
+      "fault_injected": true,
+      "fault_requested": 0,
+      "fault_type": "e",
+      "is_control": false,
+      "recovery_writes": 0,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "otadata0_crc": "0xFFFFFFFF",
+        "otadata0_seq": "0xFFFFFFFF",
+        "otadata0_state": "0xFFFFFFFF",
+        "otadata0_state_name": "UNDEFINED",
+        "otadata1_crc": "0x55F63774",
+        "otadata1_seq": "0x00000002",
+        "otadata1_state": "0x00000002",
+        "otadata1_state_name": "VALID",
+        "otadata_active_entry": "entry0",
+        "otadata_available": true,
+        "otadata_digest": "FFFFFFFF:FFFFFFFF:FFFFFFFF|00000002:00000002:55F63774",
+        "otadata_expect_enforced": false,
+        "otadata_expect_ok": true,
+        "otadata_expect_scope": "always",
+        "pc": "0x0000C054",
+        "pc_ok": true,
+        "vtor": "0x0000C000",
+        "vtor_ok": false
+      }
+    },
+    {
+      "actual_writes": 3,
+      "boot_outcome": "no_boot",
+      "boot_slot": "exec",
+      "fault_address": "0x00000000",
+      "fault_at": 1000000,
+      "fault_injected": false,
+      "fault_requested": 1000000,
+      "fault_type": "w",
+      "is_control": true,
+      "signals": {
+        "marker_actual": "0x00000000",
+        "marker_ok": true,
+        "otadata0_crc": "0x4743989A",
+        "otadata0_seq": "0x00000001",
+        "otadata0_state": "0x00000004",
+        "otadata0_state_name": "ABORTED",
+        "otadata1_crc": "0x55F63774",
+        "otadata1_seq": "0x00000002",
+        "otadata1_state": "0x00000002",
+        "otadata1_state_name": "VALID",
+        "otadata_active_entry": "entry1",
+        "otadata_available": true,
+        "otadata_digest": "00000001:00000004:4743989A|00000002:00000002:55F63774",
+        "otadata_expect_enforced": false,
+        "otadata_expect_ok": true,
+        "otadata_expect_scope": "always",
+        "pc": "0x0000C054",
+        "pc_ok": true,
+        "vtor": "0x0000C000",
+        "vtor_ok": false
+      }
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "runtime_sweep": {
+      "brick_rate": 1.0,
+      "bricks": 4,
+      "control": {
+        "boot_outcome": "no_boot",
+        "boot_slot": "exec"
+      },
+      "discarded_no_fault_fired": 0,
+      "failure_outcomes": {
+        "no_boot": 4
+      },
+      "failures": [
+        {
+          "fault_address": "0x000F8000",
+          "fault_at": 0,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.0,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x000F8018",
+          "fault_at": 1,
+          "outcome": "no_boot",
+          "phase": "mid",
+          "position_pct": 33.33,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x000F801C",
+          "fault_at": 2,
+          "outcome": "no_boot",
+          "phase": "mid",
+          "position_pct": 66.67,
+          "region": "unknown"
+        },
+        {
+          "fault_address": "0x00000000",
+          "fault_at": 0,
+          "outcome": "no_boot",
+          "phase": "early",
+          "position_pct": 0.0,
+          "region": "unknown"
+        }
+      ],
+      "recoveries": 0,
+      "total_fault_points": 4
+    }
+  },
+  "verdict": "PASS"
+}

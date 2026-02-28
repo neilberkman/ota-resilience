@@ -11,7 +11,7 @@ A Renode-based fault injection testbed for OTA firmware updates. It simulates po
 ## Architecture Overview
 
 ```
-profiles/*.yaml          -- Declarative bootloader profiles (53 total: 45 self-test + 8 exploratory)
+profiles/*.yaml          -- Declarative bootloader profiles (self-test + exploratory lanes)
     |
     v
 scripts/profile_loader.py  -- Parses YAML, generates robot variables
@@ -62,7 +62,7 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Main has the exploratory matrix stack through OtaData drift de-emphasis and scenario allowlisting, with the latest batch adding OtaData success-criteria assertions and rollback-guard exploratory profiles.
+- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), and extended ESP guard profile pairs.
 - Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -209,13 +209,44 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Focused matrix confirmation (2-case lane):
      - `5` clusters, `1` defect delta, top delta score `5.1`
      - Artifact: `results/exploratory/2026-02-28-esp-idf-rollback-guard-matrix-v2/`
-   - Full ESP matrix refresh with new guard profiles included:
+   - Initial full ESP matrix refresh with new guard profiles included:
      - `52` cases, `25` clusters, `6` control mismatches, `28` defect deltas
      - `otadata_allowlist_scenarios=5`, `otadata_allowlist_lanes=20`, `otadata_allowlisted_points_total=138`
      - Artifact: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
    - Tightened allowlist scope in `run_exploratory_matrix.py`:
      - OtaData allowlists are now keyed by `scenario + fault_preset + criteria_preset` lane (not scenario-wide only).
      - Prevents cross-lane baseline drift from over-normalizing suspicious classes in unrelated lanes.
+
+14. **New runtime fault types + OtaData scope control (2026-02-28, latest batch)**:
+   - Implemented and wired end-to-end:
+     - `write_rejection` (`fault_type='r'`, `WriteFaultMode=3`) — rejects the target write, leaving pre-write word intact.
+     - `reset_at_time` (`fault_type='t'`) — deterministic time-based reset during phase-1 execution, then recovery boot.
+   - Added `success_criteria.otadata_expect_scope` (`always` or `control`):
+     - Parsed in `scripts/profile_loader.py`, passed through Robot vars, enforced in `scripts/run_runtime_fault_sweep.resc`.
+     - `control` scope enforces OtaData assertions only on control boots, avoiding false positives on injected-fault points.
+   - Quick smoke reports:
+     - `esp_idf_ota_upgrade_write_rejection`: `0/3` bricks, control `success/exec` (PASS)
+     - `esp_idf_ota_upgrade_reset_at_time`: `0/3` bricks, control `success/exec` (PASS)
+   - Focused preset smoke matrix (`write_reject` + `time_reset`) remains clean:
+     - `2` cases, `0` clusters, `0` control mismatches.
+   - Artifacts:
+     - `results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types/*.quick.json`
+     - `results/exploratory/2026-02-28-esp-idf-faulttype-preset-smoke/`
+
+15. **Extended guard pairs + matrix refresh (2026-02-28, latest batch)**:
+   - Added exploratory baseline/defect guard pairs:
+     - `esp_idf_ota_ss_guard` vs `esp_idf_fault_single_sector_ss_guard`
+     - `esp_idf_ota_crc_schema_guard` vs `esp_idf_fault_crc_covers_state_crc_schema_guard`
+   - Quick differential outcomes:
+     - `ss_guard`: baseline `0/4` bricks (`success/staging`) vs defect `4/4` bricks (`no_boot/exec`).
+     - `crc_schema_guard`: baseline control `success/exec` with `3/6` brick faults; defect control `wrong_image/exec` with `3/6` brick faults (control mismatch differential).
+   - Focused guard matrix:
+     - `4` cases, `12` clusters, `2` control mismatches, `2` defect deltas.
+     - Artifact: `results/exploratory/2026-02-28-esp-idf-extended-guards-matrix/`
+   - Full ESP matrix refresh (`--reuse-existing`) with expanded default profile set:
+     - `68` cases, `32` clusters, `10` control mismatches, `36` defect deltas.
+     - `otadata_allowlist_scenarios=7`, `otadata_allowlist_lanes=28`, `otadata_allowlisted_points_total=191`.
+     - Artifact refreshed: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
 ### Bootloader Coverage
 
@@ -229,7 +260,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
 | MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
 | MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
-| ESP-IDF OTA           | Model                    | 14 (6 baseline + 8 defect-focused variants)                      | Clean-room otadata + copy-on-boot stress path  |
+| ESP-IDF OTA           | Model                    | 20 (10 baseline + 10 defect-focused variants)                    | Clean-room otadata + copy-on-boot stress path  |
 
 ## Files You Need to Know
 
@@ -287,14 +318,14 @@ Implemented in `NRF52NVMC.cs` and dispatched via the profile's `fault_types` lis
 | `wear_leveling_corruption` | `'l'` | Yes      | Target write commits, then deterministic page-local aging bit errors are injected.                                                    |
 | `interrupted_erase`      | `'e'` | Yes        | Partial erase at Nth erase: first half 0xFF, second half untouched.                                                                   |
 | `multi_sector_atomicity` | `'a'` | Yes        | Partial erase on target page plus neighboring-page damage (cross-sector inconsistency).                                               |
-| `write_rejection`        | —     | No         | Future: explicit erase-before-write rejection semantics.                                                                               |
-| `reset_at_time`          | —     | No         | Future: arbitrary-time reset, not just at write/erase boundaries.                                                                     |
+| `write_rejection`        | `'r'` | Yes        | Rejects the target write at the fault index (keeps pre-write word), then recovery boot evaluates downstream behavior.                |
+| `reset_at_time`          | `'t'` | Yes        | Injects a deterministic time-based reset during phase-1 execution (not tied to write/erase boundaries), then evaluates recovery boot. |
 
 ### Bit Corruption Details (committed)
 
 `NRF52NVMC.cs` properties:
 
-- `WriteFaultMode`: 0 = power_loss (default), 1 = bit_corruption
+- `WriteFaultMode`: 0 = power_loss, 1 = bit_corruption, 2 = silent_write_failure, 3 = write_rejection, 4 = write_disturb, 5 = wear_leveling_corruption
 - `CorruptionSeed`: deterministic PRNG seed (0 = use TotalWordWrites)
 
 NOR flash physics: erased = all 1s. Programming flips bits 1→0. Interrupted programming = only SOME intended 1→0 transitions complete. Implementation: `corruptedWord = oldWord & ~(bitsToFlip & prgn_mask)` where `bitsToFlip = oldWord & ~newWord`.
@@ -524,6 +555,56 @@ python3 scripts/run_exploratory_matrix.py \
   --quick \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --output-dir results/exploratory/2026-02-28-esp-idf-rollback-guard-matrix-v2
+
+# New fault-type quick smoke (`write_rejection` + `reset_at_time`)
+mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types
+for p in \
+  esp_idf_ota_upgrade_write_rejection \
+  esp_idf_ota_upgrade_reset_at_time; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --no-assert-control-boots \
+    --no-assert-verdict \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+    --output "results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types/${p}.quick.json"
+done
+
+# Extended guard quick batch (`ss_guard` + `crc_schema_guard`)
+mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-extended-guards
+for p in \
+  esp_idf_ota_ss_guard \
+  esp_idf_fault_single_sector_ss_guard \
+  esp_idf_ota_crc_schema_guard \
+  esp_idf_fault_crc_covers_state_crc_schema_guard; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --no-assert-control-boots \
+    --no-assert-verdict \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+    --output "results/oss_validation/reports/2026-02-28-esp-idf-extended-guards/${p}.quick.json"
+done
+
+# Focused matrix for new guard pairs
+python3 scripts/run_exploratory_matrix.py \
+  --output-dir results/exploratory/2026-02-28-esp-idf-extended-guards-matrix \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --profile profiles/esp_idf_ota_ss_guard.yaml \
+  --profile profiles/esp_idf_fault_single_sector_ss_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml \
+  --fault-preset profile \
+  --criteria-preset profile
+
+# Refresh full discovery matrix with new default profiles (reuse old reports)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --include-defect-profiles \
+  --reuse-existing \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
 ```
 
 ## What Needs To Be Done
@@ -545,26 +626,30 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Added explicit OtaData assertion support (`success_criteria.otadata_expect`) and a rollback guard pair:
   - `esp_idf_ota_rollback_guard` (baseline) vs `esp_idf_fault_no_abort_rollback_guard` (defect)
   - Quick differential: baseline `0/4` bricks vs defect `5/5` bricks.
+- Added `success_criteria.otadata_expect_scope` (`always` or `control`) to scope OtaData assertions per lane.
+- Added two more exploratory guard pairs with quick differential evidence:
+  - `ss_guard`: `esp_idf_ota_ss_guard` vs `esp_idf_fault_single_sector_ss_guard` (`0/4` vs `4/4` bricks).
+  - `crc_schema_guard`: `esp_idf_ota_crc_schema_guard` vs `esp_idf_fault_crc_covers_state_crc_schema_guard` (control mismatch differential: `success/exec` vs `wrong_image/exec`).
 
 **Remaining gap:**
 
-- Differential evidence now exists for `no_crc` (CRC guard) and `no_abort` (rollback guard), but coverage is still narrow.
-- High-write copy-path differentials are still missing for `no_crc`, and other ESP defects remain mostly non-differential.
+- Differential evidence now exists for `no_crc` (CRC guard), `no_abort` (rollback guard), `single_sector` (`ss_guard`), and `crc_covers_state` (`crc_schema_guard`).
+- High-write copy-path differentials are still missing for `no_crc`, and `no_fallback` still needs a strong guard-style differential lane.
 
 **High-value next steps:**
 
-- Build equivalent guard-style differential pairs for `no_fallback`, `crc_covers_state`, and `single_sector` (same pattern now used for `no_abort`).
-- Expand `otadata_expect` usage to additional baseline/defect scenarios and add a matrix criteria preset that enforces OtaData assertions consistently.
+- Build a guard-style differential pair for `no_fallback` with explicit control-outcome divergence.
+- Expand `otadata_expect` usage and add a matrix criteria preset for OtaData-asserted lanes (including scope-aware control-only checks).
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
+- Add higher-sample sweeps for `write_rejection` and `reset_at_time` lanes (beyond 3-point quick probes) to verify these fault types expose meaningful defect deltas.
 - Add per-lane minimum-sample thresholds for auto-allowlisting (avoid overfitting when baseline lane coverage is sparse).
 
 ### 3. More Fault Types
 
 User explicitly requested ("uh can we do all of this?!?!?"):
 
-- Implemented and wired end-to-end: `silent_write_failure`, `write_disturb`, `multi_sector_atomicity`, `wear_leveling_corruption` (plus existing `power_loss`, `bit_corruption`, `interrupted_erase`).
-- Remaining TODO fault types: `write_rejection`, `reset_at_time`.
-- Practical next step is profile coverage: add targeted defect profiles that specifically benefit from each new mode, then validate with quick differential runs.
+- Implemented and wired end-to-end: `power_loss`, `bit_corruption`, `silent_write_failure`, `write_rejection`, `write_disturb`, `wear_leveling_corruption`, `interrupted_erase`, `multi_sector_atomicity`, `reset_at_time`.
+- Practical next step is coverage depth: run targeted differential lanes where each non-default mode (`b/s/r/d/l/t`) is expected to reveal defect-specific behavior.
 
 ### 4. Additional Real-World Bootloader Differentials
 
@@ -595,7 +680,7 @@ Currently MCUboot is the ONLY real (non-model) bootloader tested. All others are
 
 ### 6. CI / GitHub Actions
 
-PR #1 is open (or was). The self-test should run in CI. Current blocker: Renode binary distribution for CI. May need to use Renode's Docker image or download the portable release.
+Direct-to-main workflow is currently in use. The remaining CI gap is still self-test automation in GitHub Actions; blocker is Renode binary distribution in CI. Likely options: Renode Docker image or portable release download step.
 
 ### 7. Result Visualization / Reporting
 
@@ -643,6 +728,8 @@ Current workflow is direct-to-main (no PR required):
 
 14. **Exploratory matrix should not gate on profile verdict assertions**: `scripts/run_exploratory_matrix.py` now invokes `audit_bootloader.py` with `--no-assert-control-boots --no-assert-verdict`. This keeps discovery lanes from dropping cases due expectation mismatches while still preserving full control/failure signals in report JSON.
 
+15. **`run_exploratory_matrix.py` needs explicit `--renode-test` unless `renode-test` is on PATH**: Without this, cases can all show `nonzero_exit` and `cases_missing_report` due `FileNotFoundError: renode-test executable 'renode-test' not found in PATH`.
+
 ## Profile YAML Schema Quick Reference
 
 ```yaml
@@ -674,6 +761,7 @@ success_criteria:
   # image_hash_slot: exec   # optional: only enforce image_hash when boot_slot matches
   # marker_address: 0x... # optional: app-written marker
   # marker_value: 0x...   # optional
+  # otadata_expect_scope: always # optional: always or control
   # otadata_expect:        # optional: post-boot OtaData signal assertions
   #   otadata_available: true
   #   otadata_active_entry: entry1
@@ -687,7 +775,7 @@ fault_sweep:
   max_writes_cap: 200000
   run_duration: "2.0"
   max_step_limit: 20000000
-  fault_types: [power_loss, interrupted_erase, bit_corruption]
+  fault_types: [power_loss, interrupted_erase, bit_corruption, write_rejection, reset_at_time]
 expect:
   should_find_issues: true
   brick_rate_min: 0.5 # optional minimum brick rate

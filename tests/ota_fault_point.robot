@@ -55,6 +55,7 @@ ${IMAGE_EXEC_SHA256}           ${EMPTY}
 ${IMAGE_STAGING_SHA256}        ${EMPTY}
 ${EXPECTED_EXEC_SHA256}        ${EMPTY}
 ${SUCCESS_OTADATA_EXPECT}      ${EMPTY}
+${SUCCESS_OTADATA_EXPECT_SCOPE}    always
 
 *** Keywords ***
 Load Vulnerable Scenario
@@ -152,6 +153,7 @@ Run Runtime Fault Point
     Execute Command    $image_staging_sha256="${IMAGE_STAGING_SHA256}"
     Execute Command    $expected_exec_sha256="${EXPECTED_EXEC_SHA256}"
     Execute Command    $success_otadata_expect="${SUCCESS_OTADATA_EXPECT}"
+    Execute Command    $success_otadata_expect_scope="${SUCCESS_OTADATA_EXPECT_SCOPE}"
 
     Execute Script    ${ROOT}/scripts/run_runtime_fault_sweep.resc
 

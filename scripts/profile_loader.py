@@ -52,6 +52,8 @@ IMPLEMENTED_FAULT_TYPES = {
     "write_disturb",
     "multi_sector_atomicity",
     "wear_leveling_corruption",
+    "write_rejection",
+    "reset_at_time",
 }
 
 
@@ -97,6 +99,7 @@ class SuccessCriteria:
         "expected_image",
         "image_hash_slot",
         "otadata_expect",
+        "otadata_expect_scope",
     )
 
     def __init__(
@@ -109,6 +112,7 @@ class SuccessCriteria:
         expected_image: Optional[str] = None,
         image_hash_slot: Optional[str] = None,
         otadata_expect: Optional[Dict[str, List[str]]] = None,
+        otadata_expect_scope: str = "always",
     ) -> None:
         self.vtor_in_slot = vtor_in_slot
         self.pc_in_slot = pc_in_slot
@@ -118,6 +122,7 @@ class SuccessCriteria:
         self.expected_image = expected_image
         self.image_hash_slot = image_hash_slot
         self.otadata_expect = otadata_expect or {}
+        self.otadata_expect_scope = otadata_expect_scope
 
 
 class FaultSweepConfig:
@@ -391,6 +396,9 @@ class ProfileConfig:
             vars_list.append("SUCCESS_OTADATA_EXPECT:{}".format(";".join(encoded_entries)))
         else:
             vars_list.append("SUCCESS_OTADATA_EXPECT:")
+        vars_list.append(
+            "SUCCESS_OTADATA_EXPECT_SCOPE:{}".format(sc.otadata_expect_scope or "always")
+        )
 
         # Image hash mode: pre-compute SHA-256 of each image binary.
         # Hash only the data portion (slot_size - page_size), excluding the
@@ -584,6 +592,11 @@ def _parse_memory(raw: Dict[str, Any]) -> MemoryConfig:
 def _parse_success_criteria(raw: Optional[Dict[str, Any]]) -> SuccessCriteria:
     if raw is None:
         return SuccessCriteria()
+    otadata_expect_scope = str(raw.get("otadata_expect_scope", "always")).strip().lower()
+    if otadata_expect_scope not in ("always", "control"):
+        raise ProfileError(
+            "success_criteria.otadata_expect_scope: expected 'always' or 'control'"
+        )
     return SuccessCriteria(
         vtor_in_slot=raw.get("vtor_in_slot"),
         pc_in_slot=raw.get("pc_in_slot"),
@@ -593,6 +606,7 @@ def _parse_success_criteria(raw: Optional[Dict[str, Any]]) -> SuccessCriteria:
         expected_image=raw.get("expected_image"),
         image_hash_slot=raw.get("image_hash_slot"),
         otadata_expect=_parse_otadata_expect(raw.get("otadata_expect")),
+        otadata_expect_scope=otadata_expect_scope,
     )
 
 
@@ -805,6 +819,7 @@ def main() -> int:
         "image_hash": profile.success_criteria.image_hash,
         "image_hash_slot": profile.success_criteria.image_hash_slot,
         "otadata_expect": profile.success_criteria.otadata_expect,
+        "otadata_expect_scope": profile.success_criteria.otadata_expect_scope,
         "update_trigger": profile.update_trigger.type if profile.update_trigger else None,
         "pre_boot_state_count": len(profile.pre_boot_state),
     }
