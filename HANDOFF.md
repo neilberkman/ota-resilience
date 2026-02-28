@@ -62,9 +62,8 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Last pushed main commit before this handoff batch: `0cf2696` — bounded ESP-IDF baseline deep comparison
-- Latest committed additions in that batch: bounded baseline report + handoff refresh
-- Working tree: clean at commit time of this handoff update
+- Main has the exploratory matrix stack through OtaData drift de-emphasis (`e12ebfb`, `6664374`) and this handoff tracks the next allowlist refinement batch.
+- Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
 
@@ -175,6 +174,20 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
        - `no_abort` vs `ota_upgrade` (`Δcontrol=+1`, `Δbrick up to +0.2`)
        - `no_crc` vs `ota_upgrade` (`Δfailure=+0.555556`, wrong-image class)
    - Artifacts:
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2/`
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+
+12. **Exploratory matrix analyzer v3 allowlist pass (2026-02-28, latest batch)**:
+   - Added scenario-aware OtaData allowlisting in `scripts/run_exploratory_matrix.py`:
+     - Builds an allowlist from baseline runs whose control outcome matches expectations.
+     - Converts scenario-allowlisted `suspicious_*` classes to `benign_allowlisted`.
+     - Tracks both normalized and raw drift class counts per case.
+     - Emits `otadata_allowlist` plus totals (`otadata_allowlisted_points_total`, `otadata_allowlist_scenarios`) in `matrix_results.json`.
+   - Reused existing reports (`--reuse-existing`) to regenerate matrix artifacts with new clustering/scoring:
+     - Focused lane (`16` cases): `5` clusters, `46` allowlisted points, `0` suspicious OtaData drift points.
+     - Full lane (`44` cases): `19` clusters (down from `24`), `117` allowlisted points, `25` suspicious OtaData drift points, `4` control mismatches.
+   - Result: OtaData noise is still visible for auditability but no longer dominates top exploratory clusters in scenarios where baseline already shows that drift pattern.
+   - Artifacts refreshed:
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-v2/`
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
@@ -454,6 +467,15 @@ python3 scripts/run_exploratory_matrix.py \
   --include-defect-profiles \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
+
+# Recompute matrix scoring/clustering after script-only analyzer changes
+# (skips rerunning case audits and reuses existing per-case report JSONs)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --include-defect-profiles \
+  --reuse-existing \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
 ```
 
 ## What Needs To Be Done
@@ -483,7 +505,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Build equivalent guard-style differential pairs for `no_abort`, `no_fallback`, `crc_covers_state`, and `single_sector` with explicit expected control outcomes.
 - Add explicit otadata post-boot assertions (state/seq words) as success criteria so correctness bugs become visible beyond VTOR/hash.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
-- Add scenario-aware allowlists for OtaData drift classes so known-good state evolution is filtered per scenario (reduce false-positive `suspicious_crc/seq` dominance in top clusters).
+- Tighten per-scenario OtaData allowlist boundaries (e.g., optional keying by `criteria_tag` and `fault_tag`) so baseline drift from one lane cannot over-normalize another lane.
 
 ### 3. More Fault Types
 

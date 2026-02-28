@@ -538,7 +538,74 @@ def _classify_otadata_drift(
     return "suspicious_unknown"
 
 
-def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str, Any]:
+def _normalize_drift_class(
+    drift_class: str,
+    scenario_allowlist: Sequence[str],
+) -> str:
+    if drift_class.startswith("suspicious_") and drift_class in scenario_allowlist:
+        return "benign_allowlisted"
+    return drift_class
+
+
+def build_otadata_allowlist(
+    cases: Sequence[MatrixCase],
+    run_records: Sequence[Dict[str, Any]],
+) -> Dict[str, List[str]]:
+    case_by_id = {c.case_id: c for c in cases}
+    allowlist: Dict[str, set] = {}
+
+    for rr in run_records:
+        case_id = rr.get("case_id")
+        case = case_by_id.get(case_id)
+        if case is None or case.base_role != "baseline":
+            continue
+        report = load_report(Path(rr.get("report_path", "")))
+        if report is None:
+            continue
+
+        summary = report.get("summary", {})
+        sweep_summary = summary.get("runtime_sweep", {})
+        if not isinstance(sweep_summary, dict):
+            sweep_summary = {}
+        control_summary = sweep_summary.get("control", {})
+        if not isinstance(control_summary, dict):
+            control_summary = {}
+        control_outcome = _as_signal_token(control_summary.get("boot_outcome"), "unknown")
+        if control_outcome != case.expected_control_outcome:
+            # Ignore baselines whose control run is already mismatched.
+            continue
+
+        points = report.get("runtime_sweep_results", [])
+        if not isinstance(points, list):
+            points = []
+        control_signals = _extract_control_signals(points)
+
+        scenario_set = allowlist.setdefault(case.scenario_tag, set())
+        for p in points:
+            if not isinstance(p, dict):
+                continue
+            if p.get("is_control", False):
+                continue
+            if not p.get("fault_injected", False):
+                continue
+            outcome = _as_signal_token(p.get("boot_outcome"), "unknown")
+            if outcome != "success":
+                continue
+            signals = p.get("signals", {})
+            if not isinstance(signals, dict):
+                signals = {}
+            drift_class = _classify_otadata_drift(control_signals, signals, outcome)
+            if drift_class.startswith("suspicious_"):
+                scenario_set.add(drift_class)
+
+    return {k: sorted(v) for k, v in sorted(allowlist.items())}
+
+
+def _collect_case_metrics(
+    case: MatrixCase,
+    report: Dict[str, Any],
+    scenario_allowlist: Sequence[str],
+) -> Dict[str, Any]:
     summary = report.get("summary", {})
     sweep_summary = summary.get("runtime_sweep", {})
     if not isinstance(sweep_summary, dict):
@@ -566,8 +633,10 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
     otadata_drift_points = 0
     otadata_transition_points = 0
     otadata_suspicious_drift_points = 0
+    otadata_allowlisted_points = 0
     outcomes = Counter()
     otadata_drift_classes = Counter()
+    otadata_drift_raw_classes = Counter()
 
     for p in points:
         if not isinstance(p, dict):
@@ -584,10 +653,14 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
         point_signals = p.get("signals", {})
         if not isinstance(point_signals, dict):
             point_signals = {}
-        drift_class = _classify_otadata_drift(control_signals, point_signals, outcome)
+        drift_raw = _classify_otadata_drift(control_signals, point_signals, outcome)
+        drift_class = _normalize_drift_class(drift_raw, scenario_allowlist)
         if drift_class != "none":
             otadata_drift_points += 1
             otadata_drift_classes[drift_class] += 1
+            otadata_drift_raw_classes[drift_raw] += 1
+            if drift_class == "benign_allowlisted":
+                otadata_allowlisted_points += 1
             if drift_class.startswith("benign_"):
                 otadata_transition_points += 1
             elif drift_class.startswith("suspicious_"):
@@ -620,6 +693,7 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
         "otadata_drift_points": otadata_drift_points,
         "otadata_transition_points": otadata_transition_points,
         "otadata_suspicious_drift_points": otadata_suspicious_drift_points,
+        "otadata_allowlisted_points": otadata_allowlisted_points,
         "failure_rate": round(float(anomalous_points) / denom, 6),
         "brick_rate": round(float(hard_failure_points) / denom, 6),
         "wrong_image_rate": round(float(wrong_image_points) / denom, 6),
@@ -631,6 +705,7 @@ def _collect_case_metrics(case: MatrixCase, report: Dict[str, Any]) -> Dict[str,
         "control_otadata_digest": control_otadata,
         "outcome_counts": dict(sorted(outcomes.items())),
         "otadata_drift_class_counts": dict(sorted(otadata_drift_classes.items())),
+        "otadata_drift_raw_class_counts": dict(sorted(otadata_drift_raw_classes.items())),
     }
 
 
@@ -785,10 +860,16 @@ def build_defect_deltas(
 def extract_anomalies(
     cases: Sequence[MatrixCase],
     run_records: Sequence[Dict[str, Any]],
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Dict[str, Any]]]:
+) -> Tuple[
+    List[Dict[str, Any]],
+    Dict[str, Any],
+    Dict[str, Dict[str, Any]],
+    Dict[str, List[str]],
+]:
     case_by_id = {c.case_id: c for c in cases}
     clusters: Dict[Tuple[str, ...], Dict[str, Any]] = {}
     case_metrics_by_id: Dict[str, Dict[str, Any]] = {}
+    scenario_otadata_allowlist = build_otadata_allowlist(cases, run_records)
 
     totals = {
         "cases_total": len(cases),
@@ -799,6 +880,8 @@ def extract_anomalies(
         "otadata_drift_points_total": 0,
         "otadata_transition_points_total": 0,
         "otadata_suspicious_drift_points_total": 0,
+        "otadata_allowlisted_points_total": 0,
+        "otadata_allowlist_scenarios": len(scenario_otadata_allowlist),
     }
 
     for rr in run_records:
@@ -812,7 +895,10 @@ def extract_anomalies(
             continue
         totals["cases_with_report"] += 1
 
-        case_metrics = _collect_case_metrics(case, report)
+        scenario_allowlist = set(
+            scenario_otadata_allowlist.get(case.scenario_tag, [])
+        )
+        case_metrics = _collect_case_metrics(case, report, scenario_allowlist)
         case_metrics_by_id[case.case_id] = case_metrics
 
         control_outcome = _as_signal_token(case_metrics.get("control_outcome"), "unknown")
@@ -875,7 +961,8 @@ def extract_anomalies(
             image_hash_match = str(signals.get("image_hash_match", "na"))
             total = calibrated_erases if fault_type in ("e", "a") else calibrated_writes
             phase = phase_bucket(fault_at, max(total, 1))
-            drift_class = _classify_otadata_drift(control_signals, signals, outcome)
+            drift_raw = _classify_otadata_drift(control_signals, signals, outcome)
+            drift_class = _normalize_drift_class(drift_raw, scenario_allowlist)
             otadata_drift = drift_class != "none"
             otadata_suspicious_drift = drift_class.startswith("suspicious_")
 
@@ -883,6 +970,8 @@ def extract_anomalies(
                 totals["otadata_drift_points_total"] += 1
             if drift_class.startswith("benign_"):
                 totals["otadata_transition_points_total"] += 1
+            if drift_class == "benign_allowlisted":
+                totals["otadata_allowlisted_points_total"] += 1
             if otadata_suspicious_drift:
                 totals["otadata_suspicious_drift_points_total"] += 1
                 drift_key = (
@@ -1013,7 +1102,7 @@ def extract_anomalies(
         key=lambda x: (x["score"], x["severity"], x["case_count"], x["count"]),
         reverse=True,
     )
-    return cluster_rows, totals, case_metrics_by_id
+    return cluster_rows, totals, case_metrics_by_id, scenario_otadata_allowlist
 
 
 def render_markdown_summary(
@@ -1039,6 +1128,11 @@ def render_markdown_summary(
     lines.append(
         "- OtaData benign transitions: `{}`".format(
             totals.get("otadata_transition_points_total", 0)
+        )
+    )
+    lines.append(
+        "- OtaData allowlisted points: `{}`".format(
+            totals.get("otadata_allowlisted_points_total", 0)
         )
     )
     lines.append(
@@ -1176,7 +1270,9 @@ def main() -> int:
         )
         run_records.append(rr)
 
-    clusters, totals, case_metrics_by_id = extract_anomalies(cases, run_records)
+    clusters, totals, case_metrics_by_id, scenario_otadata_allowlist = extract_anomalies(
+        cases, run_records
+    )
     defect_deltas = build_defect_deltas(cases, case_metrics_by_id)
 
     matrix_payload = {
@@ -1212,6 +1308,7 @@ def main() -> int:
         "runs": run_records,
         "totals": totals,
         "clusters": clusters,
+        "otadata_allowlist": scenario_otadata_allowlist,
         "case_metrics": [
             case_metrics_by_id[k]
             for k in sorted(case_metrics_by_id.keys())
