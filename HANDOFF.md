@@ -62,7 +62,7 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), extended ESP guard profile pairs (including `no_fallback` fallback-guard), and control-outcome-aware defect scoring.
+- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), extended ESP guard profile pairs (including `no_fallback` fallback-guard), control-outcome-aware defect scoring, and an `otadata_control` criteria preset for matrix lanes.
 - Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -273,6 +273,18 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `76` cases, `32` clusters, `10` control mismatches, `40` defect deltas.
      - `otadata_allowlist_scenarios=8`, `otadata_allowlist_lanes=32`, `otadata_allowlisted_points_total=235`.
      - Artifact refreshed: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+
+17. **Matrix criteria preset: `otadata_control` (2026-02-28, latest batch)**:
+   - Extended `scripts/run_exploratory_matrix.py` criteria presets with:
+     - `otadata_control`: keep existing criteria and set `otadata_expect_scope=control` when a profile defines `otadata_expect`.
+   - Purpose: enforce OtaData assertions consistently in control-only scope across exploratory lanes without hand-editing profile YAMLs.
+   - Focused preset smoke (rollback + CRC schema guard lanes):
+     - `4` cases, `6` clusters, `1` control mismatch, `2` defect deltas.
+     - Top deltas:
+       - `no_abort_rollback_guard` vs baseline (`delta_score=6.4`)
+       - `crc_covers_state_crc_schema_guard` vs baseline (`delta_score=6.0`)
+   - Artifact:
+     - `results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/`
 
 ### Bootloader Coverage
 
@@ -662,6 +674,18 @@ python3 scripts/run_exploratory_matrix.py \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
   --output-dir results/exploratory/2026-02-28-esp-idf-fallback-guard-matrix
 
+# `otadata_control` criteria-preset smoke on OtaData guard lanes
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke \
+  --profile profiles/esp_idf_ota_rollback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_abort_rollback_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml \
+  --fault-preset profile \
+  --criteria-preset otadata_control
+
 # Refresh full discovery matrix with new default profiles (reuse old reports)
 python3 scripts/run_exploratory_matrix.py \
   --quick \
@@ -705,7 +729,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 
 **High-value next steps:**
 
-- Expand `otadata_expect` usage and add a matrix criteria preset for OtaData-asserted lanes (including scope-aware control-only checks).
+- Expand `otadata_expect` usage and apply the new `otadata_control` criteria preset across broader exploratory lanes (beyond current rollback/CRC-guard smoke set).
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
 - Add high-write copy-on-boot variants of `fallback_guard` so `no_fallback` shows fault-induced divergence (not only control divergence).
 - New fault-type baseline sweeps (`write_rejection`/`reset_at_time`) are now high-sample and clean (`0/362` each); next step is defect-targeted lanes where these modes are expected to produce differential behavior.

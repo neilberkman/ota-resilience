@@ -33,7 +33,7 @@ FAULT_PRESETS = (
     "write_reject",
     "time_reset",
 )
-CRITERIA_PRESETS = ("profile", "vtor_any", "image_hash_exec")
+CRITERIA_PRESETS = ("profile", "vtor_any", "image_hash_exec", "otadata_control")
 ERASE_FAULT_TYPES = {"interrupted_erase", "multi_sector_atomicity"}
 HARD_OUTCOMES = {"no_boot", "hard_fault"}
 KNOWN_ESP_DEFECTS = (
@@ -294,6 +294,12 @@ def apply_criteria_preset(profile_doc: Dict[str, Any], preset: str) -> None:
         sc["image_hash_slot"] = "exec"
         expected = "staging" if "staging" in profile_doc.get("images", {}) else "exec"
         sc["expected_image"] = expected
+        return
+    if preset == "otadata_control":
+        # Keep existing success criteria, but scope OtaData assertions to the
+        # control point. Profiles without otadata_expect remain unchanged.
+        if isinstance(sc.get("otadata_expect"), dict) and sc.get("otadata_expect"):
+            sc["otadata_expect_scope"] = "control"
         return
     raise ValueError("Unknown criteria preset: {}".format(preset))
 

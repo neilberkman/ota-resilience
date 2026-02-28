@@ -1,0 +1,653 @@
+{
+  "case_metrics": [
+    {
+      "anomalous_points": 3,
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_role": "defect",
+      "brick_rate": 0.5,
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+      "control_mismatch": true,
+      "control_otadata_digest": "00000001:00000002:995C37EA|00000002:00000001:BDDAF882",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.5,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 3,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 3,
+        "success": 3
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 4,
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_role": "defect",
+      "brick_rate": 0.8,
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "wrong_image",
+      "control_slot": "exec",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "failure_rate": 0.8,
+      "fault_points_total": 5,
+      "fault_preset": "profile",
+      "hard_failure_points": 4,
+      "otadata_allowlisted_points": 0,
+      "otadata_drift_class_counts": {},
+      "otadata_drift_points": 0,
+      "otadata_drift_rate": 0.0,
+      "otadata_drift_raw_class_counts": {},
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
+      "outcome_counts": {
+        "no_boot": 4,
+        "success": 1
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 3,
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.5,
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000001:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.5,
+      "fault_points_total": 6,
+      "fault_preset": "profile",
+      "hard_failure_points": 3,
+      "otadata_allowlisted_points": 2,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 2
+      },
+      "otadata_drift_points": 2,
+      "otadata_drift_rate": 0.333333,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 2,
+      "otadata_transition_rate": 0.333333,
+      "outcome_counts": {
+        "no_boot": 3,
+        "success": 3
+      },
+      "scenario_tag": "crc_schema_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    },
+    {
+      "anomalous_points": 0,
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_role": "baseline",
+      "brick_rate": 0.0,
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_otadata_control",
+      "control_mismatch": false,
+      "control_otadata_digest": "00000001:00000002:4743989A|00000002:00000004:55F63774",
+      "control_outcome": "success",
+      "control_slot": "exec",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "failure_rate": 0.0,
+      "fault_points_total": 4,
+      "fault_preset": "profile",
+      "hard_failure_points": 0,
+      "otadata_allowlisted_points": 4,
+      "otadata_drift_class_counts": {
+        "benign_allowlisted": 4
+      },
+      "otadata_drift_points": 4,
+      "otadata_drift_rate": 1.0,
+      "otadata_drift_raw_class_counts": {
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
+      },
+      "otadata_suspicious_drift_points": 0,
+      "otadata_suspicious_drift_rate": 0.0,
+      "otadata_transition_points": 4,
+      "otadata_transition_rate": 1.0,
+      "outcome_counts": {
+        "success": 4
+      },
+      "scenario_tag": "rollback_guard",
+      "wrong_image_points": 0,
+      "wrong_image_rate": 0.0
+    }
+  ],
+  "cases": [
+    {
+      "base_profile_name": "esp_idf_fault_crc_covers_state_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "crc_covers_state",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_fault_no_abort_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "base_role": "defect",
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "no_abort",
+      "expected_control_outcome": "wrong_image",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_crc_schema_guard",
+      "base_profile_path": "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control.json",
+      "scenario_tag": "crc_schema_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control.yaml"
+    },
+    {
+      "base_profile_name": "esp_idf_ota_rollback_guard",
+      "base_profile_path": "profiles/esp_idf_ota_rollback_guard.yaml",
+      "base_role": "baseline",
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_otadata_control",
+      "criteria_preset": "otadata_control",
+      "defect_kind": "",
+      "expected_control_outcome": "success",
+      "fault_preset": "profile",
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_rollback_guard__f_profile__c_otadata_control.json",
+      "scenario_tag": "rollback_guard",
+      "variant_profile_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_ota_rollback_guard__f_profile__c_otadata_control.yaml"
+    }
+  ],
+  "clusters": [
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 3
+      },
+      "case_count": 3,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control"
+      ],
+      "count": 3,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 3
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 3
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_schema_guard",
+        "rollback_guard"
+      ],
+      "score": 4.158883,
+      "severity": 3,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_abort_rollback_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 3
+      },
+      "case_count": 3,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control"
+      ],
+      "count": 3,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 3
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 3
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_schema_guard",
+        "rollback_guard"
+      ],
+      "score": 4.158883,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_ota_crc_schema_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 2
+      },
+      "case_count": 2,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control"
+      ],
+      "count": 2,
+      "defect_kinds": [
+        "crc_covers_state"
+      ],
+      "image_hash_matches": {
+        "na": 2
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 2
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_schema_guard"
+      ],
+      "score": 3.295837,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "case_count": 1,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control"
+      ],
+      "control_slots": {
+        "exec": 1
+      },
+      "count": 1,
+      "defect_kinds": [
+        "crc_covers_state"
+      ],
+      "kind": "control_mismatch",
+      "profile_count": 1,
+      "scenarios": [
+        "crc_schema_guard"
+      ],
+      "score": 2.772589,
+      "severity": 4,
+      "signature": {
+        "actual_control_outcome": "wrong_image",
+        "expected_control_outcome": "success"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 1
+      },
+      "case_count": 1,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control"
+      ],
+      "count": 1,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 1
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 1
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 2.079442,
+      "severity": 3,
+      "signature": {
+        "fault_type": "w",
+        "outcome": "no_boot",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_abort_rollback_guard"
+      ],
+      "base_roles": [
+        "defect"
+      ],
+      "boot_slots": {
+        "staging": 1
+      },
+      "case_count": 1,
+      "case_ids": [
+        "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control"
+      ],
+      "count": 1,
+      "defect_kinds": [
+        "no_abort"
+      ],
+      "image_hash_matches": {
+        "na": 1
+      },
+      "kind": "fault_anomaly",
+      "otadata_drift": {
+        "none": 1
+      },
+      "profile_count": 1,
+      "scenarios": [
+        "rollback_guard"
+      ],
+      "score": 2.079442,
+      "severity": 3,
+      "signature": {
+        "fault_type": "e",
+        "outcome": "no_boot",
+        "phase": "late"
+      }
+    }
+  ],
+  "config": {
+    "bounded_step_limit": 1572864,
+    "criteria_presets": [
+      "otadata_control"
+    ],
+    "fault_presets": [
+      "profile"
+    ],
+    "max_cases": 0,
+    "profile_patterns": [
+      "profiles/esp_idf_ota_rollback_guard.yaml",
+      "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
+      "profiles/esp_idf_ota_crc_schema_guard.yaml",
+      "profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml"
+    ],
+    "quick": true,
+    "reuse_existing": false,
+    "workers": 1
+  },
+  "defect_deltas": [
+    {
+      "baseline_case_id": "esp_idf_ota_rollback_guard__f_profile__c_otadata_control",
+      "baseline_metrics": {
+        "brick_rate": 0.0,
+        "control_mismatch": false,
+        "control_outcome": "success",
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "otadata_control",
+      "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+      "defect_kind": "no_abort",
+      "defect_metrics": {
+        "brick_rate": 0.8,
+        "control_mismatch": false,
+        "control_outcome": "wrong_image",
+        "failure_rate": 0.8,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 6.4,
+      "deltas": {
+        "anomalous_points": 4,
+        "brick_rate": 0.8,
+        "control_mismatch": 0,
+        "control_outcome_changed": 1,
+        "control_outcome_shift": 1,
+        "failure_rate": 0.8,
+        "otadata_drift_rate": -1.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "rollback_guard"
+    },
+    {
+      "baseline_case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control",
+      "baseline_metrics": {
+        "brick_rate": 0.5,
+        "control_mismatch": false,
+        "control_outcome": "success",
+        "failure_rate": 0.5,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "criteria_preset": "otadata_control",
+      "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+      "defect_kind": "crc_covers_state",
+      "defect_metrics": {
+        "brick_rate": 0.5,
+        "control_mismatch": true,
+        "control_outcome": "wrong_image",
+        "failure_rate": 0.5,
+        "otadata_drift_rate": 0.333333,
+        "otadata_suspicious_drift_rate": 0.0
+      },
+      "delta_score": 6.0,
+      "deltas": {
+        "anomalous_points": 0,
+        "brick_rate": 0.0,
+        "control_mismatch": 1,
+        "control_outcome_changed": 1,
+        "control_outcome_shift": 1,
+        "failure_rate": 0.0,
+        "otadata_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.0,
+        "wrong_image_rate": 0.0
+      },
+      "direction": "worse",
+      "fault_preset": "profile",
+      "scenario_tag": "crc_schema_guard"
+    }
+  ],
+  "generated_at_utc": "2026-02-28T072408Z",
+  "otadata_allowlist": {
+    "crc_schema_guard": {
+      "profile|otadata_control": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ]
+    },
+    "rollback_guard": {
+      "profile|otadata_control": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ]
+    }
+  },
+  "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke",
+  "repo_root": "/Users/neil/mirala/ota-resilience",
+  "runs": [
+    {
+      "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 3,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control'...\nCalibration: 2049 NVM writes, 2 page erases.\nRunning 5 fault points (3 writes + 2 erases) for 'esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort_rollback_guard__f_profile__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.8,\n      \"bricks\": 4,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 4\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000CFFC\",\n          \"fault_at\": 1024,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 49.98,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x0000DFFC\",\n          \"fault_at\": 2048,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"late\",\n          \"position_pct\": 99.95,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 1,\n      \"total_fault_points\": 5\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control'...\nCalibration: 2052 NVM writes, 3 page erases.\nRunning 6 fault points (3 writes + 3 erases) for 'esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_profile__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.5,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x0000D004\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"exec_data\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.05,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 3,\n      \"total_fault_points\": 6\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 3 (50.0%)\"\n}\n"
+    },
+    {
+      "case_id": "esp_idf_ota_rollback_guard__f_profile__c_otadata_control",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
+        "--profile",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/profiles/esp_idf_ota_rollback_guard__f_profile__c_otadata_control.yaml",
+        "--output",
+        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_rollback_guard__f_profile__c_otadata_control.json",
+        "--renode-test",
+        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
+        "--no-assert-control-boots",
+        "--no-assert-verdict",
+        "--quick"
+      ],
+      "exit_code": 0,
+      "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/reports/esp_idf_ota_rollback_guard__f_profile__c_otadata_control.json",
+      "status": "ok",
+      "stderr_tail": "Calibrating write count for 'esp_idf_ota_rollback_guard__f_profile__c_otadata_control'...\nCalibration: 3 NVM writes, 1 page erases.\nRunning 4 fault points (3 writes + 1 erases) for 'esp_idf_ota_rollback_guard__f_profile__c_otadata_control'...\n",
+      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_rollback_guard__f_profile__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 4,\n      \"total_fault_points\": 4\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+    }
+  ],
+  "totals": {
+    "anomalous_points_total": 10,
+    "cases_control_mismatch": 1,
+    "cases_missing_report": 0,
+    "cases_total": 4,
+    "cases_with_report": 4,
+    "otadata_allowlist_lanes": 2,
+    "otadata_allowlist_scenarios": 2,
+    "otadata_allowlisted_points_total": 8,
+    "otadata_drift_points_total": 8,
+    "otadata_suspicious_drift_points_total": 0,
+    "otadata_transition_points_total": 8
+  }
+}
