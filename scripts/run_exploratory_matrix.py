@@ -553,9 +553,9 @@ def _normalize_drift_class(
 def build_otadata_allowlist(
     cases: Sequence[MatrixCase],
     run_records: Sequence[Dict[str, Any]],
-) -> Dict[str, List[str]]:
+) -> Dict[str, Dict[str, List[str]]]:
     case_by_id = {c.case_id: c for c in cases}
-    allowlist: Dict[str, set] = {}
+    allowlist: Dict[str, Dict[str, set]] = {}
 
     for rr in run_records:
         case_id = rr.get("case_id")
@@ -583,7 +583,9 @@ def build_otadata_allowlist(
             points = []
         control_signals = _extract_control_signals(points)
 
-        scenario_set = allowlist.setdefault(case.scenario_tag, set())
+        scenario_bucket = allowlist.setdefault(case.scenario_tag, {})
+        lane_key = "{}|{}".format(case.fault_preset, case.criteria_preset)
+        lane_set = scenario_bucket.setdefault(lane_key, set())
         for p in points:
             if not isinstance(p, dict):
                 continue
@@ -599,9 +601,14 @@ def build_otadata_allowlist(
                 signals = {}
             drift_class = _classify_otadata_drift(control_signals, signals, outcome)
             if drift_class.startswith("suspicious_"):
-                scenario_set.add(drift_class)
+                lane_set.add(drift_class)
 
-    return {k: sorted(v) for k, v in sorted(allowlist.items())}
+    normalized: Dict[str, Dict[str, List[str]]] = {}
+    for scenario_tag, lane_map in sorted(allowlist.items()):
+        normalized[scenario_tag] = {
+            lane_key: sorted(values) for lane_key, values in sorted(lane_map.items())
+        }
+    return normalized
 
 
 def _collect_case_metrics(
@@ -867,7 +874,7 @@ def extract_anomalies(
     List[Dict[str, Any]],
     Dict[str, Any],
     Dict[str, Dict[str, Any]],
-    Dict[str, List[str]],
+    Dict[str, Dict[str, List[str]]],
 ]:
     case_by_id = {c.case_id: c for c in cases}
     clusters: Dict[Tuple[str, ...], Dict[str, Any]] = {}
@@ -885,6 +892,9 @@ def extract_anomalies(
         "otadata_suspicious_drift_points_total": 0,
         "otadata_allowlisted_points_total": 0,
         "otadata_allowlist_scenarios": len(scenario_otadata_allowlist),
+        "otadata_allowlist_lanes": sum(
+            len(lane_map) for lane_map in scenario_otadata_allowlist.values()
+        ),
     }
 
     for rr in run_records:
@@ -898,9 +908,15 @@ def extract_anomalies(
             continue
         totals["cases_with_report"] += 1
 
-        scenario_allowlist = set(
-            scenario_otadata_allowlist.get(case.scenario_tag, [])
-        )
+        scenario_allowlist: set = set()
+        lane_map = scenario_otadata_allowlist.get(case.scenario_tag, {})
+        lane_key = "{}|{}".format(case.fault_preset, case.criteria_preset)
+        if lane_key in lane_map:
+            scenario_allowlist.update(lane_map[lane_key])
+        elif lane_map:
+            # Fallback when no baseline lane exists for the exact variant.
+            for values in lane_map.values():
+                scenario_allowlist.update(values)
         case_metrics = _collect_case_metrics(case, report, scenario_allowlist)
         case_metrics_by_id[case.case_id] = case_metrics
 
@@ -1136,6 +1152,11 @@ def render_markdown_summary(
     lines.append(
         "- OtaData allowlisted points: `{}`".format(
             totals.get("otadata_allowlisted_points_total", 0)
+        )
+    )
+    lines.append(
+        "- OtaData allowlist lanes: `{}`".format(
+            totals.get("otadata_allowlist_lanes", 0)
         )
     )
     lines.append(

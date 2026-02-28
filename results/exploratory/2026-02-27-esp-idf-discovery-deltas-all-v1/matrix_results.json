@@ -4509,25 +4509,86 @@
       "scenario_tag": "upgrade"
     }
   ],
-  "generated_at_utc": "2026-02-28T042553Z",
+  "generated_at_utc": "2026-02-28T043208Z",
   "otadata_allowlist": {
-    "crc_guard": [
-      "suspicious_active_entry",
-      "suspicious_crc"
-    ],
-    "no_rollback": [],
-    "rollback": [
-      "suspicious_crc",
-      "suspicious_seq"
-    ],
-    "rollback_guard": [
-      "suspicious_crc",
-      "suspicious_seq"
-    ],
-    "upgrade": [
-      "suspicious_crc",
-      "suspicious_seq"
-    ]
+    "crc_guard": {
+      "profile|image_hash_exec": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "profile|profile": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_active_entry",
+        "suspicious_crc"
+      ]
+    },
+    "no_rollback": {
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
+    },
+    "rollback": {
+      "profile|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "profile|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ]
+    },
+    "rollback_guard": {
+      "profile|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "profile|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ]
+    },
+    "upgrade": {
+      "profile|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "profile|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|image_hash_exec": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ],
+      "write_erase_bit|profile": [
+        "suspicious_crc",
+        "suspicious_seq"
+      ]
+    }
   },
   "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1",
   "repo_root": "/Users/neil/mirala/ota-resilience",
@@ -4851,6 +4912,7 @@
     "cases_missing_report": 0,
     "cases_total": 52,
     "cases_with_report": 52,
+    "otadata_allowlist_lanes": 20,
     "otadata_allowlist_scenarios": 5,
     "otadata_allowlisted_points_total": 138,
     "otadata_drift_points_total": 164,

@@ -1,6 +1,6 @@
 # Exploratory Matrix Summary
 
-- Generated: `2026-02-28T042553Z`
+- Generated: `2026-02-28T043208Z`
 - Output dir: `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1`
 - Cases planned: `52`
 - Cases with report: `52`
@@ -10,6 +10,7 @@
 - OtaData drift points (all): `164`
 - OtaData benign transitions: `138`
 - OtaData allowlisted points: `138`
+- OtaData allowlist lanes: `20`
 - OtaData suspicious drift points: `26`
 
 ## Top Clusters

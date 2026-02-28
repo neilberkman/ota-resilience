@@ -211,8 +211,11 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - Artifact: `results/exploratory/2026-02-28-esp-idf-rollback-guard-matrix-v2/`
    - Full ESP matrix refresh with new guard profiles included:
      - `52` cases, `25` clusters, `6` control mismatches, `28` defect deltas
-     - `otadata_allowlist_scenarios=5`, `otadata_allowlisted_points_total=138`
+     - `otadata_allowlist_scenarios=5`, `otadata_allowlist_lanes=20`, `otadata_allowlisted_points_total=138`
      - Artifact: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+   - Tightened allowlist scope in `run_exploratory_matrix.py`:
+     - OtaData allowlists are now keyed by `scenario + fault_preset + criteria_preset` lane (not scenario-wide only).
+     - Prevents cross-lane baseline drift from over-normalizing suspicious classes in unrelated lanes.
 
 ### Bootloader Coverage
 
@@ -553,7 +556,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Build equivalent guard-style differential pairs for `no_fallback`, `crc_covers_state`, and `single_sector` (same pattern now used for `no_abort`).
 - Expand `otadata_expect` usage to additional baseline/defect scenarios and add a matrix criteria preset that enforces OtaData assertions consistently.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
-- Tighten per-scenario OtaData allowlist boundaries (e.g., optional keying by `criteria_tag` and `fault_tag`) so baseline drift from one lane cannot over-normalize another lane.
+- Add per-lane minimum-sample thresholds for auto-allowlisting (avoid overfitting when baseline lane coverage is sparse).
 
 ### 3. More Fault Types
 
