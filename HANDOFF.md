@@ -227,10 +227,14 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Quick smoke reports:
      - `esp_idf_ota_upgrade_write_rejection`: `0/3` bricks, control `success/exec` (PASS)
      - `esp_idf_ota_upgrade_reset_at_time`: `0/3` bricks, control `success/exec` (PASS)
+   - Higher-sample non-quick sweeps (4 workers, heuristic 362 points each):
+     - `esp_idf_ota_upgrade_write_rejection`: `0/362` bricks, control `success/exec` (PASS)
+     - `esp_idf_ota_upgrade_reset_at_time`: `0/362` bricks, control `success/exec` (PASS)
    - Focused preset smoke matrix (`write_reject` + `time_reset`) remains clean:
      - `2` cases, `0` clusters, `0` control mismatches.
    - Artifacts:
      - `results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types/*.quick.json`
+     - `results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types-full/*.full.json`
      - `results/exploratory/2026-02-28-esp-idf-faulttype-preset-smoke/`
 
 15. **Extended guard pairs + matrix refresh (2026-02-28, latest batch)**:
@@ -592,6 +596,20 @@ for p in \
     --output "results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types/${p}.quick.json"
 done
 
+# Higher-sample non-quick sweeps for new fault types
+mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types-full
+for p in \
+  esp_idf_ota_upgrade_write_rejection \
+  esp_idf_ota_upgrade_reset_at_time; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --workers 4 \
+    --no-assert-control-boots \
+    --no-assert-verdict \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+    --output "results/oss_validation/reports/2026-02-28-esp-idf-new-fault-types-full/${p}.full.json"
+done
+
 # Extended guard quick batch (`ss_guard` + `crc_schema_guard`)
 mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-extended-guards
 for p in \
@@ -690,7 +708,7 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Expand `otadata_expect` usage and add a matrix criteria preset for OtaData-asserted lanes (including scope-aware control-only checks).
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
 - Add high-write copy-on-boot variants of `fallback_guard` so `no_fallback` shows fault-induced divergence (not only control divergence).
-- Add higher-sample sweeps for `write_rejection` and `reset_at_time` lanes (beyond 3-point quick probes) to verify these fault types expose meaningful defect deltas.
+- New fault-type baseline sweeps (`write_rejection`/`reset_at_time`) are now high-sample and clean (`0/362` each); next step is defect-targeted lanes where these modes are expected to produce differential behavior.
 - Add per-lane minimum-sample thresholds for auto-allowlisting (avoid overfitting when baseline lane coverage is sparse).
 
 ### 3. More Fault Types
@@ -780,6 +798,8 @@ Current workflow is direct-to-main (no PR required):
 15. **`run_exploratory_matrix.py` needs explicit `--renode-test` unless `renode-test` is on PATH**: Without this, cases can all show `nonzero_exit` and `cases_missing_report` due `FileNotFoundError: renode-test executable 'renode-test' not found in PATH`.
 
 16. **Control-outcome deltas are now first-class in defect scoring**: `build_defect_deltas()` compares baseline vs defect control outcomes (`control_outcome_changed` / `control_outcome_shift`) in addition to control-mismatch-vs-expected. This prevents real regressions from being hidden when each profile has different expected control outcomes.
+
+17. **`reset_at_time` full sweeps are slower than other write fault modes**: even with heuristic reduction and parallel workers, timed-reset campaigns can run much longer than write-reject/bit/erase lanes. Prefer `--workers` plus bounded exploratory lanes first, then scale up.
 
 ## Profile YAML Schema Quick Reference
 
