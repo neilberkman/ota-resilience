@@ -168,6 +168,7 @@ def utc_stamp() -> str:
 def default_profile_patterns(include_defects: bool) -> List[str]:
     base = [
         "profiles/esp_idf_ota_upgrade.yaml",
+        "profiles/esp_idf_ota_fallback_guard.yaml",
         "profiles/esp_idf_ota_crc_schema_guard.yaml",
         "profiles/esp_idf_ota_rollback.yaml",
         "profiles/esp_idf_ota_rollback_guard.yaml",
@@ -762,6 +763,17 @@ def build_defect_deltas(
         if defect_metrics is None or baseline_metrics is None:
             continue
 
+        defect_control_outcome = _as_signal_token(
+            defect_metrics.get("control_outcome"), "unknown"
+        )
+        baseline_control_outcome = _as_signal_token(
+            baseline_metrics.get("control_outcome"), "unknown"
+        )
+        control_outcome_changed = defect_control_outcome != baseline_control_outcome
+        control_outcome_shift = severity_for_outcome(
+            defect_control_outcome, False
+        ) - severity_for_outcome(baseline_control_outcome, False)
+
         control_delta = int(bool(defect_metrics.get("control_mismatch"))) - int(
             bool(baseline_metrics.get("control_mismatch"))
         )
@@ -784,6 +796,7 @@ def build_defect_deltas(
             max(brick_delta, 0.0),
             max(wrong_image_delta, 0.0),
             max(otadata_suspicious_drift_delta, 0.0),
+            max(float(control_outcome_shift), 0.0),
         )
         negative_signal = min(
             float(min(control_delta, 0)),
@@ -791,6 +804,7 @@ def build_defect_deltas(
             min(brick_delta, 0.0),
             min(wrong_image_delta, 0.0),
             min(otadata_suspicious_drift_delta, 0.0),
+            min(float(control_outcome_shift), 0.0),
         )
         if positive_signal > 0:
             direction = "worse"
@@ -801,6 +815,7 @@ def build_defect_deltas(
 
         behavior_regression = (
             control_delta > 0
+            or control_outcome_shift > 0
             or failure_delta > 0.0
             or brick_delta > 0.0
             or wrong_image_delta > 0.0
@@ -811,6 +826,7 @@ def build_defect_deltas(
 
         delta_score = (
             4.0 * max(float(control_delta), 0.0)
+            + 2.0 * max(float(control_outcome_shift), 0.0)
             + 3.0 * max(brick_delta, 0.0)
             + 2.0 * max(failure_delta, 0.0)
             + 1.5 * otadata_score_term
@@ -830,6 +846,8 @@ def build_defect_deltas(
                 "delta_score": round(delta_score, 6),
                 "deltas": {
                     "control_mismatch": control_delta,
+                    "control_outcome_changed": int(control_outcome_changed),
+                    "control_outcome_shift": int(control_outcome_shift),
                     "failure_rate": round(failure_delta, 6),
                     "brick_rate": round(brick_delta, 6),
                     "wrong_image_rate": round(wrong_image_delta, 6),
@@ -841,6 +859,7 @@ def build_defect_deltas(
                 },
                 "defect_metrics": {
                     "control_mismatch": bool(defect_metrics.get("control_mismatch", False)),
+                    "control_outcome": defect_control_outcome,
                     "failure_rate": float(defect_metrics.get("failure_rate", 0.0) or 0.0),
                     "brick_rate": float(defect_metrics.get("brick_rate", 0.0) or 0.0),
                     "otadata_drift_rate": float(
@@ -855,6 +874,7 @@ def build_defect_deltas(
                     "control_mismatch": bool(
                         baseline_metrics.get("control_mismatch", False)
                     ),
+                    "control_outcome": baseline_control_outcome,
                     "failure_rate": float(
                         baseline_metrics.get("failure_rate", 0.0) or 0.0
                     ),

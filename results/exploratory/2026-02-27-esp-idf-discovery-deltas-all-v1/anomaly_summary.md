@@ -1,16 +1,16 @@
 # Exploratory Matrix Summary
 
-- Generated: `2026-02-28T061632Z`
+- Generated: `2026-02-28T070053Z`
 - Output dir: `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1`
-- Cases planned: `68`
-- Cases with report: `68`
+- Cases planned: `76`
+- Cases with report: `76`
 - Cases missing report: `0`
 - Control mismatches: `10`
 - Anomalous fault points: `57`
-- OtaData drift points (all): `228`
-- OtaData benign transitions: `191`
-- OtaData allowlisted points: `191`
-- OtaData allowlist lanes: `28`
+- OtaData drift points (all): `272`
+- OtaData benign transitions: `235`
+- OtaData allowlisted points: `235`
+- OtaData allowlist lanes: `32`
 - OtaData suspicious drift points: `37`
 
 ## Top Clusters
@@ -47,22 +47,26 @@
 
 | Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | Δfailure | Δbrick | Δcontrol | Δotadata(susp) |
 | --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | 11.200 | `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | `ss_guard` | `write_erase_bit` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
-| 2 | 10.900 | `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | `esp_idf_ota_ss_guard__f_profile__c_profile` | `ss_guard` | `profile` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
-| 3 | 7.514 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_profile` | `crc_guard` | `write_erase_bit` | `profile` | +0.429 | +0.429 | +1 | +0.714 |
-| 4 | 6.475 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_profile` | `esp_idf_ota_crc_guard__f_profile__c_profile` | `crc_guard` | `profile` | `profile` | +0.250 | +0.250 | +1 | +0.750 |
-| 5 | 5.100 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile` | `esp_idf_ota_rollback_guard__f_profile__c_profile` | `rollback_guard` | `profile` | `profile` | +1.000 | +0.800 | +0 | +0.000 |
-| 6 | 5.100 | `esp_idf_fault_no_abort__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.200 | +0.200 | +1 | +0.000 |
-| 7 | 5.039 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile` | `rollback_guard` | `write_erase_bit` | `profile` | +0.857 | +0.875 | +0 | -0.143 |
-| 8 | 4.725 | `esp_idf_fault_no_abort__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.125 | +0.125 | +1 | +0.000 |
-| 9 | 4.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | `crc_schema_guard` | `profile` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
-| 10 | 4.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | `crc_schema_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
+| 1 | 15.200 | `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | `ss_guard` | `write_erase_bit` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
+| 2 | 14.900 | `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | `esp_idf_ota_ss_guard__f_profile__c_profile` | `ss_guard` | `profile` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
+| 3 | 11.514 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_profile` | `crc_guard` | `write_erase_bit` | `profile` | +0.429 | +0.429 | +1 | +0.714 |
+| 4 | 10.475 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_profile` | `esp_idf_ota_crc_guard__f_profile__c_profile` | `crc_guard` | `profile` | `profile` | +0.250 | +0.250 | +1 | +0.750 |
+| 5 | 9.100 | `esp_idf_fault_no_abort__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.200 | +0.200 | +1 | +0.000 |
+| 6 | 8.725 | `esp_idf_fault_no_abort__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.125 | +0.125 | +1 | +0.000 |
+| 7 | 7.100 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile` | `esp_idf_ota_rollback_guard__f_profile__c_profile` | `rollback_guard` | `profile` | `profile` | +1.000 | +0.800 | +0 | +0.000 |
+| 8 | 7.039 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile` | `rollback_guard` | `write_erase_bit` | `profile` | +0.857 | +0.875 | +0 | -0.143 |
+| 9 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | `crc_schema_guard` | `profile` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
+| 10 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | `crc_schema_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
 | 11 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec` | `rollback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0.000 |
 | 12 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `rollback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0.000 |
-| 13 | 2.167 | `esp_idf_fault_no_crc__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
-| 14 | 2.167 | `esp_idf_fault_no_crc__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
-| 15 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_profile__c_image_hash_exec` | `crc_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.500 |
-| 16 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec` | `crc_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.429 |
+| 13 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile` | `esp_idf_ota_fallback_guard__f_profile__c_profile` | `fallback_guard` | `profile` | `profile` | +0.000 | +0.000 | +0 | +0.000 |
+| 14 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec` | `fallback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.000 |
+| 15 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile` | `fallback_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +0 | +0.000 |
+| 16 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `fallback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.000 |
+| 17 | 2.167 | `esp_idf_fault_no_crc__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
+| 18 | 2.167 | `esp_idf_fault_no_crc__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
+| 19 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_profile__c_image_hash_exec` | `crc_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.500 |
+| 20 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec` | `crc_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.429 |
 
 ## Run Records
 
@@ -72,10 +76,10 @@
 | `esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec.json` |
 | `esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_profile.json` |
 | `esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state__f_write_erase_bit__c_image_hash_exec.json` |
-| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.json` |
-| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.json` |
-| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.json` |
-| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile.json` |
+| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json` |
 | `esp_idf_fault_no_abort__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort__f_profile__c_profile.json` |
 | `esp_idf_fault_no_abort__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort__f_profile__c_image_hash_exec.json` |
 | `esp_idf_fault_no_abort__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_abort__f_write_erase_bit__c_profile.json` |
@@ -100,22 +104,30 @@
 | `esp_idf_fault_no_fallback__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback__f_profile__c_image_hash_exec.json` |
 | `esp_idf_fault_no_fallback__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_profile.json` |
 | `esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile.json` |
+| `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec.json` |
 | `esp_idf_fault_single_sector__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector__f_profile__c_profile.json` |
 | `esp_idf_fault_single_sector__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector__f_profile__c_image_hash_exec.json` |
 | `esp_idf_fault_single_sector__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector__f_write_erase_bit__c_profile.json` |
 | `esp_idf_fault_single_sector__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector__f_write_erase_bit__c_image_hash_exec.json` |
-| `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json` |
-| `esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.json` |
-| `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.json` |
-| `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_profile.json` |
+| `esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec.json` |
 | `esp_idf_ota_crc_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_profile__c_profile.json` |
 | `esp_idf_ota_crc_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_profile__c_image_hash_exec.json` |
 | `esp_idf_ota_crc_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_write_erase_bit__c_profile.json` |
 | `esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec.json` |
-| `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_profile.json` |
-| `esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.json` |
-| `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.json` |
-| `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_profile.json` |
+| `esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_ota_fallback_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_fallback_guard__f_profile__c_profile.json` |
+| `esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec.json` |
 | `esp_idf_ota_no_rollback__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_no_rollback__f_profile__c_profile.json` |
 | `esp_idf_ota_no_rollback__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_no_rollback__f_profile__c_image_hash_exec.json` |
 | `esp_idf_ota_no_rollback__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_no_rollback__f_write_erase_bit__c_profile.json` |
@@ -128,10 +140,10 @@
 | `esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec.json` |
 | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile.json` |
 | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec.json` |
-| `esp_idf_ota_ss_guard__f_profile__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_profile.json` |
-| `esp_idf_ota_ss_guard__f_profile__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.json` |
-| `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.json` |
-| `esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec` | ok | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.json` |
+| `esp_idf_ota_ss_guard__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_profile.json` |
+| `esp_idf_ota_ss_guard__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_profile__c_image_hash_exec.json` |
+| `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_profile.json` |
+| `esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec.json` |
 | `esp_idf_ota_upgrade__f_profile__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_upgrade__f_profile__c_profile.json` |
 | `esp_idf_ota_upgrade__f_profile__c_image_hash_exec` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_upgrade__f_profile__c_image_hash_exec.json` |
 | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | reused | 0 | `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/reports/esp_idf_ota_upgrade__f_write_erase_bit__c_profile.json` |

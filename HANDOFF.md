@@ -62,7 +62,7 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), and extended ESP guard profile pairs.
+- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), extended ESP guard profile pairs (including `no_fallback` fallback-guard), and control-outcome-aware defect scoring.
 - Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -248,6 +248,28 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `otadata_allowlist_scenarios=7`, `otadata_allowlist_lanes=28`, `otadata_allowlisted_points_total=191`.
      - Artifact refreshed: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
+16. **No-fallback guard pair + control-outcome delta scoring (2026-02-28, latest batch)**:
+   - Added fallback-guard exploratory pair:
+     - `profiles/esp_idf_ota_fallback_guard.yaml`
+     - `profiles/esp_idf_fault_no_fallback_fallback_guard.yaml`
+   - Scenario: OtaData selects slot1, but slot1 vector table is intentionally invalid.
+     - Baseline should fallback to slot0 (`success/exec`).
+     - `no_fallback` defect bricks in control (`no_boot`) instead of falling back.
+   - Quick pair confirmation:
+     - Baseline fallback-guard: `0/4` bricks, control `success/exec` (PASS)
+     - Defect fallback-guard: `0/4` bricks, control `no_boot` (PASS with expected control outcome)
+     - Reports: `results/oss_validation/reports/2026-02-28-esp-idf-fallback-guard/*.quick.json`
+   - Focused fallback matrix:
+     - `2` cases, `1` defect delta.
+     - Artifact: `results/exploratory/2026-02-28-esp-idf-fallback-guard-matrix/`
+   - Upgraded `scripts/run_exploratory_matrix.py` defect scoring:
+     - Added baseline-vs-defect control-outcome comparison (`control_outcome_changed`, `control_outcome_shift`) into `defect_deltas`.
+     - This captures regressions even when both profiles satisfy their own expected control outcomes.
+   - Full ESP matrix refresh after fallback profiles + scoring update:
+     - `76` cases, `32` clusters, `10` control mismatches, `40` defect deltas.
+     - `otadata_allowlist_scenarios=8`, `otadata_allowlist_lanes=32`, `otadata_allowlisted_points_total=235`.
+     - Artifact refreshed: `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -260,7 +282,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | MCUboot swap-move     | REAL BINARY              | Multiple profiles                                                | Built from Zephyr+MCUboot, real swap algorithm |
 | MCUboot swap-scratch  | REAL BINARY              | Multiple profiles                                                | Includes PR2109 and exploratory PR2205/2206    |
 | MCUboot swap-offset   | REAL BINARY              | Multiple profiles                                                | Includes upstream head and exploratory PR2214   |
-| ESP-IDF OTA           | Model                    | 20 (10 baseline + 10 defect-focused variants)                    | Clean-room otadata + copy-on-boot stress path  |
+| ESP-IDF OTA           | Model                    | 22 (11 baseline + 11 defect-focused variants)                    | Clean-room otadata + copy-on-boot stress path  |
 
 ## Files You Need to Know
 
@@ -598,6 +620,30 @@ python3 scripts/run_exploratory_matrix.py \
   --fault-preset profile \
   --criteria-preset profile
 
+# Fallback-guard quick pair (baseline fallback vs no_fallback defect)
+mkdir -p results/oss_validation/reports/2026-02-28-esp-idf-fallback-guard
+for p in \
+  esp_idf_ota_fallback_guard \
+  esp_idf_fault_no_fallback_fallback_guard; do
+  python3 scripts/audit_bootloader.py \
+    --profile "profiles/${p}.yaml" \
+    --quick \
+    --no-assert-control-boots \
+    --no-assert-verdict \
+    --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+    --output "results/oss_validation/reports/2026-02-28-esp-idf-fallback-guard/${p}.quick.json"
+done
+
+# Focused matrix for fallback-guard pair
+python3 scripts/run_exploratory_matrix.py \
+  --profile profiles/esp_idf_ota_fallback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_fallback_fallback_guard.yaml \
+  --fault-preset profile \
+  --criteria-preset profile \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-28-esp-idf-fallback-guard-matrix
+
 # Refresh full discovery matrix with new default profiles (reuse old reports)
 python3 scripts/run_exploratory_matrix.py \
   --quick \
@@ -630,17 +676,20 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Added two more exploratory guard pairs with quick differential evidence:
   - `ss_guard`: `esp_idf_ota_ss_guard` vs `esp_idf_fault_single_sector_ss_guard` (`0/4` vs `4/4` bricks).
   - `crc_schema_guard`: `esp_idf_ota_crc_schema_guard` vs `esp_idf_fault_crc_covers_state_crc_schema_guard` (control mismatch differential: `success/exec` vs `wrong_image/exec`).
+- Added `fallback_guard` pair for `no_fallback`:
+  - `esp_idf_ota_fallback_guard` vs `esp_idf_fault_no_fallback_fallback_guard`
+  - Control divergence is now explicit (`success/exec` baseline vs `no_boot` defect).
 
 **Remaining gap:**
 
-- Differential evidence now exists for `no_crc` (CRC guard), `no_abort` (rollback guard), `single_sector` (`ss_guard`), and `crc_covers_state` (`crc_schema_guard`).
-- High-write copy-path differentials are still missing for `no_crc`, and `no_fallback` still needs a strong guard-style differential lane.
+- Differential evidence now exists for `no_crc` (CRC guard), `no_abort` (rollback guard), `single_sector` (`ss_guard`), `crc_covers_state` (`crc_schema_guard`), and `no_fallback` (`fallback_guard`).
+- High-write copy-path differentials are still missing for `no_crc` and `no_fallback` fault-induced lanes.
 
 **High-value next steps:**
 
-- Build a guard-style differential pair for `no_fallback` with explicit control-outcome divergence.
 - Expand `otadata_expect` usage and add a matrix criteria preset for OtaData-asserted lanes (including scope-aware control-only checks).
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
+- Add high-write copy-on-boot variants of `fallback_guard` so `no_fallback` shows fault-induced divergence (not only control divergence).
 - Add higher-sample sweeps for `write_rejection` and `reset_at_time` lanes (beyond 3-point quick probes) to verify these fault types expose meaningful defect deltas.
 - Add per-lane minimum-sample thresholds for auto-allowlisting (avoid overfitting when baseline lane coverage is sparse).
 
@@ -729,6 +778,8 @@ Current workflow is direct-to-main (no PR required):
 14. **Exploratory matrix should not gate on profile verdict assertions**: `scripts/run_exploratory_matrix.py` now invokes `audit_bootloader.py` with `--no-assert-control-boots --no-assert-verdict`. This keeps discovery lanes from dropping cases due expectation mismatches while still preserving full control/failure signals in report JSON.
 
 15. **`run_exploratory_matrix.py` needs explicit `--renode-test` unless `renode-test` is on PATH**: Without this, cases can all show `nonzero_exit` and `cases_missing_report` due `FileNotFoundError: renode-test executable 'renode-test' not found in PATH`.
+
+16. **Control-outcome deltas are now first-class in defect scoring**: `build_defect_deltas()` compares baseline vs defect control outcomes (`control_outcome_changed` / `control_outcome_shift`) in addition to control-mismatch-vs-expected. This prevents real regressions from being hidden when each profile has different expected control outcomes.
 
 ## Profile YAML Schema Quick Reference
 
