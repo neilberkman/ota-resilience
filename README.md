@@ -132,6 +132,12 @@ Render HTML summaries from audit/self-test/matrix JSON outputs:
 python3 scripts/render_results_html.py \
   --input results/exploratory/<run>/matrix_results.json \
   --output results/exploratory/<run>/matrix_report.html
+
+# Multiple --input values produce a combined matrix dashboard section.
+python3 scripts/render_results_html.py \
+  --input results/exploratory/<run1>/matrix_results.json \
+  --input results/exploratory/<run2>/matrix_results.json \
+  --output results/exploratory/matrix_dashboard.html
 ```
 
 ## CI and reproducibility

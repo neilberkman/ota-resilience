@@ -355,9 +355,11 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - key totals (cases, clusters, control mismatches, defect deltas, anomalous points)
      - top clusters table
      - top worsening defect-delta table
+   - Added multi-input matrix dashboard view when multiple matrix JSON files are provided.
    - Generated fresh HTML artifacts:
      - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_report.html`
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html`
+     - `results/exploratory/2026-03-01-esp-idf-matrix-dashboard.html`
 
 ### Bootloader Coverage
 
@@ -822,6 +824,12 @@ python3 scripts/render_results_html.py \
 python3 scripts/render_results_html.py \
   --input results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_results.json \
   --output results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html
+
+# Render a combined matrix dashboard (multiple inputs)
+python3 scripts/render_results_html.py \
+  --input results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_results.json \
+  --input results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_results.json \
+  --output results/exploratory/2026-03-01-esp-idf-matrix-dashboard.html
 ```
 
 ## What Needs To Be Done
@@ -926,10 +934,10 @@ Result visualization is now partially implemented:
 - Latest matrix HTML artifacts:
   - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_report.html`
   - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html`
+  - `results/exploratory/2026-03-01-esp-idf-matrix-dashboard.html` (cross-run dashboard)
 
 Remaining gap:
 
-- Cross-run aggregated HTML dashboard (multiple matrix outputs in one page)
 - Trend view over time (delta-score and cluster-count evolution by scenario/fault lane)
 
 ### 8. Push Directly To Main

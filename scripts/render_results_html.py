@@ -247,6 +247,62 @@ def render_matrix_card(path: Path, payload: Dict[str, Any]) -> str:
     )
 
 
+def extract_matrix_summary(path: Path, payload: Dict[str, Any]) -> Dict[str, Any]:
+    totals = payload.get("totals", {})
+    if not isinstance(totals, dict):
+        totals = {}
+    clusters = payload.get("clusters", [])
+    if not isinstance(clusters, list):
+        clusters = []
+    defect_deltas = payload.get("defect_deltas", [])
+    if not isinstance(defect_deltas, list):
+        defect_deltas = []
+    regressions = [d for d in defect_deltas if d.get("direction") == "worse"]
+
+    return {
+        "path": str(path),
+        "cases": _as_int(totals.get("cases_total", len(payload.get("cases", [])))),
+        "clusters": len(clusters),
+        "control_mismatches": _as_int(totals.get("cases_control_mismatch")),
+        "defect_deltas": len(defect_deltas),
+        "worse_deltas": len(regressions),
+        "anomalous_points": _as_int(totals.get("anomalous_points_total")),
+        "otadata_suspicious": _as_int(
+            totals.get("otadata_suspicious_drift_points_total")
+        ),
+    }
+
+
+def render_matrix_comparison(summaries: List[Dict[str, Any]]) -> str:
+    if len(summaries) < 2:
+        return ""
+    rows = []
+    for item in summaries:
+        rows.append(
+            "<tr>"
+            f"<td>{html.escape(str(item.get('path', '')))}</td>"
+            f"<td>{_as_int(item.get('cases'))}</td>"
+            f"<td>{_as_int(item.get('clusters'))}</td>"
+            f"<td>{_as_int(item.get('control_mismatches'))}</td>"
+            f"<td>{_as_int(item.get('defect_deltas'))}</td>"
+            f"<td>{_as_int(item.get('worse_deltas'))}</td>"
+            f"<td>{_as_int(item.get('anomalous_points'))}</td>"
+            f"<td>{_as_int(item.get('otadata_suspicious'))}</td>"
+            "</tr>"
+        )
+    return (
+        "<section class='card'>"
+        "<h2>Matrix Dashboard</h2>"
+        "<table><thead><tr>"
+        "<th>Matrix JSON</th><th>Cases</th><th>Clusters</th><th>Control mismatches</th>"
+        "<th>Defect deltas</th><th>Worse deltas</th><th>Anomalous points</th><th>OtaData suspicious</th>"
+        "</tr></thead><tbody>"
+        f"{''.join(rows)}"
+        "</tbody></table>"
+        "</section>"
+    )
+
+
 def render_comparison(summaries: List[Dict[str, Any]]) -> str:
     if len(summaries) != 2:
         return ""
@@ -274,6 +330,7 @@ def main() -> int:
     inputs = [Path(p) for p in args.input]
     cards: List[str] = []
     audit_summaries: List[Dict[str, Any]] = []
+    matrix_summaries: List[Dict[str, Any]] = []
 
     for path in inputs:
         payload = load_json(path)
@@ -286,6 +343,7 @@ def main() -> int:
             cards.append(render_self_test_card(path, payload))
         elif kind == "matrix":
             cards.append(render_matrix_card(path, payload))
+            matrix_summaries.append(extract_matrix_summary(path, payload))
         else:
             cards.append(
                 "<section class='card'><h2>Unsupported JSON</h2>"
@@ -294,6 +352,7 @@ def main() -> int:
             )
 
     comparison = render_comparison(audit_summaries)
+    matrix_comparison = render_matrix_comparison(matrix_summaries)
 
     html_doc = """<!doctype html>
 <html>
@@ -366,7 +425,7 @@ tr.bad { background: #fef2f2; }
 <body>
 <main>
 <h1>OTA Resilience Report</h1>
-""" + comparison + """\n""" + "\n".join(cards) + """
+""" + comparison + """\n""" + matrix_comparison + """\n""" + "\n".join(cards) + """
 </main>
 </body>
 </html>
