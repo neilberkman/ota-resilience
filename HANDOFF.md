@@ -286,6 +286,22 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Artifact:
      - `results/exploratory/2026-02-28-esp-idf-otadata-control-preset-smoke/`
 
+18. **Defect-focused matrix for new fault presets (`write_reject` + `time_reset`) (2026-03-01, latest batch)**:
+   - Ran a focused exploratory matrix over current ESP guard baseline/defect pairs:
+     - scenarios: `rollback_guard`, `crc_schema_guard`, `ss_guard`, `fallback_guard`, `crc_guard`
+     - fault presets: `write_reject`, `time_reset`
+     - criteria presets: `profile`, `otadata_control`
+   - Aggregate result:
+     - `40` cases, `13` clusters, `12` control mismatches, `20` defect deltas.
+   - Top regressions by delta score:
+     - `ss_guard` + `write_reject`: `delta_score=14.8`, `Δfailure=+1.0`, `Δbrick=+1.0`, `Δcontrol_outcome=+2`
+     - `ss_guard` + `time_reset`: `delta_score=13.3`, `Δfailure=+1.0`, `Δbrick=+1.0`, `Δcontrol_outcome=+2`
+     - `crc_guard` + `write_reject`: `delta_score=10.77`, `Δfailure=+0.333`, `Δbrick=+0.333`, `Δcontrol_outcome=+2`
+   - Outcome:
+     - `write_reject` and `time_reset` are now proven to surface meaningful defect deltas in targeted guard lanes (not just baseline-clean behavior).
+   - Artifact:
+     - `results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -684,6 +700,26 @@ python3 scripts/run_exploratory_matrix.py \
   --profile profiles/esp_idf_ota_crc_schema_guard.yaml \
   --profile profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml \
   --fault-preset profile \
+  --criteria-preset otadata_control
+
+# Defect-focused matrix for new fault presets (`write_reject` + `time_reset`)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix \
+  --profile profiles/esp_idf_ota_rollback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_abort_rollback_guard.yaml \
+  --profile profiles/esp_idf_ota_ss_guard.yaml \
+  --profile profiles/esp_idf_fault_single_sector_ss_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_ota_fallback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_fallback_fallback_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_guard.yaml \
+  --profile profiles/esp_idf_fault_no_crc_crc_guard.yaml \
+  --fault-preset write_reject \
+  --fault-preset time_reset \
+  --criteria-preset profile \
   --criteria-preset otadata_control
 
 # Refresh full discovery matrix with new default profiles (reuse old reports)

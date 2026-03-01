@@ -1236,14 +1236,16 @@ def render_markdown_summary(
     else:
         lines.append(
             "| Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | "
-            "Δfailure | Δbrick | Δcontrol | Δotadata(susp) |"
+            "Δfailure | Δbrick | Δcontrol | Δcontrol_outcome | Δotadata(susp) |"
         )
-        lines.append("| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |")
+        lines.append(
+            "| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |"
+        )
         for idx, row in enumerate(regressions[:top_n], 1):
             delta = row.get("deltas", {})
             lines.append(
                 "| {} | {:.3f} | `{}` | `{}` | `{}` | `{}` | `{}` | "
-                "{:+.3f} | {:+.3f} | {:+d} | {:+.3f} |".format(
+                "{:+.3f} | {:+.3f} | {:+d} | {:+d} | {:+.3f} |".format(
                     idx,
                     float(row.get("delta_score", 0.0)),
                     row.get("defect_case_id", ""),
@@ -1254,6 +1256,7 @@ def render_markdown_summary(
                     float(delta.get("failure_rate", 0.0)),
                     float(delta.get("brick_rate", 0.0)),
                     int(delta.get("control_mismatch", 0)),
+                    int(delta.get("control_outcome_shift", 0)),
                     float(delta.get("otadata_suspicious_drift_rate", 0.0)),
                 )
             )
