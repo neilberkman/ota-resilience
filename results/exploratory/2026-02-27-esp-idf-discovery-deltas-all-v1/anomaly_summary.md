@@ -1,6 +1,6 @@
 # Exploratory Matrix Summary
 
-- Generated: `2026-02-28T070053Z`
+- Generated: `2026-03-01T034824Z`
 - Output dir: `/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1`
 - Cases planned: `76`
 - Cases with report: `76`
@@ -8,10 +8,13 @@
 - Control mismatches: `10`
 - Anomalous fault points: `57`
 - OtaData drift points (all): `272`
-- OtaData benign transitions: `235`
-- OtaData allowlisted points: `235`
+- OtaData benign transitions: `50`
+- OtaData allowlisted points: `50`
 - OtaData allowlist lanes: `32`
-- OtaData suspicious drift points: `37`
+- OtaData allowlist eligible lanes: `4`
+- OtaData allowlist ineligible lanes: `28`
+- OtaData allowlist min samples (fault/success): `8/4`
+- OtaData suspicious drift points: `222`
 
 ## Top Clusters
 
@@ -27,46 +30,46 @@
 | 8 | 8.789 | control_mismatch | `{"actual_control_outcome": "success", "expected_control_outcome": "wrong_image"}` | 2 | 2 | 1 |
 | 9 | 6.592 | fault_anomaly | `{"fault_type": "e", "outcome": "no_boot", "phase": "late"}` | 2 | 2 | 1 |
 | 10 | 6.592 | fault_anomaly | `{"fault_type": "e", "outcome": "no_boot", "phase": "single"}` | 2 | 2 | 1 |
-| 11 | 5.375 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "early"}` | 5 | 5 | 5 |
-| 12 | 5.375 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "mid"}` | 5 | 5 | 5 |
-| 13 | 4.394 | fault_anomaly | `{"fault_type": "w", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
-| 14 | 4.394 | fault_anomaly | `{"fault_type": "w", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
-| 15 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
-| 16 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
-| 17 | 4.394 | fault_anomaly | `{"fault_type": "b", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
-| 18 | 4.159 | fault_anomaly | `{"fault_type": "b", "outcome": "wrong_image", "phase": "mid"}` | 3 | 3 | 2 |
-| 19 | 3.296 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "late"}` | 2 | 2 | 2 |
-| 20 | 3.219 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "w", "phase": "late"}` | 4 | 4 | 1 |
-| 21 | 3.219 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "e", "phase": "late"}` | 4 | 4 | 1 |
-| 22 | 3.219 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "b", "phase": "late"}` | 4 | 4 | 1 |
-| 23 | 3.219 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "w", "phase": "early"}` | 4 | 4 | 1 |
-| 24 | 3.219 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "e", "phase": "single"}` | 4 | 4 | 1 |
-| 25 | 2.414 | otadata_drift | `{"drift_class": "suspicious_failure", "fault_type": "w", "phase": "mid"}` | 4 | 4 | 2 |
+| 11 | 5.838 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "w", "phase": "late"}` | 48 | 48 | 16 |
+| 12 | 5.748 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "w", "phase": "early"}` | 22 | 22 | 6 |
+| 13 | 5.748 | otadata_drift | `{"drift_class": "suspicious_seq", "fault_type": "e", "phase": "single"}` | 22 | 22 | 6 |
+| 14 | 5.723 | otadata_drift | `{"drift_class": "suspicious_crc", "fault_type": "w", "phase": "mid"}` | 30 | 30 | 9 |
+| 15 | 5.375 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "early"}` | 5 | 5 | 5 |
+| 16 | 5.375 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "mid"}` | 5 | 5 | 5 |
+| 17 | 4.394 | fault_anomaly | `{"fault_type": "w", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
+| 18 | 4.394 | fault_anomaly | `{"fault_type": "w", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
+| 19 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
+| 20 | 4.394 | fault_anomaly | `{"fault_type": "e", "outcome": "wrong_image", "phase": "mid"}` | 2 | 2 | 1 |
+| 21 | 4.394 | fault_anomaly | `{"fault_type": "b", "outcome": "wrong_image", "phase": "early"}` | 2 | 2 | 1 |
+| 22 | 4.159 | fault_anomaly | `{"fault_type": "b", "outcome": "wrong_image", "phase": "mid"}` | 3 | 3 | 2 |
+| 23 | 3.996 | otadata_drift | `{"drift_class": "suspicious_active_entry", "fault_type": "w", "phase": "early"}` | 10 | 10 | 3 |
+| 24 | 3.996 | otadata_drift | `{"drift_class": "suspicious_active_entry", "fault_type": "e", "phase": "single"}` | 10 | 10 | 3 |
+| 25 | 3.296 | fault_anomaly | `{"fault_type": "b", "outcome": "no_boot", "phase": "late"}` | 2 | 2 | 2 |
 
 ## Baseline vs Defect Deltas
 
-| Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | Δfailure | Δbrick | Δcontrol | Δotadata(susp) |
-| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | 15.200 | `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | `ss_guard` | `write_erase_bit` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
-| 2 | 14.900 | `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | `esp_idf_ota_ss_guard__f_profile__c_profile` | `ss_guard` | `profile` | `profile` | +1.000 | +1.000 | +1 | +1.000 |
-| 3 | 11.514 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_profile` | `crc_guard` | `write_erase_bit` | `profile` | +0.429 | +0.429 | +1 | +0.714 |
-| 4 | 10.475 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_profile` | `esp_idf_ota_crc_guard__f_profile__c_profile` | `crc_guard` | `profile` | `profile` | +0.250 | +0.250 | +1 | +0.750 |
-| 5 | 9.100 | `esp_idf_fault_no_abort__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.200 | +0.200 | +1 | +0.000 |
-| 6 | 8.725 | `esp_idf_fault_no_abort__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.125 | +0.125 | +1 | +0.000 |
-| 7 | 7.100 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile` | `esp_idf_ota_rollback_guard__f_profile__c_profile` | `rollback_guard` | `profile` | `profile` | +1.000 | +0.800 | +0 | +0.000 |
-| 8 | 7.039 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile` | `rollback_guard` | `write_erase_bit` | `profile` | +0.857 | +0.875 | +0 | -0.143 |
-| 9 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | `crc_schema_guard` | `profile` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
-| 10 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | `crc_schema_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +1 | +0.000 |
-| 11 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec` | `rollback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0.000 |
-| 12 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `rollback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0.000 |
-| 13 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile` | `esp_idf_ota_fallback_guard__f_profile__c_profile` | `fallback_guard` | `profile` | `profile` | +0.000 | +0.000 | +0 | +0.000 |
-| 14 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec` | `fallback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.000 |
-| 15 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile` | `fallback_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +0 | +0.000 |
-| 16 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `fallback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.000 |
-| 17 | 2.167 | `esp_idf_fault_no_crc__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
-| 18 | 2.167 | `esp_idf_fault_no_crc__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.556 | +0.000 | +0 | +0.000 |
-| 19 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_profile__c_image_hash_exec` | `crc_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.500 |
-| 20 | 0.000 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec` | `crc_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0.429 |
+| Rank | Score | Defect | Baseline | Scenario | Fault | Criteria | Δfailure | Δbrick | Δcontrol | Δcontrol_outcome | Δotadata(susp) |
+| --- | ---: | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 13.700 | `esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_ss_guard__f_write_erase_bit__c_profile` | `ss_guard` | `write_erase_bit` | `profile` | +1.000 | +1.000 | +1 | +2 | +0.000 |
+| 2 | 13.400 | `esp_idf_fault_single_sector_ss_guard__f_profile__c_profile` | `esp_idf_ota_ss_guard__f_profile__c_profile` | `ss_guard` | `profile` | `profile` | +1.000 | +1.000 | +1 | +2 | +0.000 |
+| 3 | 10.443 | `esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_guard__f_write_erase_bit__c_profile` | `crc_guard` | `write_erase_bit` | `profile` | +0.429 | +0.429 | +1 | +2 | +0.000 |
+| 4 | 9.350 | `esp_idf_fault_no_crc_crc_guard__f_profile__c_profile` | `esp_idf_ota_crc_guard__f_profile__c_profile` | `crc_guard` | `profile` | `profile` | +0.250 | +0.250 | +1 | +2 | +0.000 |
+| 5 | 9.100 | `esp_idf_fault_no_abort__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.200 | +0.200 | +1 | +2 | -0.333 |
+| 6 | 8.725 | `esp_idf_fault_no_abort__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.125 | +0.125 | +1 | +2 | +0.000 |
+| 7 | 7.100 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile` | `esp_idf_ota_rollback_guard__f_profile__c_profile` | `rollback_guard` | `profile` | `profile` | +1.000 | +0.800 | +0 | +1 | -1.000 |
+| 8 | 7.039 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile` | `rollback_guard` | `write_erase_bit` | `profile` | +0.857 | +0.875 | +0 | +1 | -1.000 |
+| 9 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile` | `esp_idf_ota_crc_schema_guard__f_profile__c_profile` | `crc_schema_guard` | `profile` | `profile` | +0.000 | +0.000 | +1 | +1 | +0.000 |
+| 10 | 6.000 | `esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_crc_schema_guard__f_write_erase_bit__c_profile` | `crc_schema_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +1 | +1 | +0.000 |
+| 11 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec` | `rollback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0 | -1.000 |
+| 12 | 4.000 | `esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec` | `rollback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +1 | +0 | -1.000 |
+| 13 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile` | `esp_idf_ota_fallback_guard__f_profile__c_profile` | `fallback_guard` | `profile` | `profile` | +0.000 | +0.000 | +0 | +2 | +0.000 |
+| 14 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec` | `fallback_guard` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +2 | +0.000 |
+| 15 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile` | `fallback_guard` | `write_erase_bit` | `profile` | +0.000 | +0.000 | +0 | +2 | +0.000 |
+| 16 | 4.000 | `esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec` | `fallback_guard` | `write_erase_bit` | `image_hash_exec` | +0.000 | +0.000 | +0 | +2 | +0.000 |
+| 17 | 2.167 | `esp_idf_fault_no_crc__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.556 | +0.000 | +0 | +0 | +0.000 |
+| 18 | 2.167 | `esp_idf_fault_no_crc__f_write_erase_bit__c_profile` | `esp_idf_ota_upgrade__f_write_erase_bit__c_profile` | `upgrade` | `write_erase_bit` | `profile` | +0.556 | +0.000 | +0 | +0 | +0.000 |
+| 19 | 0.000 | `esp_idf_fault_single_sector__f_profile__c_profile` | `esp_idf_ota_upgrade__f_profile__c_profile` | `upgrade` | `profile` | `profile` | +0.000 | +0.000 | +0 | +0 | +0.667 |
+| 20 | 0.000 | `esp_idf_fault_single_sector__f_profile__c_image_hash_exec` | `esp_idf_ota_upgrade__f_profile__c_image_hash_exec` | `upgrade` | `profile` | `image_hash_exec` | +0.000 | +0.000 | +0 | +0 | +0.667 |
 
 ## Run Records
 

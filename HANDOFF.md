@@ -335,6 +335,20 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Artifact:
      - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/`
 
+21. **Full ESP discovery matrix refresh under thresholded allowlisting (2026-03-01, latest batch)**:
+   - Recomputed the full default ESP discovery matrix (`76` cases, baseline + all defect profiles) with:
+     - `--otadata-allowlist-min-fault-points 8`
+     - `--otadata-allowlist-min-success-points 4`
+   - Aggregate result:
+     - `76` cases, `37` clusters, `10` control mismatches, `40` defect deltas
+     - `otadata_allowlist_scenarios=8`, `otadata_allowlist_lanes=32`
+     - allowlist eligibility: `4` eligible lanes / `28` ineligible lanes
+     - `otadata_allowlisted_points_total=50`, `otadata_suspicious_drift_points_total=222`
+   - Outcome:
+     - Full-lane clustering now reflects stricter anti-overfit normalization while preserving strong defect deltas (`ss_guard`, `crc_guard`, `rollback_guard`, `fallback_guard` lanes remain high-signal).
+   - Artifact refreshed:
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |

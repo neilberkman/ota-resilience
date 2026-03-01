@@ -17,9 +17,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -27,10 +28,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -55,9 +56,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -65,10 +67,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -169,9 +171,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -179,10 +182,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -207,9 +210,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 3,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -217,10 +221,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 3,
         "success": 3
@@ -591,9 +595,10 @@
       "fault_points_total": 9,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 0.333333,
@@ -601,10 +606,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 9
       },
@@ -629,9 +634,10 @@
       "fault_points_total": 9,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 0.333333,
@@ -639,10 +645,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4,
         "wrong_image": 5
@@ -901,9 +907,9 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2,
+        "suspicious_crc": 2,
         "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
@@ -912,10 +918,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 2,
-      "otadata_suspicious_drift_rate": 0.5,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.5,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -940,9 +946,9 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1,
+        "suspicious_crc": 1,
         "suspicious_failure": 1,
         "suspicious_seq": 2
       },
@@ -953,10 +959,10 @@
         "suspicious_failure": 1,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 3,
-      "otadata_suspicious_drift_rate": 0.75,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.25,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 3
@@ -982,9 +988,9 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4,
+        "suspicious_crc": 4,
         "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
@@ -993,10 +999,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 3,
-      "otadata_suspicious_drift_rate": 0.428571,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 0.571429,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1021,9 +1027,9 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 3,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2,
+        "suspicious_crc": 2,
         "suspicious_failure": 3,
         "suspicious_seq": 2
       },
@@ -1034,10 +1040,10 @@
         "suspicious_failure": 3,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 5,
-      "otadata_suspicious_drift_rate": 0.714286,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.285714,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 3,
         "success": 4
@@ -1063,9 +1069,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -1073,10 +1080,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -1101,9 +1108,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -1111,10 +1119,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -1215,9 +1223,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1225,10 +1234,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1253,9 +1262,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1263,10 +1273,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1291,9 +1301,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -1301,10 +1312,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1329,9 +1340,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -1339,10 +1351,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1367,9 +1379,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1377,10 +1390,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1405,9 +1418,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1415,10 +1429,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1519,9 +1533,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1529,10 +1544,10 @@
         "suspicious_active_entry": 2,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1594,9 +1609,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -1604,10 +1620,10 @@
         "suspicious_active_entry": 3,
         "suspicious_crc": 4
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1669,9 +1685,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1679,10 +1696,10 @@
         "suspicious_active_entry": 2,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1707,9 +1724,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1717,10 +1735,10 @@
         "suspicious_active_entry": 2,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -1745,9 +1763,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -1755,10 +1774,10 @@
         "suspicious_active_entry": 3,
         "suspicious_crc": 4
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1783,9 +1802,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -1793,10 +1813,10 @@
         "suspicious_active_entry": 3,
         "suspicious_crc": 4
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -1821,9 +1841,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -1831,10 +1852,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -1859,9 +1880,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 3,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -1869,10 +1891,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 3,
         "success": 3
@@ -1975,9 +1997,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -1985,10 +2008,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2013,9 +2036,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2023,10 +2047,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2051,9 +2075,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2061,10 +2086,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2089,9 +2114,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2099,10 +2125,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2251,9 +2277,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2261,10 +2288,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2289,9 +2316,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2299,10 +2327,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2327,9 +2355,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2337,10 +2366,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2365,9 +2394,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2375,10 +2405,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2403,9 +2433,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2413,10 +2444,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2441,9 +2472,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_crc": 2,
+        "suspicious_seq": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2451,10 +2483,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2479,9 +2511,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_crc": 4,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2489,10 +2522,10 @@
         "suspicious_crc": 4,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2517,10 +2550,11 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 6,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 6,
-        "suspicious_failure": 1
+        "suspicious_crc": 3,
+        "suspicious_failure": 1,
+        "suspicious_seq": 3
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2529,10 +2563,10 @@
         "suspicious_failure": 1,
         "suspicious_seq": 3
       },
-      "otadata_suspicious_drift_points": 1,
-      "otadata_suspicious_drift_rate": 0.142857,
-      "otadata_transition_points": 6,
-      "otadata_transition_rate": 0.857143,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6,
         "wrong_image": 1
@@ -2558,9 +2592,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2568,10 +2603,10 @@
         "suspicious_active_entry": 2,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2596,9 +2631,10 @@
       "fault_points_total": 4,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 4,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 4
+        "suspicious_active_entry": 2,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 4,
       "otadata_drift_rate": 1.0,
@@ -2606,10 +2642,10 @@
         "suspicious_active_entry": 2,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 4,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 4,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 4
       },
@@ -2634,9 +2670,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2644,10 +2681,10 @@
         "suspicious_active_entry": 3,
         "suspicious_crc": 4
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2672,9 +2709,10 @@
       "fault_points_total": 7,
       "fault_preset": "write_erase_bit",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 7,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 7
+        "suspicious_active_entry": 3,
+        "suspicious_crc": 4
       },
       "otadata_drift_points": 7,
       "otadata_drift_rate": 1.0,
@@ -2682,10 +2720,10 @@
         "suspicious_active_entry": 3,
         "suspicious_crc": 4
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 7,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 7,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 7
       },
@@ -2710,9 +2748,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -2720,10 +2759,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -2748,9 +2787,10 @@
       "fault_points_total": 6,
       "fault_preset": "profile",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 2,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 2
+        "suspicious_crc": 1,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 2,
       "otadata_drift_rate": 0.333333,
@@ -2758,10 +2798,10 @@
         "suspicious_crc": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 2,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 2,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 6
       },
@@ -4256,6 +4296,328 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_crc_covers_state",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc",
+        "esp_idf_fault_no_crc_copy_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard",
+        "esp_idf_ota_upgrade"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 44,
+        "staging": 4
+      },
+      "case_count": 48,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec",
+        "esp_idf_fault_crc_covers_state__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_fallback__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback__f_profile__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_profile__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_profile__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_profile__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_upgrade__f_profile__c_image_hash_exec",
+        "esp_idf_ota_upgrade__f_profile__c_profile"
+      ],
+      "count": 48,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 48
+      },
+      "profile_count": 16,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "ss_guard",
+        "upgrade",
+        "upgrade_copy_guard"
+      ],
+      "score": 5.83773,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_crc",
+        "fault_type": "w",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 22
+      },
+      "case_count": 22,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_profile__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_profile__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 22,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 22
+      },
+      "profile_count": 6,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "upgrade"
+      ],
+      "score": 5.748406,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_seq",
+        "fault_type": "w",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 22
+      },
+      "case_count": 22,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_profile__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_profile__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 22,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 22
+      },
+      "profile_count": 6,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "upgrade"
+      ],
+      "score": 5.748406,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_seq",
+        "fault_type": "e",
+        "phase": "single"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 24,
+        "staging": 6
+      },
+      "case_count": 30,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector__f_profile__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_fallback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_profile__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_profile__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_profile__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_profile__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 30,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 30
+      },
+      "profile_count": 9,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "ss_guard",
+        "upgrade"
+      ],
+      "score": 5.723312,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_crc",
+        "fault_type": "w",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_crc_covers_state_crc_schema_guard",
         "esp_idf_fault_no_abort_rollback_guard",
         "esp_idf_fault_no_crc_crc_guard",
@@ -4599,6 +4961,102 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 6,
+        "staging": 4
+      },
+      "case_count": 10,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_profile__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 10,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 10
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_guard",
+        "ss_guard"
+      ],
+      "score": 3.996492,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_active_entry",
+        "fault_type": "w",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 6,
+        "staging": 4
+      },
+      "case_count": 10,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_profile__c_profile",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_profile__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 10,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 10
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_guard",
+        "ss_guard"
+      ],
+      "score": 3.996492,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_active_entry",
+        "fault_type": "e",
+        "phase": "single"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_no_abort_rollback_guard",
         "esp_idf_fault_single_sector_ss_guard"
       ],
@@ -4642,108 +5100,70 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_copy_guard"
+        "esp_idf_fault_no_crc",
+        "esp_idf_fault_no_crc_copy_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard"
       ],
       "base_roles": [
+        "baseline",
         "defect"
       ],
       "boot_slots": {
-        "exec": 4
+        "exec": 19,
+        "staging": 2
       },
-      "case_count": 4,
+      "case_count": 21,
       "case_ids": [
+        "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc__f_profile__c_profile",
         "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
         "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
         "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
-        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
       ],
-      "count": 4,
+      "count": 21,
       "defect_kinds": [
-        "no_crc"
+        "no_crc",
+        "no_fallback",
+        "single_sector"
       ],
       "kind": "otadata_drift",
       "outcomes": {
-        "success": 4
+        "success": 21
       },
-      "profile_count": 1,
+      "profile_count": 10,
       "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "ss_guard",
+        "upgrade",
         "upgrade_copy_guard"
       ],
-      "score": 3.218876,
-      "severity": 2,
-      "signature": {
-        "drift_class": "suspicious_crc",
-        "fault_type": "w",
-        "phase": "late"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_copy_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "exec": 4
-      },
-      "case_count": 4,
-      "case_ids": [
-        "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
-        "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
-        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 4,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "kind": "otadata_drift",
-      "outcomes": {
-        "success": 4
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "upgrade_copy_guard"
-      ],
-      "score": 3.218876,
-      "severity": 2,
-      "signature": {
-        "drift_class": "suspicious_seq",
-        "fault_type": "e",
-        "phase": "late"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_copy_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "exec": 4
-      },
-      "case_count": 4,
-      "case_ids": [
-        "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
-        "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
-        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 4,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "kind": "otadata_drift",
-      "outcomes": {
-        "success": 4
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "upgrade_copy_guard"
-      ],
-      "score": 3.218876,
+      "score": 3.245595,
       "severity": 2,
       "signature": {
         "drift_class": "suspicious_crc",
@@ -4753,76 +5173,62 @@
     },
     {
       "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
+        "esp_idf_fault_crc_covers_state",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc",
+        "esp_idf_fault_no_crc_copy_guard",
+        "esp_idf_fault_no_fallback",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_upgrade"
       ],
       "base_roles": [
+        "baseline",
         "defect"
       ],
       "boot_slots": {
-        "exec": 4
+        "exec": 16
       },
-      "case_count": 4,
+      "case_count": 16,
       "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
+        "esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec",
+        "esp_idf_fault_crc_covers_state__f_profile__c_profile",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc__f_profile__c_profile",
+        "esp_idf_fault_no_crc_copy_guard__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_crc_copy_guard__f_profile__c_profile",
+        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_crc_copy_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_no_fallback__f_profile__c_image_hash_exec",
+        "esp_idf_fault_no_fallback__f_profile__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_image_hash_exec",
+        "esp_idf_ota_crc_schema_guard__f_profile__c_profile",
+        "esp_idf_ota_upgrade__f_profile__c_image_hash_exec",
+        "esp_idf_ota_upgrade__f_profile__c_profile"
       ],
-      "count": 4,
+      "count": 16,
       "defect_kinds": [
-        "no_crc"
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback"
       ],
       "kind": "otadata_drift",
       "outcomes": {
-        "success": 4
+        "success": 16
       },
-      "profile_count": 1,
+      "profile_count": 7,
       "scenarios": [
-        "crc_guard"
+        "crc_schema_guard",
+        "upgrade",
+        "upgrade_copy_guard"
       ],
-      "score": 3.218876,
-      "severity": 2,
-      "signature": {
-        "drift_class": "suspicious_seq",
-        "fault_type": "w",
-        "phase": "early"
-      }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "exec": 4
-      },
-      "case_count": 4,
-      "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
-        "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile"
-      ],
-      "count": 4,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "kind": "otadata_drift",
-      "outcomes": {
-        "success": 4
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "crc_guard"
-      ],
-      "score": 3.218876,
+      "score": 3.237958,
       "severity": 2,
       "signature": {
         "drift_class": "suspicious_seq",
         "fault_type": "e",
-        "phase": "single"
+        "phase": "late"
       }
     },
     {
@@ -4868,6 +5274,119 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 10,
+        "staging": 3
+      },
+      "case_count": 13,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 13,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback",
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 13
+      },
+      "profile_count": 8,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 2.144234,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_crc",
+        "fault_type": "b",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback",
+        "esp_idf_ota_rollback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 8,
+        "staging": 1
+      },
+      "case_count": 9,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_fallback_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback__f_write_erase_bit__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_rollback_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 9,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 9
+      },
+      "profile_count": 5,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback",
+        "rollback_guard"
+      ],
+      "score": 2.072327,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_seq",
+        "fault_type": "b",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_single_sector_ss_guard"
       ],
       "base_roles": [
@@ -4969,6 +5488,49 @@
         "drift_class": "suspicious_failure",
         "fault_type": "e",
         "phase": "single"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_single_sector_ss_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 3,
+        "staging": 2
+      },
+      "case_count": 5,
+      "case_ids": [
+        "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_crc_guard__f_write_erase_bit__c_profile",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_image_hash_exec",
+        "esp_idf_ota_ss_guard__f_write_erase_bit__c_profile"
+      ],
+      "count": 5,
+      "defect_kinds": [
+        "single_sector"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 5
+      },
+      "profile_count": 3,
+      "scenarios": [
+        "crc_guard",
+        "ss_guard"
+      ],
+      "score": 1.493133,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_active_entry",
+        "fault_type": "b",
+        "phase": "early"
       }
     },
     {
@@ -5087,40 +5649,6 @@
         "fault_type": "b",
         "phase": "late"
       }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "staging": 1
-      },
-      "case_count": 1,
-      "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec"
-      ],
-      "count": 1,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "kind": "otadata_drift",
-      "outcomes": {
-        "success": 1
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "crc_guard"
-      ],
-      "score": 0.346574,
-      "severity": 2,
-      "signature": {
-        "drift_class": "suspicious_seq",
-        "fault_type": "b",
-        "phase": "early"
-      }
     }
   ],
   "config": {
@@ -5134,6 +5662,8 @@
       "write_erase_bit"
     ],
     "max_cases": 0,
+    "otadata_allowlist_min_fault_points": 8,
+    "otadata_allowlist_min_success_points": 4,
     "profile_patterns": [
       "profiles/esp_idf_ota_upgrade.yaml",
       "profiles/esp_idf_ota_fallback_guard.yaml",
@@ -5158,7 +5688,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_profile",
@@ -5171,7 +5701,7 @@
         "otadata_drift_rate": 1.0,
         "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 15.2,
+      "delta_score": 13.7,
       "deltas": {
         "anomalous_points": 7,
         "brick_rate": 1.0,
@@ -5180,7 +5710,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 1.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5195,7 +5725,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_profile",
@@ -5208,7 +5738,7 @@
         "otadata_drift_rate": 1.0,
         "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 14.9,
+      "delta_score": 13.4,
       "deltas": {
         "anomalous_points": 4,
         "brick_rate": 1.0,
@@ -5217,7 +5747,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 1.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5232,7 +5762,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_profile",
@@ -5243,9 +5773,9 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.428571,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.714286
+        "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 11.514284,
+      "delta_score": 10.442855,
       "deltas": {
         "anomalous_points": 3,
         "brick_rate": 0.428571,
@@ -5254,7 +5784,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 0.428571,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.714286,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5269,7 +5799,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_profile",
@@ -5280,9 +5810,9 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.25,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.75
+        "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 10.475,
+      "delta_score": 9.35,
       "deltas": {
         "anomalous_points": 1,
         "brick_rate": 0.25,
@@ -5291,7 +5821,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 0.25,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.75,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5306,7 +5836,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_abort__f_profile__c_profile",
@@ -5328,7 +5858,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 0.2,
         "otadata_drift_rate": -0.333333,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -0.333333,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5380,7 +5910,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_profile",
@@ -5402,7 +5932,7 @@
         "control_outcome_shift": 1,
         "failure_rate": 1.0,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": 0.2
       },
       "direction": "worse",
@@ -5417,7 +5947,7 @@
         "control_outcome": "success",
         "failure_rate": 0.142857,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.142857
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_profile",
@@ -5439,7 +5969,7 @@
         "control_outcome_shift": 1,
         "failure_rate": 0.857143,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": -0.142857,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": -0.017857
       },
       "direction": "worse",
@@ -5454,7 +5984,7 @@
         "control_outcome": "success",
         "failure_rate": 0.5,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_profile",
@@ -5465,7 +5995,7 @@
         "control_outcome": "wrong_image",
         "failure_rate": 0.5,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 6.0,
       "deltas": {
@@ -5528,7 +6058,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_profile__c_image_hash_exec",
@@ -5550,7 +6080,7 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5565,7 +6095,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_erase_bit__c_image_hash_exec",
@@ -5587,7 +6117,7 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -5602,7 +6132,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_profile",
@@ -5613,7 +6143,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -5639,7 +6169,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_profile__c_image_hash_exec",
@@ -5650,7 +6180,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -5676,7 +6206,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_profile",
@@ -5687,7 +6217,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -5713,7 +6243,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_erase_bit__c_image_hash_exec",
@@ -5724,7 +6254,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -5750,7 +6280,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_crc__f_profile__c_profile",
@@ -5761,7 +6291,7 @@
         "control_outcome": "success",
         "failure_rate": 0.555556,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 2.166668,
       "deltas": {
@@ -5824,7 +6354,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_crc_covers_state__f_profile__c_profile",
@@ -5835,7 +6365,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -5861,7 +6391,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_crc_covers_state__f_profile__c_image_hash_exec",
@@ -5872,7 +6402,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -5972,7 +6502,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_profile__c_image_hash_exec",
@@ -5983,7 +6513,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6046,7 +6576,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_abort__f_profile__c_image_hash_exec",
@@ -6068,10 +6598,10 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": -0.333333,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -0.333333,
         "wrong_image_rate": 0.0
       },
-      "direction": "same",
+      "direction": "better",
       "fault_preset": "profile",
       "scenario_tag": "upgrade"
     },
@@ -6120,7 +6650,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_crc__f_profile__c_image_hash_exec",
@@ -6131,7 +6661,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6194,7 +6724,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_profile__c_image_hash_exec",
@@ -6205,7 +6735,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.5
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6216,10 +6746,10 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.5,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
-      "direction": "worse",
+      "direction": "same",
       "fault_preset": "profile",
       "scenario_tag": "crc_guard"
     },
@@ -6231,7 +6761,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_write_erase_bit__c_image_hash_exec",
@@ -6242,7 +6772,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.428571
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6253,10 +6783,10 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.428571,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
-      "direction": "worse",
+      "direction": "same",
       "fault_preset": "write_erase_bit",
       "scenario_tag": "crc_guard"
     },
@@ -6268,7 +6798,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_fallback__f_profile__c_profile",
@@ -6279,7 +6809,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6305,7 +6835,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_no_fallback__f_profile__c_image_hash_exec",
@@ -6316,7 +6846,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6416,7 +6946,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_single_sector__f_profile__c_profile",
@@ -6427,7 +6957,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6438,10 +6968,10 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.666667,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.666667,
         "wrong_image_rate": 0.0
       },
-      "direction": "same",
+      "direction": "worse",
       "fault_preset": "profile",
       "scenario_tag": "upgrade"
     },
@@ -6453,7 +6983,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_single_sector__f_profile__c_image_hash_exec",
@@ -6464,7 +6994,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6475,10 +7005,10 @@
         "control_outcome_shift": 0,
         "failure_rate": 0.0,
         "otadata_drift_rate": 0.666667,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": 0.666667,
         "wrong_image_rate": 0.0
       },
-      "direction": "same",
+      "direction": "worse",
       "fault_preset": "profile",
       "scenario_tag": "upgrade"
     },
@@ -6564,7 +7094,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_profile__c_image_hash_exec",
@@ -6575,7 +7105,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6601,7 +7131,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "image_hash_exec",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_erase_bit__c_image_hash_exec",
@@ -6612,7 +7142,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 0.0,
       "deltas": {
@@ -6631,35 +7161,17 @@
       "scenario_tag": "ss_guard"
     }
   ],
-  "generated_at_utc": "2026-02-28T070052Z",
+  "generated_at_utc": "2026-03-01T034824Z",
   "otadata_allowlist": {
     "crc_guard": {
-      "profile|image_hash_exec": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "profile|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_erase_bit|image_hash_exec": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_erase_bit|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ]
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
     },
     "crc_schema_guard": {
-      "profile|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "profile|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
       "write_erase_bit|image_hash_exec": [
         "suspicious_crc",
         "suspicious_seq"
@@ -6670,22 +7182,10 @@
       ]
     },
     "fallback_guard": {
-      "profile|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "profile|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ]
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
     },
     "no_rollback": {
       "profile|image_hash_exec": [],
@@ -6694,68 +7194,26 @@
       "write_erase_bit|profile": []
     },
     "rollback": {
-      "profile|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "profile|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ]
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
     },
     "rollback_guard": {
-      "profile|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "profile|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_erase_bit|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ]
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
     },
     "ss_guard": {
-      "profile|image_hash_exec": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "profile|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_erase_bit|image_hash_exec": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_erase_bit|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ]
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
+      "write_erase_bit|image_hash_exec": [],
+      "write_erase_bit|profile": []
     },
     "upgrade": {
-      "profile|image_hash_exec": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "profile|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
+      "profile|image_hash_exec": [],
+      "profile|profile": [],
       "write_erase_bit|image_hash_exec": [
         "suspicious_crc",
         "suspicious_seq"
@@ -6765,6 +7223,256 @@
         "suspicious_seq"
       ]
     }
+  },
+  "otadata_allowlist_meta": {
+    "lane_samples": {
+      "crc_guard": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        }
+      },
+      "crc_schema_guard": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 6,
+          "success_fault_points": 6
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 6,
+          "success_fault_points": 3
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 2,
+          "baseline_cases": 1,
+          "eligible": true,
+          "fault_points_total": 9,
+          "success_fault_points": 9
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 2,
+          "baseline_cases": 1,
+          "eligible": true,
+          "fault_points_total": 9,
+          "success_fault_points": 4
+        }
+      },
+      "fallback_guard": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        }
+      },
+      "no_rollback": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 0,
+          "success_fault_points": 0
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 0,
+          "success_fault_points": 0
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 0,
+          "success_fault_points": 0
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 0,
+          "success_fault_points": 0
+        }
+      },
+      "rollback": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        }
+      },
+      "rollback_guard": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 6
+        }
+      },
+      "ss_guard": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 4,
+          "success_fault_points": 4
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 7,
+          "success_fault_points": 7
+        }
+      },
+      "upgrade": {
+        "profile|image_hash_exec": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 6,
+          "success_fault_points": 6
+        },
+        "profile|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 6,
+          "success_fault_points": 6
+        },
+        "write_erase_bit|image_hash_exec": {
+          "allowlisted_classes_count": 2,
+          "baseline_cases": 1,
+          "eligible": true,
+          "fault_points_total": 9,
+          "success_fault_points": 9
+        },
+        "write_erase_bit|profile": {
+          "allowlisted_classes_count": 2,
+          "baseline_cases": 1,
+          "eligible": true,
+          "fault_points_total": 9,
+          "success_fault_points": 9
+        }
+      }
+    },
+    "lanes_eligible": 4,
+    "lanes_ineligible": 28,
+    "lanes_total": 32,
+    "lanes_with_allowlisted_classes": 4,
+    "min_fault_points": 8,
+    "min_success_points": 4
   },
   "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1",
   "repo_root": "/Users/neil/mirala/ota-resilience",
@@ -7232,11 +7940,15 @@
     "cases_missing_report": 0,
     "cases_total": 76,
     "cases_with_report": 76,
+    "otadata_allowlist_eligible_lanes": 4,
+    "otadata_allowlist_ineligible_lanes": 28,
     "otadata_allowlist_lanes": 32,
+    "otadata_allowlist_min_fault_points": 8,
+    "otadata_allowlist_min_success_points": 4,
     "otadata_allowlist_scenarios": 8,
-    "otadata_allowlisted_points_total": 235,
+    "otadata_allowlisted_points_total": 50,
     "otadata_drift_points_total": 272,
-    "otadata_suspicious_drift_points_total": 37,
-    "otadata_transition_points_total": 235
+    "otadata_suspicious_drift_points_total": 222,
+    "otadata_transition_points_total": 50
   }
 }
