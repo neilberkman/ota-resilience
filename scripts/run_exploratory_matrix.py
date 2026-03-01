@@ -30,6 +30,8 @@ FAULT_PRESETS = (
     "profile",
     "write_erase",
     "write_erase_bit",
+    "write_integrity",
+    "erase_atomicity",
     "write_reject",
     "time_reset",
 )
@@ -153,6 +155,24 @@ def parse_args() -> argparse.Namespace:
         help="Step limit used for bit-corruption presets.",
     )
     parser.add_argument(
+        "--otadata-allowlist-min-fault-points",
+        type=int,
+        default=8,
+        help=(
+            "Minimum fault-injected baseline points required in a scenario lane "
+            "before OtaData suspicious classes can be auto-allowlisted."
+        ),
+    )
+    parser.add_argument(
+        "--otadata-allowlist-min-success-points",
+        type=int,
+        default=4,
+        help=(
+            "Minimum successful fault-injected baseline points required in a "
+            "scenario lane before OtaData suspicious classes can be auto-allowlisted."
+        ),
+    )
+    parser.add_argument(
         "--top-clusters",
         type=int,
         default=25,
@@ -268,6 +288,16 @@ def apply_fault_preset(
         fs["fault_types"] = ["power_loss", "interrupted_erase"]
     elif preset == "write_erase_bit":
         fs["fault_types"] = ["power_loss", "interrupted_erase", "bit_corruption"]
+        fs["max_step_limit"] = bounded_step_limit
+    elif preset == "write_integrity":
+        fs["fault_types"] = [
+            "silent_write_failure",
+            "write_disturb",
+            "wear_leveling_corruption",
+        ]
+        fs["max_step_limit"] = bounded_step_limit
+    elif preset == "erase_atomicity":
+        fs["fault_types"] = ["interrupted_erase", "multi_sector_atomicity"]
         fs["max_step_limit"] = bounded_step_limit
     elif preset == "write_reject":
         fs["fault_types"] = ["write_rejection"]
@@ -574,9 +604,12 @@ def _normalize_drift_class(
 def build_otadata_allowlist(
     cases: Sequence[MatrixCase],
     run_records: Sequence[Dict[str, Any]],
-) -> Dict[str, Dict[str, List[str]]]:
+    min_fault_points: int,
+    min_success_points: int,
+) -> Tuple[Dict[str, Dict[str, List[str]]], Dict[str, Any]]:
     case_by_id = {c.case_id: c for c in cases}
     allowlist: Dict[str, Dict[str, set]] = {}
+    lane_samples: Dict[str, Dict[str, Dict[str, int]]] = {}
 
     for rr in run_records:
         case_id = rr.get("case_id")
@@ -607,6 +640,16 @@ def build_otadata_allowlist(
         scenario_bucket = allowlist.setdefault(case.scenario_tag, {})
         lane_key = "{}|{}".format(case.fault_preset, case.criteria_preset)
         lane_set = scenario_bucket.setdefault(lane_key, set())
+        scenario_samples = lane_samples.setdefault(case.scenario_tag, {})
+        lane_sample = scenario_samples.setdefault(
+            lane_key,
+            {
+                "baseline_cases": 0,
+                "fault_points_total": 0,
+                "success_fault_points": 0,
+            },
+        )
+        lane_sample["baseline_cases"] += 1
         for p in points:
             if not isinstance(p, dict):
                 continue
@@ -614,9 +657,11 @@ def build_otadata_allowlist(
                 continue
             if not p.get("fault_injected", False):
                 continue
+            lane_sample["fault_points_total"] += 1
             outcome = _as_signal_token(p.get("boot_outcome"), "unknown")
             if outcome != "success":
                 continue
+            lane_sample["success_fault_points"] += 1
             signals = p.get("signals", {})
             if not isinstance(signals, dict):
                 signals = {}
@@ -624,12 +669,55 @@ def build_otadata_allowlist(
             if drift_class.startswith("suspicious_"):
                 lane_set.add(drift_class)
 
+    min_fault_points = int(max(0, min_fault_points))
+    min_success_points = int(max(0, min_success_points))
+
     normalized: Dict[str, Dict[str, List[str]]] = {}
-    for scenario_tag, lane_map in sorted(allowlist.items()):
-        normalized[scenario_tag] = {
-            lane_key: sorted(values) for lane_key, values in sorted(lane_map.items())
-        }
-    return normalized
+    normalized_meta: Dict[str, Dict[str, Dict[str, Any]]] = {}
+    lanes_total = 0
+    lanes_eligible = 0
+    lanes_with_allowlisted = 0
+
+    for scenario_tag, samples in sorted(lane_samples.items()):
+        lane_map = allowlist.get(scenario_tag, {})
+        scenario_allowlist: Dict[str, List[str]] = {}
+        scenario_meta: Dict[str, Dict[str, Any]] = {}
+        for lane_key, sample in sorted(samples.items()):
+            lanes_total += 1
+            fault_points_total = int(sample.get("fault_points_total", 0))
+            success_fault_points = int(sample.get("success_fault_points", 0))
+            eligible = (
+                fault_points_total >= min_fault_points
+                and success_fault_points >= min_success_points
+            )
+            if eligible:
+                lanes_eligible += 1
+                classes = sorted(lane_map.get(lane_key, set()))
+            else:
+                classes = []
+            if classes:
+                lanes_with_allowlisted += 1
+            scenario_allowlist[lane_key] = classes
+            scenario_meta[lane_key] = {
+                "baseline_cases": int(sample.get("baseline_cases", 0)),
+                "fault_points_total": fault_points_total,
+                "success_fault_points": success_fault_points,
+                "eligible": bool(eligible),
+                "allowlisted_classes_count": len(classes),
+            }
+        normalized[scenario_tag] = scenario_allowlist
+        normalized_meta[scenario_tag] = scenario_meta
+
+    allowlist_meta = {
+        "min_fault_points": min_fault_points,
+        "min_success_points": min_success_points,
+        "lanes_total": lanes_total,
+        "lanes_eligible": lanes_eligible,
+        "lanes_ineligible": max(lanes_total - lanes_eligible, 0),
+        "lanes_with_allowlisted_classes": lanes_with_allowlisted,
+        "lane_samples": normalized_meta,
+    }
+    return normalized, allowlist_meta
 
 
 def _collect_case_metrics(
@@ -910,16 +998,24 @@ def build_defect_deltas(
 def extract_anomalies(
     cases: Sequence[MatrixCase],
     run_records: Sequence[Dict[str, Any]],
+    otadata_allowlist_min_fault_points: int,
+    otadata_allowlist_min_success_points: int,
 ) -> Tuple[
     List[Dict[str, Any]],
     Dict[str, Any],
     Dict[str, Dict[str, Any]],
     Dict[str, Dict[str, List[str]]],
+    Dict[str, Any],
 ]:
     case_by_id = {c.case_id: c for c in cases}
     clusters: Dict[Tuple[str, ...], Dict[str, Any]] = {}
     case_metrics_by_id: Dict[str, Dict[str, Any]] = {}
-    scenario_otadata_allowlist = build_otadata_allowlist(cases, run_records)
+    scenario_otadata_allowlist, allowlist_meta = build_otadata_allowlist(
+        cases,
+        run_records,
+        min_fault_points=otadata_allowlist_min_fault_points,
+        min_success_points=otadata_allowlist_min_success_points,
+    )
 
     totals = {
         "cases_total": len(cases),
@@ -932,8 +1028,18 @@ def extract_anomalies(
         "otadata_suspicious_drift_points_total": 0,
         "otadata_allowlisted_points_total": 0,
         "otadata_allowlist_scenarios": len(scenario_otadata_allowlist),
-        "otadata_allowlist_lanes": sum(
-            len(lane_map) for lane_map in scenario_otadata_allowlist.values()
+        "otadata_allowlist_lanes": int(allowlist_meta.get("lanes_total", 0)),
+        "otadata_allowlist_eligible_lanes": int(
+            allowlist_meta.get("lanes_eligible", 0)
+        ),
+        "otadata_allowlist_ineligible_lanes": int(
+            allowlist_meta.get("lanes_ineligible", 0)
+        ),
+        "otadata_allowlist_min_fault_points": int(
+            allowlist_meta.get("min_fault_points", 0)
+        ),
+        "otadata_allowlist_min_success_points": int(
+            allowlist_meta.get("min_success_points", 0)
         ),
     }
 
@@ -1161,7 +1267,13 @@ def extract_anomalies(
         key=lambda x: (x["score"], x["severity"], x["case_count"], x["count"]),
         reverse=True,
     )
-    return cluster_rows, totals, case_metrics_by_id, scenario_otadata_allowlist
+    return (
+        cluster_rows,
+        totals,
+        case_metrics_by_id,
+        scenario_otadata_allowlist,
+        allowlist_meta,
+    )
 
 
 def render_markdown_summary(
@@ -1197,6 +1309,22 @@ def render_markdown_summary(
     lines.append(
         "- OtaData allowlist lanes: `{}`".format(
             totals.get("otadata_allowlist_lanes", 0)
+        )
+    )
+    lines.append(
+        "- OtaData allowlist eligible lanes: `{}`".format(
+            totals.get("otadata_allowlist_eligible_lanes", 0)
+        )
+    )
+    lines.append(
+        "- OtaData allowlist ineligible lanes: `{}`".format(
+            totals.get("otadata_allowlist_ineligible_lanes", 0)
+        )
+    )
+    lines.append(
+        "- OtaData allowlist min samples (fault/success): `{}/{}`".format(
+            totals.get("otadata_allowlist_min_fault_points", 0),
+            totals.get("otadata_allowlist_min_success_points", 0),
         )
     )
     lines.append(
@@ -1337,8 +1465,17 @@ def main() -> int:
         )
         run_records.append(rr)
 
-    clusters, totals, case_metrics_by_id, scenario_otadata_allowlist = extract_anomalies(
-        cases, run_records
+    (
+        clusters,
+        totals,
+        case_metrics_by_id,
+        scenario_otadata_allowlist,
+        otadata_allowlist_meta,
+    ) = extract_anomalies(
+        cases,
+        run_records,
+        otadata_allowlist_min_fault_points=args.otadata_allowlist_min_fault_points,
+        otadata_allowlist_min_success_points=args.otadata_allowlist_min_success_points,
     )
     defect_deltas = build_defect_deltas(cases, case_metrics_by_id)
 
@@ -1355,6 +1492,12 @@ def main() -> int:
             "max_cases": int(args.max_cases),
             "reuse_existing": bool(args.reuse_existing),
             "bounded_step_limit": int(bounded_step_limit),
+            "otadata_allowlist_min_fault_points": int(
+                args.otadata_allowlist_min_fault_points
+            ),
+            "otadata_allowlist_min_success_points": int(
+                args.otadata_allowlist_min_success_points
+            ),
         },
         "cases": [
             {
@@ -1376,6 +1519,7 @@ def main() -> int:
         "totals": totals,
         "clusters": clusters,
         "otadata_allowlist": scenario_otadata_allowlist,
+        "otadata_allowlist_meta": otadata_allowlist_meta,
         "case_metrics": [
             case_metrics_by_id[k]
             for k in sorted(case_metrics_by_id.keys())

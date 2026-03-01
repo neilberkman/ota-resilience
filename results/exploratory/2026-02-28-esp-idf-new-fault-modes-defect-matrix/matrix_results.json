@@ -17,19 +17,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -54,19 +54,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -91,19 +91,19 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1
+        "suspicious_crc": 1
       },
       "otadata_drift_points": 1,
       "otadata_drift_rate": 0.333333,
       "otadata_drift_raw_class_counts": {
         "suspicious_crc": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 1,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -129,19 +129,19 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1
+        "suspicious_crc": 1
       },
       "otadata_drift_points": 1,
       "otadata_drift_rate": 0.333333,
       "otadata_drift_raw_class_counts": {
         "suspicious_crc": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 1,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -301,19 +301,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -338,19 +338,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -375,9 +375,9 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1,
+        "suspicious_crc": 1,
         "suspicious_failure": 1,
         "suspicious_seq": 1
       },
@@ -388,10 +388,10 @@
         "suspicious_failure": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 2,
-      "otadata_suspicious_drift_rate": 0.666667,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -417,9 +417,9 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1,
+        "suspicious_crc": 1,
         "suspicious_failure": 1,
         "suspicious_seq": 1
       },
@@ -430,10 +430,10 @@
         "suspicious_failure": 1,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 2,
-      "otadata_suspicious_drift_rate": 0.666667,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -459,19 +459,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -496,19 +496,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -533,9 +533,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -543,10 +544,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -571,9 +572,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -581,10 +583,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -749,19 +751,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -786,19 +788,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -823,9 +825,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_active_entry": 1,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -833,10 +836,10 @@
         "suspicious_active_entry": 1,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -861,9 +864,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_active_entry": 1,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -871,10 +875,10 @@
         "suspicious_active_entry": 1,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -899,19 +903,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -936,19 +940,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -973,19 +977,19 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1
+        "suspicious_crc": 1
       },
       "otadata_drift_points": 1,
       "otadata_drift_rate": 0.333333,
       "otadata_drift_raw_class_counts": {
         "suspicious_crc": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 1,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -1011,19 +1015,19 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 1,
-      "otadata_allowlisted_points": 1,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 1
+        "suspicious_crc": 1
       },
       "otadata_drift_points": 1,
       "otadata_drift_rate": 0.333333,
       "otadata_drift_raw_class_counts": {
         "suspicious_crc": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 1,
-      "otadata_transition_rate": 0.333333,
+      "otadata_suspicious_drift_points": 1,
+      "otadata_suspicious_drift_rate": 0.333333,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "no_boot": 1,
         "success": 2
@@ -1049,19 +1053,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1086,19 +1090,19 @@
       "fault_points_total": 3,
       "fault_preset": "time_reset",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_state": 3
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
       "otadata_drift_raw_class_counts": {
         "suspicious_state": 3
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1123,9 +1127,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1133,10 +1138,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1161,9 +1166,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1171,10 +1177,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1265,9 +1271,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1275,10 +1282,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1303,9 +1310,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_crc": 2,
+        "suspicious_seq": 1
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1313,10 +1321,10 @@
         "suspicious_crc": 2,
         "suspicious_seq": 1
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1407,9 +1415,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_active_entry": 1,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1417,10 +1426,10 @@
         "suspicious_active_entry": 1,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -1445,9 +1454,10 @@
       "fault_points_total": 3,
       "fault_preset": "write_reject",
       "hard_failure_points": 0,
-      "otadata_allowlisted_points": 3,
+      "otadata_allowlisted_points": 0,
       "otadata_drift_class_counts": {
-        "benign_allowlisted": 3
+        "suspicious_active_entry": 1,
+        "suspicious_crc": 2
       },
       "otadata_drift_points": 3,
       "otadata_drift_rate": 1.0,
@@ -1455,10 +1465,10 @@
         "suspicious_active_entry": 1,
         "suspicious_crc": 2
       },
-      "otadata_suspicious_drift_points": 0,
-      "otadata_suspicious_drift_rate": 0.0,
-      "otadata_transition_points": 3,
-      "otadata_transition_rate": 1.0,
+      "otadata_suspicious_drift_points": 3,
+      "otadata_suspicious_drift_rate": 1.0,
+      "otadata_transition_points": 0,
+      "otadata_transition_rate": 0.0,
       "outcome_counts": {
         "success": 3
       },
@@ -2340,6 +2350,235 @@
     },
     {
       "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 14,
+        "staging": 2
+      },
+      "case_count": 16,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_crc_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_write_reject__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_write_reject__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_ss_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_ss_guard__f_write_reject__c_profile"
+      ],
+      "count": 16,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 16
+      },
+      "profile_count": 8,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "fallback_guard",
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 2.833213,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_crc",
+        "fault_type": "r",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_fallback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 12
+      },
+      "case_count": 12,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_profile"
+      ],
+      "count": 12,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 12
+      },
+      "profile_count": 6,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "fallback_guard"
+      ],
+      "score": 2.564949,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_state",
+        "fault_type": "t",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_fallback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 12
+      },
+      "case_count": 12,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_profile"
+      ],
+      "count": 12,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 12
+      },
+      "profile_count": 6,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "fallback_guard"
+      ],
+      "score": 2.564949,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_state",
+        "fault_type": "t",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard",
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_crc_schema_guard",
+        "esp_idf_ota_fallback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 12
+      },
+      "case_count": 12,
+      "case_ids": [
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_time_reset__c_profile",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_crc_schema_guard__f_time_reset__c_profile",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_time_reset__c_profile"
+      ],
+      "count": 12,
+      "defect_kinds": [
+        "crc_covers_state",
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 12
+      },
+      "profile_count": 6,
+      "scenarios": [
+        "crc_guard",
+        "crc_schema_guard",
+        "fallback_guard"
+      ],
+      "score": 2.564949,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_state",
+        "fault_type": "t",
+        "phase": "late"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_no_crc_crc_guard",
         "esp_idf_fault_single_sector_ss_guard"
       ],
@@ -2377,6 +2616,106 @@
         "drift_class": "suspicious_failure",
         "fault_type": "r",
         "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 8,
+        "staging": 2
+      },
+      "case_count": 10,
+      "case_ids": [
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_crc_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_write_reject__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_ss_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_ss_guard__f_write_reject__c_profile"
+      ],
+      "count": 10,
+      "defect_kinds": [
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 10
+      },
+      "profile_count": 5,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback_guard",
+        "ss_guard"
+      ],
+      "score": 2.397895,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_crc",
+        "fault_type": "r",
+        "phase": "mid"
+      }
+    },
+    {
+      "base_profiles": [
+        "esp_idf_fault_no_crc_crc_guard",
+        "esp_idf_fault_no_fallback_fallback_guard",
+        "esp_idf_ota_fallback_guard",
+        "esp_idf_ota_rollback_guard"
+      ],
+      "base_roles": [
+        "baseline",
+        "defect"
+      ],
+      "boot_slots": {
+        "exec": 8
+      },
+      "case_count": 8,
+      "case_ids": [
+        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_fallback_guard__f_write_reject__c_profile",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_rollback_guard__f_write_reject__c_profile"
+      ],
+      "count": 8,
+      "defect_kinds": [
+        "no_crc",
+        "no_fallback"
+      ],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 8
+      },
+      "profile_count": 4,
+      "scenarios": [
+        "crc_guard",
+        "fallback_guard",
+        "rollback_guard"
+      ],
+      "score": 2.197225,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_seq",
+        "fault_type": "r",
+        "phase": "early"
       }
     },
     {
@@ -2451,6 +2790,44 @@
     },
     {
       "base_profiles": [
+        "esp_idf_ota_crc_guard",
+        "esp_idf_ota_ss_guard"
+      ],
+      "base_roles": [
+        "baseline"
+      ],
+      "boot_slots": {
+        "exec": 2,
+        "staging": 2
+      },
+      "case_count": 4,
+      "case_ids": [
+        "esp_idf_ota_crc_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_crc_guard__f_write_reject__c_profile",
+        "esp_idf_ota_ss_guard__f_write_reject__c_otadata_control",
+        "esp_idf_ota_ss_guard__f_write_reject__c_profile"
+      ],
+      "count": 4,
+      "defect_kinds": [],
+      "kind": "otadata_drift",
+      "outcomes": {
+        "success": 4
+      },
+      "profile_count": 2,
+      "scenarios": [
+        "crc_guard",
+        "ss_guard"
+      ],
+      "score": 1.609438,
+      "severity": 2,
+      "signature": {
+        "drift_class": "suspicious_active_entry",
+        "fault_type": "r",
+        "phase": "early"
+      }
+    },
+    {
+      "base_profiles": [
         "esp_idf_fault_no_abort_rollback_guard"
       ],
       "base_roles": [
@@ -2485,41 +2862,6 @@
         "outcome": "wrong_image",
         "phase": "early"
       }
-    },
-    {
-      "base_profiles": [
-        "esp_idf_fault_no_crc_crc_guard"
-      ],
-      "base_roles": [
-        "defect"
-      ],
-      "boot_slots": {
-        "exec": 2
-      },
-      "case_count": 2,
-      "case_ids": [
-        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control",
-        "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile"
-      ],
-      "count": 2,
-      "defect_kinds": [
-        "no_crc"
-      ],
-      "kind": "otadata_drift",
-      "outcomes": {
-        "success": 2
-      },
-      "profile_count": 1,
-      "scenarios": [
-        "crc_guard"
-      ],
-      "score": 1.098612,
-      "severity": 2,
-      "signature": {
-        "drift_class": "suspicious_seq",
-        "fault_type": "r",
-        "phase": "early"
-      }
     }
   ],
   "config": {
@@ -2533,6 +2875,8 @@
       "time_reset"
     ],
     "max_cases": 0,
+    "otadata_allowlist_min_fault_points": 8,
+    "otadata_allowlist_min_success_points": 4,
     "profile_patterns": [
       "profiles/esp_idf_ota_rollback_guard.yaml",
       "profiles/esp_idf_fault_no_abort_rollback_guard.yaml",
@@ -2546,7 +2890,7 @@
       "profiles/esp_idf_fault_no_crc_crc_guard.yaml"
     ],
     "quick": true,
-    "reuse_existing": false,
+    "reuse_existing": true,
     "workers": 1
   },
   "defect_deltas": [
@@ -2558,7 +2902,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile",
@@ -2571,7 +2915,7 @@
         "otadata_drift_rate": 1.0,
         "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 14.8,
+      "delta_score": 13.3,
       "deltas": {
         "anomalous_points": 3,
         "brick_rate": 1.0,
@@ -2580,7 +2924,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 1.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -2595,7 +2939,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control",
@@ -2608,7 +2952,7 @@
         "otadata_drift_rate": 1.0,
         "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 14.8,
+      "delta_score": 13.3,
       "deltas": {
         "anomalous_points": 3,
         "brick_rate": 1.0,
@@ -2617,7 +2961,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 1.0,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 1.0,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -2706,7 +3050,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile",
@@ -2717,9 +3061,9 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.666667
+        "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 10.766666,
+      "delta_score": 9.766665,
       "deltas": {
         "anomalous_points": 1,
         "brick_rate": 0.333333,
@@ -2728,7 +3072,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.666667,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -2743,7 +3087,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control",
@@ -2754,9 +3098,9 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.666667
+        "otadata_suspicious_drift_rate": 1.0
       },
-      "delta_score": 10.766666,
+      "delta_score": 9.766665,
       "deltas": {
         "anomalous_points": 1,
         "brick_rate": 0.333333,
@@ -2765,7 +3109,7 @@
         "control_outcome_shift": 2,
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.0,
-        "otadata_suspicious_drift_rate": 0.666667,
+        "otadata_suspicious_drift_rate": 0.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -2780,7 +3124,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile",
@@ -2791,7 +3135,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 8.0,
       "deltas": {
@@ -2817,7 +3161,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control",
@@ -2828,7 +3172,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 8.0,
       "deltas": {
@@ -2928,7 +3272,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile",
@@ -2950,7 +3294,7 @@
         "control_outcome_shift": 1,
         "failure_rate": 1.0,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": 0.333333
       },
       "direction": "worse",
@@ -2965,7 +3309,7 @@
         "control_outcome": "success",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile",
@@ -2976,7 +3320,7 @@
         "control_outcome": "wrong_image",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 6.0,
       "deltas": {
@@ -3002,7 +3346,7 @@
         "control_outcome": "success",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control",
@@ -3013,7 +3357,7 @@
         "control_outcome": "wrong_image",
         "failure_rate": 0.333333,
         "otadata_drift_rate": 0.333333,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 0.333333
       },
       "delta_score": 6.0,
       "deltas": {
@@ -3039,7 +3383,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile",
@@ -3050,7 +3394,7 @@
         "control_outcome": "wrong_image",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 6.0,
       "deltas": {
@@ -3076,7 +3420,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control",
@@ -3087,7 +3431,7 @@
         "control_outcome": "wrong_image",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 6.0,
       "deltas": {
@@ -3113,7 +3457,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control",
@@ -3135,7 +3479,7 @@
         "control_outcome_shift": 1,
         "failure_rate": 0.666667,
         "otadata_drift_rate": -1.0,
-        "otadata_suspicious_drift_rate": 0.0,
+        "otadata_suspicious_drift_rate": -1.0,
         "wrong_image_rate": 0.0
       },
       "direction": "worse",
@@ -3150,7 +3494,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile",
@@ -3161,7 +3505,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -3187,7 +3531,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control",
@@ -3198,7 +3542,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -3224,7 +3568,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "profile",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile",
@@ -3235,7 +3579,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -3261,7 +3605,7 @@
         "control_outcome": "success",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "criteria_preset": "otadata_control",
       "defect_case_id": "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control",
@@ -3272,7 +3616,7 @@
         "control_outcome": "no_boot",
         "failure_rate": 0.0,
         "otadata_drift_rate": 1.0,
-        "otadata_suspicious_drift_rate": 0.0
+        "otadata_suspicious_drift_rate": 1.0
       },
       "delta_score": 4.0,
       "deltas": {
@@ -3291,921 +3635,441 @@
       "scenario_tag": "fallback_guard"
     }
   ],
-  "generated_at_utc": "2026-03-01T031123Z",
+  "generated_at_utc": "2026-03-01T032846Z",
   "otadata_allowlist": {
     "crc_guard": {
-      "time_reset|otadata_control": [
-        "suspicious_state"
-      ],
-      "time_reset|profile": [
-        "suspicious_state"
-      ],
-      "write_reject|otadata_control": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_reject|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ]
+      "time_reset|otadata_control": [],
+      "time_reset|profile": [],
+      "write_reject|otadata_control": [],
+      "write_reject|profile": []
     },
     "crc_schema_guard": {
-      "time_reset|otadata_control": [
-        "suspicious_state"
-      ],
-      "time_reset|profile": [
-        "suspicious_state"
-      ],
-      "write_reject|otadata_control": [
-        "suspicious_crc"
-      ],
-      "write_reject|profile": [
-        "suspicious_crc"
-      ]
+      "time_reset|otadata_control": [],
+      "time_reset|profile": [],
+      "write_reject|otadata_control": [],
+      "write_reject|profile": []
     },
     "fallback_guard": {
-      "time_reset|otadata_control": [
-        "suspicious_state"
-      ],
-      "time_reset|profile": [
-        "suspicious_state"
-      ],
-      "write_reject|otadata_control": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_reject|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ]
+      "time_reset|otadata_control": [],
+      "time_reset|profile": [],
+      "write_reject|otadata_control": [],
+      "write_reject|profile": []
     },
     "rollback_guard": {
       "time_reset|otadata_control": [],
       "time_reset|profile": [],
-      "write_reject|otadata_control": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ],
-      "write_reject|profile": [
-        "suspicious_crc",
-        "suspicious_seq"
-      ]
+      "write_reject|otadata_control": [],
+      "write_reject|profile": []
     },
     "ss_guard": {
       "time_reset|otadata_control": [],
       "time_reset|profile": [],
-      "write_reject|otadata_control": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ],
-      "write_reject|profile": [
-        "suspicious_active_entry",
-        "suspicious_crc"
-      ]
+      "write_reject|otadata_control": [],
+      "write_reject|profile": []
     }
+  },
+  "otadata_allowlist_meta": {
+    "lane_samples": {
+      "crc_guard": {
+        "time_reset|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "time_reset|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        }
+      },
+      "crc_schema_guard": {
+        "time_reset|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "time_reset|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 2
+        },
+        "write_reject|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 2
+        }
+      },
+      "fallback_guard": {
+        "time_reset|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "time_reset|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        }
+      },
+      "rollback_guard": {
+        "time_reset|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "time_reset|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        }
+      },
+      "ss_guard": {
+        "time_reset|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "time_reset|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|otadata_control": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        },
+        "write_reject|profile": {
+          "allowlisted_classes_count": 0,
+          "baseline_cases": 1,
+          "eligible": false,
+          "fault_points_total": 3,
+          "success_fault_points": 3
+        }
+      }
+    },
+    "lanes_eligible": 0,
+    "lanes_ineligible": 20,
+    "lanes_total": 20,
+    "lanes_with_allowlisted_classes": 0,
+    "min_fault_points": 8,
+    "min_success_points": 4
   },
   "output_dir": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix",
   "repo_root": "/Users/neil/mirala/ota-resilience",
   "runs": [
     {
       "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_crc_covers_state_crc_schema_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile'...\nCalibration: 2049 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 2,\n        \"wrong_image\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"wrong_image\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1024,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 49.98,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2048,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"late\",\n          \"position_pct\": 99.95,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control'...\nCalibration: 2049 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort_rollback_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.6666666666666666,\n      \"bricks\": 2,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 2\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1024,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 49.98,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2048,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"late\",\n          \"position_pct\": 99.95,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 1,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile'...\nCalibration: 2049 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1024,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 49.98,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2048,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"late\",\n          \"position_pct\": 99.95,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control'...\nCalibration: 2049 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_abort_rollback_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"wrong_image\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1024,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 49.98,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2048,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"late\",\n          \"position_pct\": 99.95,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_crc_crc_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected to find bricks but found none\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": null\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback_fallback_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": null\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": null\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_no_fallback_fallback_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": null\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_fault_single_sector_ss_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 1.0,\n      \"bricks\": 3,\n      \"control\": {\n        \"boot_outcome\": \"no_boot\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 3\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 0,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"early\",\n          \"position_pct\": 0.0,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 33.33,\n          \"region\": \"unknown\"\n        },\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 2,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 66.67,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 0,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_crc_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_crc_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_crc_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_crc_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_schema_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_schema_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_write_reject__c_profile'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_crc_schema_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 1 (33.3%)\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.3333333333333333,\n      \"bricks\": 1,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {\n        \"no_boot\": 1\n      },\n      \"failures\": [\n        {\n          \"fault_address\": \"0x00000000\",\n          \"fault_at\": 1026,\n          \"outcome\": \"no_boot\",\n          \"phase\": \"mid\",\n          \"position_pct\": 50.0,\n          \"region\": \"unknown\"\n        }\n      ],\n      \"recoveries\": 2,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"FAIL \\u2014 expected no bricks but found 1 (33.3%)\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_schema_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_schema_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_time_reset__c_profile'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_crc_schema_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control'...\nCalibration: 2052 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_crc_schema_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_fallback_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_fallback_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_fallback_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_fallback_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_fallback_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_fallback_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_fallback_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_fallback_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_fallback_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_fallback_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_fallback_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_fallback_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_rollback_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_rollback_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_rollback_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_rollback_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_rollback_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_rollback_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_rollback_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_rollback_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_rollback_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_rollback_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_rollback_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_rollback_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"exec\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_ss_guard__f_write_reject__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_ss_guard__f_write_reject__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_write_reject__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_write_reject__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_write_reject__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_ss_guard__f_write_reject__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_write_reject__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_ss_guard__f_write_reject__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_ss_guard__f_write_reject__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_write_reject__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_write_reject__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_write_reject__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 write-reject) for 'esp_idf_ota_ss_guard__f_write_reject__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_write_reject__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_ss_guard__f_time_reset__c_profile",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_ss_guard__f_time_reset__c_profile.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_time_reset__c_profile.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_time_reset__c_profile.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_time_reset__c_profile'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_ss_guard__f_time_reset__c_profile'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_time_reset__c_profile\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     },
     {
       "case_id": "esp_idf_ota_ss_guard__f_time_reset__c_otadata_control",
-      "command": [
-        "/opt/homebrew/opt/python@3.14/bin/python3.14",
-        "/Users/neil/mirala/ota-resilience/scripts/audit_bootloader.py",
-        "--profile",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/profiles/esp_idf_ota_ss_guard__f_time_reset__c_otadata_control.yaml",
-        "--output",
-        "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_time_reset__c_otadata_control.json",
-        "--renode-test",
-        "/Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test",
-        "--no-assert-control-boots",
-        "--no-assert-verdict",
-        "--quick"
-      ],
       "exit_code": 0,
       "report_path": "/Users/neil/mirala/ota-resilience/results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/reports/esp_idf_ota_ss_guard__f_time_reset__c_otadata_control.json",
-      "status": "ok",
-      "stderr_tail": "Calibrating write count for 'esp_idf_ota_ss_guard__f_time_reset__c_otadata_control'...\nCalibration: 3 NVM writes.\nRunning 3 fault points (0 writes + 3 timed-reset) for 'esp_idf_ota_ss_guard__f_time_reset__c_otadata_control'...\n",
-      "stdout_tail": "{\n  \"profile\": \"esp_idf_ota_ss_guard__f_time_reset__c_otadata_control\",\n  \"summary\": {\n    \"runtime_sweep\": {\n      \"brick_rate\": 0.0,\n      \"bricks\": 0,\n      \"control\": {\n        \"boot_outcome\": \"success\",\n        \"boot_slot\": \"staging\"\n      },\n      \"discarded_no_fault_fired\": 0,\n      \"failure_outcomes\": {},\n      \"recoveries\": 3,\n      \"total_fault_points\": 3\n    }\n  },\n  \"verdict\": \"PASS\"\n}\n"
+      "status": "reused"
     }
   ],
   "totals": {
@@ -4214,11 +4078,15 @@
     "cases_missing_report": 0,
     "cases_total": 40,
     "cases_with_report": 40,
+    "otadata_allowlist_eligible_lanes": 0,
+    "otadata_allowlist_ineligible_lanes": 20,
     "otadata_allowlist_lanes": 20,
+    "otadata_allowlist_min_fault_points": 8,
+    "otadata_allowlist_min_success_points": 4,
     "otadata_allowlist_scenarios": 5,
-    "otadata_allowlisted_points_total": 72,
+    "otadata_allowlisted_points_total": 0,
     "otadata_drift_points_total": 82,
-    "otadata_suspicious_drift_points_total": 10,
-    "otadata_transition_points_total": 72
+    "otadata_suspicious_drift_points_total": 82,
+    "otadata_transition_points_total": 0
   }
 }

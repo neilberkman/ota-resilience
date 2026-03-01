@@ -62,7 +62,7 @@ The fast path (`NRF52NVMC.cs`) diffs the entire flash on each NVMC CONFIG transi
 
 ### Branch: `main` (active branch)
 
-- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), extended ESP guard profile pairs (including `no_fallback` fallback-guard), control-outcome-aware defect scoring, and an `otadata_control` criteria preset for matrix lanes.
+- Main has the exploratory matrix stack through lane-scoped OtaData allowlisting with per-lane sample thresholds, OtaData success-criteria assertions (with scope control), new runtime fault types (`write_rejection`, `reset_at_time`), extended ESP guard profile pairs (including `no_fallback` fallback-guard), control-outcome-aware defect scoring, and an `otadata_control` criteria preset for matrix lanes.
 - Working tree state should be checked with `git status --short --branch` before resuming long runs.
 - Local MCUboot workspace (`third_party/zephyr_ws/bootloader/mcuboot`): branch `fix/revert-copy-done-any`, local commit `b05be3a5`
 - Bit-corruption fault mode is committed (not pending)
@@ -301,6 +301,39 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
      - `write_reject` and `time_reset` are now proven to surface meaningful defect deltas in targeted guard lanes (not just baseline-clean behavior).
    - Artifact:
      - `results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/`
+
+19. **Per-lane minimum-sample thresholds for OtaData auto-allowlisting (2026-03-01, latest batch)**:
+   - Upgraded `scripts/run_exploratory_matrix.py` with explicit allowlist threshold controls:
+     - `--otadata-allowlist-min-fault-points` (default `8`)
+     - `--otadata-allowlist-min-success-points` (default `4`)
+   - Added lane-level allowlist metadata to matrix JSON:
+     - top-level: `otadata_allowlist_meta`
+     - per-lane stats: baseline case count, fault/success sample counts, eligibility, allowlisted class count
+   - Markdown summary now includes:
+     - allowlist eligible vs ineligible lane counts
+     - active min-sample thresholds
+   - Recomputed the focused new-fault matrix (`--reuse-existing`) under thresholded allowlisting:
+     - `40` cases, `19` clusters, `12` control mismatches, `20` defect deltas
+     - `otadata_allowlist_lanes=20`, `eligible=0`, `ineligible=20`, `otadata_allowlisted_points_total=0`
+   - Artifact refreshed:
+     - `results/exploratory/2026-02-28-esp-idf-new-fault-modes-defect-matrix/`
+
+20. **Targeted non-default fault-mode matrix: `write_integrity` + `erase_atomicity` (2026-03-01, latest batch)**:
+   - Extended matrix fault presets in `scripts/run_exploratory_matrix.py`:
+     - `write_integrity` → `silent_write_failure`, `write_disturb`, `wear_leveling_corruption`
+     - `erase_atomicity` → `interrupted_erase`, `multi_sector_atomicity`
+   - Ran focused exploratory matrix across current ESP guard baseline/defect pairs with criteria presets `profile` + `otadata_control`.
+   - Aggregate result:
+     - `40` cases, `38` clusters, `12` control mismatches, `20` defect deltas
+     - `otadata_allowlist_lanes=20`, `eligible=8`, `ineligible=12`, `otadata_allowlisted_points_total=83`
+   - Top regressions by delta score:
+     - `ss_guard` + `write_integrity`: `delta_score=14.24`, `Δfailure=+0.889`, `Δbrick=+0.889`, `Δcontrol_outcome=+2`
+     - `ss_guard` + `erase_atomicity`: `delta_score=10.6`, `Δfailure=+0.5`, `Δbrick=+0.5`, `Δcontrol_outcome=+2`
+     - `crc_guard` + `write_integrity`: `delta_score=10.47`, `Δfailure=+0.333`, `Δbrick=+0.333`, `Δcontrol_outcome=+2`
+   - Outcome:
+     - Newly-added non-default fault presets now produce broad, high-signal exploratory differentials beyond the earlier `write_reject`/`time_reset` lanes.
+   - Artifact:
+     - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/`
 
 ### Bootloader Coverage
 
@@ -720,7 +753,31 @@ python3 scripts/run_exploratory_matrix.py \
   --fault-preset write_reject \
   --fault-preset time_reset \
   --criteria-preset profile \
-  --criteria-preset otadata_control
+  --criteria-preset otadata_control \
+  --otadata-allowlist-min-fault-points 8 \
+  --otadata-allowlist-min-success-points 4
+
+# Targeted non-default fault presets (`write_integrity` + `erase_atomicity`)
+python3 scripts/run_exploratory_matrix.py \
+  --quick \
+  --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
+  --output-dir results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix \
+  --profile profiles/esp_idf_ota_rollback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_abort_rollback_guard.yaml \
+  --profile profiles/esp_idf_ota_ss_guard.yaml \
+  --profile profiles/esp_idf_fault_single_sector_ss_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_fault_crc_covers_state_crc_schema_guard.yaml \
+  --profile profiles/esp_idf_ota_fallback_guard.yaml \
+  --profile profiles/esp_idf_fault_no_fallback_fallback_guard.yaml \
+  --profile profiles/esp_idf_ota_crc_guard.yaml \
+  --profile profiles/esp_idf_fault_no_crc_crc_guard.yaml \
+  --fault-preset write_integrity \
+  --fault-preset erase_atomicity \
+  --criteria-preset profile \
+  --criteria-preset otadata_control \
+  --otadata-allowlist-min-fault-points 8 \
+  --otadata-allowlist-min-success-points 4
 
 # Refresh full discovery matrix with new default profiles (reuse old reports)
 python3 scripts/run_exploratory_matrix.py \
@@ -728,7 +785,9 @@ python3 scripts/run_exploratory_matrix.py \
   --include-defect-profiles \
   --reuse-existing \
   --renode-test /Users/neil/.local/renode/app/Renode.app/Contents/MacOS/renode-test \
-  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1
+  --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1 \
+  --otadata-allowlist-min-fault-points 8 \
+  --otadata-allowlist-min-success-points 4
 ```
 
 ## What Needs To Be Done
@@ -769,14 +828,17 @@ Done. Bit-corruption runtime fault mode is already committed on this branch.
 - Tune copy-path scenarios so the correct profile and defect diverge under the same high-write fault windows (not just low-write CRC-guard cases).
 - Add high-write copy-on-boot variants of `fallback_guard` so `no_fallback` shows fault-induced divergence (not only control divergence).
 - New fault-type baseline sweeps (`write_rejection`/`reset_at_time`) are now high-sample and clean (`0/362` each); next step is defect-targeted lanes where these modes are expected to produce differential behavior.
-- Add per-lane minimum-sample thresholds for auto-allowlisting (avoid overfitting when baseline lane coverage is sparse).
+- Tune per-lane allowlist thresholds per campaign (`--otadata-allowlist-min-fault-points`, `--otadata-allowlist-min-success-points`) so fast smokes and deep sweeps use appropriate normalization strictness.
 
 ### 3. More Fault Types
 
 User explicitly requested ("uh can we do all of this?!?!?"):
 
 - Implemented and wired end-to-end: `power_loss`, `bit_corruption`, `silent_write_failure`, `write_rejection`, `write_disturb`, `wear_leveling_corruption`, `interrupted_erase`, `multi_sector_atomicity`, `reset_at_time`.
-- Practical next step is coverage depth: run targeted differential lanes where each non-default mode (`b/s/r/d/l/t`) is expected to reveal defect-specific behavior.
+- Added exploratory matrix fault presets for broader non-default coverage:
+  - `write_integrity` (`s/d/l`) and `erase_atomicity` (`e/a`) in `run_exploratory_matrix.py`.
+- Completed a focused guard-pair matrix for `write_integrity` + `erase_atomicity` with concrete defect deltas across all current ESP defect families.
+- Practical next step is deeper sample depth (non-quick lanes) for the new presets to stabilize rates and reduce cluster fragmentation.
 
 ### 4. Additional Real-World Bootloader Differentials
 
@@ -860,6 +922,8 @@ Current workflow is direct-to-main (no PR required):
 16. **Control-outcome deltas are now first-class in defect scoring**: `build_defect_deltas()` compares baseline vs defect control outcomes (`control_outcome_changed` / `control_outcome_shift`) in addition to control-mismatch-vs-expected. This prevents real regressions from being hidden when each profile has different expected control outcomes.
 
 17. **`reset_at_time` full sweeps are slower than other write fault modes**: even with heuristic reduction and parallel workers, timed-reset campaigns can run much longer than write-reject/bit/erase lanes. Prefer `--workers` plus bounded exploratory lanes first, then scale up.
+
+18. **Allowlist thresholds can fully disable normalization in sparse quick lanes**: with defaults (`fault>=8`, `success>=4`), small quick campaigns can yield `eligible=0` and zero allowlisted points. This is intentional anti-overfit behavior; lower thresholds for smoke analysis or run deeper baseline lanes first.
 
 ## Profile YAML Schema Quick Reference
 
