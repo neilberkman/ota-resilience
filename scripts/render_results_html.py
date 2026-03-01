@@ -30,6 +30,8 @@ def classify_payload(payload: Any) -> str:
         return "audit"
     if isinstance(payload, dict) and "total_profiles" in payload and "results" in payload:
         return "self_test"
+    if isinstance(payload, dict) and "clusters" in payload and "totals" in payload:
+        return "matrix"
     return "unknown"
 
 
@@ -142,6 +144,109 @@ def render_self_test_card(path: Path, payload: Dict[str, Any]) -> str:
     )
 
 
+def _as_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _as_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def render_matrix_card(path: Path, payload: Dict[str, Any]) -> str:
+    totals = payload.get("totals", {})
+    if not isinstance(totals, dict):
+        totals = {}
+
+    clusters = payload.get("clusters", [])
+    if not isinstance(clusters, list):
+        clusters = []
+    defect_deltas = payload.get("defect_deltas", [])
+    if not isinstance(defect_deltas, list):
+        defect_deltas = []
+    regressions = [d for d in defect_deltas if d.get("direction") == "worse"]
+
+    metrics = (
+        "<div class='metrics'>"
+        f"<div><b>cases</b><span>{_as_int(totals.get('cases_total', len(payload.get('cases', []))))}</span></div>"
+        f"<div><b>clusters</b><span>{len(clusters)}</span></div>"
+        f"<div><b>control mismatches</b><span>{_as_int(totals.get('cases_control_mismatch'))}</span></div>"
+        f"<div><b>defect deltas</b><span>{len(defect_deltas)}</span></div>"
+        f"<div><b>anomalous points</b><span>{_as_int(totals.get('anomalous_points_total'))}</span></div>"
+        f"<div><b>otadata suspicious</b><span>{_as_int(totals.get('otadata_suspicious_drift_points_total'))}</span></div>"
+        "</div>"
+    )
+
+    top_cluster_rows: List[str] = []
+    for idx, cluster in enumerate(clusters[:12], 1):
+        signature = json.dumps(cluster.get("signature", {}), sort_keys=True)
+        if len(signature) > 120:
+            signature = signature[:117] + "..."
+        top_cluster_rows.append(
+            "<tr>"
+            f"<td>{idx}</td>"
+            f"<td>{html.escape(str(cluster.get('kind', '')))}</td>"
+            f"<td>{_as_float(cluster.get('score')):.3f}</td>"
+            f"<td>{_as_int(cluster.get('count'))}</td>"
+            f"<td>{_as_int(cluster.get('case_count'))}</td>"
+            f"<td><code>{html.escape(signature)}</code></td>"
+            "</tr>"
+        )
+    if not top_cluster_rows:
+        top_cluster_rows.append(
+            "<tr><td colspan='6'>No clusters available.</td></tr>"
+        )
+
+    top_regression_rows: List[str] = []
+    for idx, row in enumerate(regressions[:12], 1):
+        deltas = row.get("deltas", {})
+        if not isinstance(deltas, dict):
+            deltas = {}
+        top_regression_rows.append(
+            "<tr>"
+            f"<td>{idx}</td>"
+            f"<td>{_as_float(row.get('delta_score')):.3f}</td>"
+            f"<td>{html.escape(str(row.get('scenario_tag', '')))}</td>"
+            f"<td>{html.escape(str(row.get('fault_preset', '')))}</td>"
+            f"<td>{html.escape(str(row.get('criteria_preset', '')))}</td>"
+            f"<td>{_as_float(deltas.get('failure_rate')):+.3f}</td>"
+            f"<td>{_as_float(deltas.get('brick_rate')):+.3f}</td>"
+            f"<td>{_as_int(deltas.get('control_mismatch')):+d}</td>"
+            f"<td>{_as_int(deltas.get('control_outcome_shift')):+d}</td>"
+            "</tr>"
+        )
+    if not top_regression_rows:
+        top_regression_rows.append(
+            "<tr><td colspan='9'>No worsening defect deltas detected.</td></tr>"
+        )
+
+    return (
+        "<section class='card'>"
+        "<h2>Exploratory Matrix Summary</h2>"
+        f"<p class='path'>{html.escape(str(path))}</p>"
+        f"{metrics}"
+        "<h3>Top Clusters</h3>"
+        "<table><thead><tr>"
+        "<th>#</th><th>Kind</th><th>Score</th><th>Occurrences</th><th>Cases</th><th>Signature</th>"
+        "</tr></thead><tbody>"
+        f"{''.join(top_cluster_rows)}"
+        "</tbody></table>"
+        "<h3>Top Worsening Defect Deltas</h3>"
+        "<table><thead><tr>"
+        "<th>#</th><th>Score</th><th>Scenario</th><th>Fault</th><th>Criteria</th>"
+        "<th>Δfailure</th><th>Δbrick</th><th>Δcontrol</th><th>Δcontrol_outcome</th>"
+        "</tr></thead><tbody>"
+        f"{''.join(top_regression_rows)}"
+        "</tbody></table>"
+        "</section>"
+    )
+
+
 def render_comparison(summaries: List[Dict[str, Any]]) -> str:
     if len(summaries) != 2:
         return ""
@@ -179,6 +284,8 @@ def main() -> int:
             audit_summaries.append(summary)
         elif kind == "self_test":
             cards.append(render_self_test_card(path, payload))
+        elif kind == "matrix":
+            cards.append(render_matrix_card(path, payload))
         else:
             cards.append(
                 "<section class='card'><h2>Unsupported JSON</h2>"

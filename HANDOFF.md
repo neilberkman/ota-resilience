@@ -349,6 +349,16 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
    - Artifact refreshed:
      - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/`
 
+22. **Exploratory matrix HTML reporting (2026-03-01, latest batch)**:
+   - Extended `scripts/render_results_html.py` to classify/render exploratory matrix payloads (`matrix_results.json`) in addition to audit/self-test JSON.
+   - Matrix HTML cards now include:
+     - key totals (cases, clusters, control mismatches, defect deltas, anomalous points)
+     - top clusters table
+     - top worsening defect-delta table
+   - Generated fresh HTML artifacts:
+     - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_report.html`
+     - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html`
+
 ### Bootloader Coverage
 
 | Bootloader            | Type                     | Profiles                                                         | Notes                                          |
@@ -387,6 +397,7 @@ Additional exploratory real-binary runs were completed for geometry/math bug PRs
 | `scripts/bootstrap_mcuboot_geometry_assets.sh` | Rebuild geometry-trigger MCUboot assets (PR2206 forced trailer + large images) |
 | `scripts/sweep_pr2206_geometry_threshold.py` | Control-only payload-size sweep for PR2206 threshold and broken/fixed comparison |
 | `scripts/run_exploratory_matrix.py` | Discovery-first matrix runner + anomaly clustering report generator |
+| `scripts/render_results_html.py`   | HTML renderer for audit/self-test and exploratory matrix JSON outputs    |
 | `scripts/run_oss_validation.py`    | MCUboot build + validate pipeline                                       |
 | `scripts/geometry_matrix.py`       | MCUboot swap geometry analysis                                          |
 
@@ -802,6 +813,15 @@ python3 scripts/run_exploratory_matrix.py \
   --output-dir results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1 \
   --otadata-allowlist-min-fault-points 8 \
   --otadata-allowlist-min-success-points 4
+
+# Render HTML reports from exploratory matrix JSON
+python3 scripts/render_results_html.py \
+  --input results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_results.json \
+  --output results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_report.html
+
+python3 scripts/render_results_html.py \
+  --input results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_results.json \
+  --output results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html
 ```
 
 ## What Needs To Be Done
@@ -883,15 +903,34 @@ Currently MCUboot is the ONLY real (non-model) bootloader tested. All others are
 
 ### 6. CI / GitHub Actions
 
-Direct-to-main workflow is currently in use. The remaining CI gap is still self-test automation in GitHub Actions; blocker is Renode binary distribution in CI. Likely options: Renode Docker image or portable release download step.
+Direct-to-main workflow is currently in use, and CI automation is now present in-repo:
+
+- `.github/workflows/ci.yml`
+  - `renode-tests` job: pinned `antmicro/renode-test-action` + core Robot suites.
+  - `self-test` job: installs Renode portable and runs `scripts/self_test.py --quick`.
+- `.github/workflows/oss-validation.yml`
+  - Manual (`workflow_dispatch`) guard workflow for known-good / known-bad MCUboot validation.
+- `.github/workflows/renode-latest-canary.yml`
+  - Manual canary against latest Renode portable.
+
+Remaining CI gap is broader exploratory automation (matrix campaigns + artifact summarization) on a cadence, not basic self-test bring-up.
 
 ### 7. Result Visualization / Reporting
 
-Currently results are JSON blobs. Could benefit from:
+Result visualization is now partially implemented:
 
-- HTML report with fault point heatmap (which addresses brick)
-- Comparison view: broken vs fixed side by side
-- Aggregated report across all profiles
+- `scripts/render_results_html.py` renders:
+  - audit JSON (fault grids + summary)
+  - self-test JSON
+  - exploratory matrix JSON (top clusters + top defect deltas + key totals)
+- Latest matrix HTML artifacts:
+  - `results/exploratory/2026-03-01-esp-idf-write-integrity-erase-atomicity-matrix/matrix_report.html`
+  - `results/exploratory/2026-02-27-esp-idf-discovery-deltas-all-v1/matrix_report.html`
+
+Remaining gap:
+
+- Cross-run aggregated HTML dashboard (multiple matrix outputs in one page)
+- Trend view over time (delta-score and cluster-count evolution by scenario/fault lane)
 
 ### 8. Push Directly To Main
 

@@ -126,6 +126,14 @@ debugging broken baseline images.
 The `tests/ota_resilience.robot` suite parses report JSON and asserts structured
 fields (not serialized string matching).
 
+Render HTML summaries from audit/self-test/matrix JSON outputs:
+
+```bash
+python3 scripts/render_results_html.py \
+  --input results/exploratory/<run>/matrix_results.json \
+  --output results/exploratory/<run>/matrix_report.html
+```
+
 ## CI and reproducibility
 
 - Workflow: `.github/workflows/ci.yml`
@@ -177,6 +185,7 @@ ota-resilience/
 ├── scripts/
 │   ├── audit_bootloader.py                 # Unguided bootloader resilience audit
 │   ├── self_test.py                        # Meta-test: validate audit catches defects
+│   ├── render_results_html.py              # HTML summaries for audit/self-test/matrix JSON
 │   ├── run_oss_validation.py               # OSS profile orchestrator
 │   ├── mcuboot_state_fuzzer.py             # MCUboot trailer state exploration
 │   ├── ota_fault_campaign.py               # Fault sweep campaign runner
